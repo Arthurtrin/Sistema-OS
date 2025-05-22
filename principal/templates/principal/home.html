@@ -1,0 +1,38 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card text-bg-light h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-box fa-2x mb-3 text-primary"></i>
+        <h5 class="card-title">Produtos</h5>
+        <p class="card-text">Gerencie seus produtos cadastrados.</p>
+        <a href="#" class="btn btn-primary">Ver produtos</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-light h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-users fa-2x mb-3 text-success"></i>
+        <h5 class="card-title">Usuários</h5>
+        <p class="card-text">Administre os usuários do sistema.</p>
+        <a href="#" class="btn btn-success">Ver usuários</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-light h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="fas fa-cog fa-2x mb-3 text-warning"></i>
+        <h5 class="card-title">Configurações</h5>
+        <p class="card-text">Ajuste preferências do sistema.</p>
+        <a href="#" class="btn btn-warning text-white">Ir para configurações</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
