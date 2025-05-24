@@ -16,7 +16,7 @@ class Perfil(models.Model):
 
 
 class Chave_Gerenciador(models.Model):
-    nome = models.CharField(max_length=20, default='')
+    nome = models.OneToOneField(User, on_delete=models.CASCADE)
     chave = models.CharField(max_length=20, default='')
 
     def __str__(self):

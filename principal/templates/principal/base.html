@@ -11,11 +11,15 @@
 
   <!-- Font Awesome para ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 
   <style>
     body {
       display: flex;
       min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .sidebar {
@@ -65,6 +69,22 @@
         margin-left: 0;
       }
     }
+
+    .text-purple {
+  color: #6f42c1 !important;
+}
+
+.btn-purple {
+  background-color: #6f42c1;
+  color: white;
+  border: none;
+}
+
+.btn-purple:hover {
+  background-color: #5a32a3;
+  color: white;
+}
+
   </style>
 </head>
 <body>
@@ -75,7 +95,7 @@
       <button class="btn btn-link text-white me-3" id="toggleSidebar">
         <i class="fas fa-bars"></i>
       </button>
-      <a class="navbar-brand" href="#">Minha Empresa</a>
+      <a class="navbar-brand" href="{% url 'home' %}">Minha Empresa</a>
   
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ms-auto d-flex align-items-center">
@@ -100,7 +120,7 @@
   <div class="sidebar" id="sidebar">
     <ul class="nav flex-column px-3">
       <li class="nav-item mb-2">
-        <a class="nav-link" href="#"><i class="fas fa-home me-2"></i>Início</a>
+        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-2"></i>Início</a>
       </li>
       <li class="nav-item mb-2">
         <a class="nav-link" href="#"><i class="fas fa-box me-2"></i>Produtos</a>

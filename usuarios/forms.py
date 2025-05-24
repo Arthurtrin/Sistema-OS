@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Chave_Gerenciador
+from .models import Chave_Gerenciador, Perfil
 
 TIPOS_USUARIO = [
     ('normal', 'Usuário Normal'),
@@ -47,4 +47,20 @@ class CustomUserCreationForm(UserCreationForm):
             Perfil.objects.create(usuario=usuario, tipo=tipo)
         return usuario
 
+
+class EditarUsuarioForm(forms.ModelForm):
+    tipo_usuario = forms.ChoiceField(
+        choices=Perfil.TIPOS_USUARIO,
+        label="Tipo de Usuário"
+    )
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+    
+    def __init__(self, *args, **kwargs):
+        perfil = kwargs.pop('perfil', None)
+        super().__init__(*args, **kwargs)
+        if perfil:
+            self.fields['tipo_usuario'].initial = perfil.tipo
 

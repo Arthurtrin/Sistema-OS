@@ -1,0 +1,158 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Criar Ordem de Serviço</h2>
+  <form>
+    
+    <!-- Identificação -->
+    <div class="mb-3">
+      <label for="osNumero" class="form-label">Número da OS</label>
+      <input type="text" class="form-control" id="osNumero" placeholder="Ex.: 12345">
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="dataAbertura" class="form-label">Data de Abertura</label>
+        <input type="date" class="form-control" id="dataAbertura">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dataPrevista" class="form-label">Data Prevista de Conclusão</label>
+        <input type="date" class="form-control" id="dataPrevista">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dataEncerramento" class="form-label">Data de Encerramento</label>
+        <input type="date" class="form-control" id="dataEncerramento">
+      </div>
+    </div>
+
+    <!-- Dados do Cliente -->
+    <h5 class="mt-4">Dados do Cliente</h5>
+    <div class="mb-3">
+      <label for="clienteNome" class="form-label">Nome</label>
+      <input type="text" class="form-control" id="clienteNome" placeholder="Nome completo">
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="clienteCpf" class="form-label">CPF/CNPJ</label>
+        <input type="text" class="form-control" id="clienteCpf" placeholder="000.000.000-00">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="clienteTelefone" class="form-label">Telefone</label>
+        <input type="tel" class="form-control" id="clienteTelefone" placeholder="(00) 00000-0000">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="clienteEmail" class="form-label">E-mail</label>
+      <input type="email" class="form-control" id="clienteEmail" placeholder="cliente@exemplo.com">
+    </div>
+
+    <div class="mb-3">
+      <label for="clienteEndereco" class="form-label">Endereço</label>
+      <input type="text" class="form-control" id="clienteEndereco" placeholder="Rua, número, bairro, cidade">
+    </div>
+
+    <!-- Descrição do Serviço -->
+    <h5 class="mt-4">Descrição do Serviço</h5>
+    <div class="mb-3">
+      <label for="descricao" class="form-label">Descrição</label>
+      <textarea class="form-control" id="descricao" rows="3" placeholder="Descreva o problema ou necessidade"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="observacoes" class="form-label">Observações Adicionais</label>
+      <textarea class="form-control" id="observacoes" rows="2"></textarea>
+    </div>
+
+    <!-- Equipamento -->
+    <h5 class="mt-4">Equipamento</h5>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="modelo" class="form-label">Modelo</label>
+        <input type="text" class="form-control" id="modelo">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="numeroSerie" class="form-label">Número de Série</label>
+        <input type="text" class="form-control" id="numeroSerie">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="acessorios" class="form-label">Acessórios Enviados</label>
+        <input type="text" class="form-control" id="acessorios">
+      </div>
+    </div>
+
+    <!-- Diagnóstico -->
+    <h5 class="mt-4">Diagnóstico Técnico</h5>
+    <div class="mb-3">
+      <label for="diagnostico" class="form-label">Descrição</label>
+      <textarea class="form-control" id="diagnostico" rows="3"></textarea>
+    </div>
+
+    <!-- Responsáveis -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="tecnico" class="form-label">Técnico Responsável</label>
+        <input type="text" class="form-control" id="tecnico">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="supervisor" class="form-label">Supervisor</label>
+        <input type="text" class="form-control" id="supervisor">
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select class="form-select" id="status">
+        <option selected>Selecione o status</option>
+        <option value="aberta">Aberta</option>
+        <option value="em_andamento">Em andamento</option>
+        <option value="aguardando">Aguardando peças</option>
+        <option value="finalizada">Finalizada</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+    </div>
+
+    <!-- Custos -->
+    <h5 class="mt-4">Custos</h5>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="maoDeObra" class="form-label">Mão de Obra (R$)</label>
+        <input type="number" class="form-control" id="maoDeObra" step="0.01">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="pecas" class="form-label">Peças (R$)</label>
+        <input type="number" class="form-control" id="pecas" step="0.01">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="total" class="form-label">Valor Total (R$)</label>
+        <input type="number" class="form-control" id="total" step="0.01">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="pagamento" class="form-label">Forma de Pagamento</label>
+      <input type="text" class="form-control" id="pagamento" placeholder="Dinheiro, cartão, transferência...">
+    </div>
+
+    <!-- Anexos -->
+    <h5 class="mt-4">Anexos</h5>
+    <div class="mb-3">
+      <label for="anexos" class="form-label">Enviar Fotos ou Documentos</label>
+      <input class="form-control" type="file" id="anexos" multiple>
+    </div>
+
+    <!-- Botão -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-save me-2"></i>Salvar Ordem de Serviço
+      </button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

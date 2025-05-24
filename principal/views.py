@@ -3,8 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
-from usuarios.models import Perfil
-
+from usuarios.models import Perfil, Chave_Gerenciador
 
 @login_required
 def home(request):
@@ -26,9 +25,15 @@ def usuarios(request, usuario):
             if pesquisa:
                 perfis = perfis.filter(usuario__username__icontains=pesquisa)
 
-            usuarios_perfis = [(perfil.usuario, perfil) for perfil in perfis]
+            usuarios_perfis = []
+            for perfil in perfis:
+                try:
+                    chave = Chave_Gerenciador.objects.get(nome=perfil.usuario)
+                except Chave_Gerenciador.DoesNotExist:
+                    chave = None
+                usuarios_perfis.append((perfil.usuario, perfil, chave))
 
-            # Paginação: 10 itens por página
+            # Paginação: 5 itens por página
             paginator = Paginator(usuarios_perfis, 5)
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
@@ -39,6 +44,16 @@ def usuarios(request, usuario):
                 "pesquisa": pesquisa
             })
         else:
-            return HttpResponseForbidden("Você não tem permissão para acessar esta página.")
+            mensagem = 'Você não tem permissão para acessar esta página.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
     except Perfil.DoesNotExist:
-        return HttpResponseForbidden("Perfil não encontrado.")
+        mensagem = 'Perfil não encontrado'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+@login_required
+def ordem_servico(request):
+    return render(request, 'principal/ordem_servico.html')
+
+@login_required
+def criar_os(request):
+    return render(request, 'principal/criar_os.html')

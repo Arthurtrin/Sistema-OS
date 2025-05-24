@@ -2,35 +2,72 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<div class="row g-4">
-  <div class="col-md-4">
-    <div class="card text-bg-light h-100 shadow-sm">
-      <div class="card-body text-center">
-        <i class="fas fa-box fa-2x mb-3 text-primary"></i>
-        <h5 class="card-title">Produtos</h5>
-        <p class="card-text">Gerencie seus produtos cadastrados.</p>
-        <a href="" class="btn btn-primary">Ver produtos</a>
+<div class="container pt-5">
+  <h2 class="mb-4">Painel de Controle</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-file-alt fa-2x mb-3 text-purple"></i>
+          <h5 class="card-title">Ordens de Serviço</h5>
+          <p class="card-text">Gerencie e crie novas ordens de serviço.</p>
+          <a href="{% url 'ordem_servico' %}" class="btn btn-purple">Ver OS</a>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card text-bg-light h-100 shadow-sm">
-      <div class="card-body text-center">
-        <i class="fas fa-users fa-2x mb-3 text-success"></i>
-        <h5 class="card-title">Usuários</h5>
-        <p class="card-text">Administre os usuários do sistema.</p>
-        <a href="#" class="btn btn-success">Ver usuários</a>
+    
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-user-friends fa-2x mb-3 text-primary"></i>
+          <h5 class="card-title">Clientes</h5>
+          <p class="card-text">Administre seus clientes e contatos.</p>
+          <a href="#" class="btn btn-primary">Ver clientes</a>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card text-bg-light h-100 shadow-sm">
-      <div class="card-body text-center">
-        <i class="fas fa-cog fa-2x mb-3 text-warning"></i>
-        <h5 class="card-title">Configurações</h5>
-        <p class="card-text">Ajuste preferências do sistema.</p>
-        <a href="#" class="btn btn-warning text-white">Ir para configurações</a>
+
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-wallet fa-2x mb-3 text-success"></i>
+          <h5 class="card-title">Financeiro</h5>
+          <p class="card-text">Controle de contas a pagar e receber.</p>
+          <a href="#" class="btn btn-success">Ver financeiro</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-boxes fa-2x mb-3 text-warning"></i>
+          <h5 class="card-title">Estoque</h5>
+          <p class="card-text">Gerencie o estoque de produtos.</p>
+          <a href="#" class="btn btn-warning text-white">Ver estoque</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-chart-line fa-2x mb-3 text-danger"></i>
+          <h5 class="card-title">Relatórios</h5>
+          <p class="card-text">Visualize relatórios e estatísticas.</p>
+          <a href="#" class="btn btn-danger">Ver relatórios</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-bg-light h-100 shadow-sm">
+        <div class="card-body text-center">
+          <i class="fas fa-cog fa-2x mb-3 text-secondary"></i>
+          <h5 class="card-title">Configurações</h5>
+          <p class="card-text">Personalize o sistema e preferências.</p>
+          <a href="#" class="btn btn-secondary">Configurações</a>
+        </div>
       </div>
     </div>
   </div>
