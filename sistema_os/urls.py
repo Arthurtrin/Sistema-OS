@@ -10,4 +10,5 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('', include('usuarios.urls')),
     path('painel/', include('principal.urls')),
+    path('clientes/', include('clientes.urls')),
 )

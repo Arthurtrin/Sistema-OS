@@ -4,72 +4,122 @@
 {% block content %}
 <div class="container pt-5">
   <h2 class="mb-4">Painel de Controle</h2>
-  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+  <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
     <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-file-alt fa-2x mb-3 text-purple"></i>
-          <h5 class="card-title">Ordens de Serviço</h5>
-          <p class="card-text">Gerencie e crie novas ordens de serviço.</p>
-          <a href="{% url 'ordem_servico' %}" class="btn btn-purple">Ver OS</a>
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-tasks fa-2x mb-3 text-info"></i>
+            <h5 class="card-title">4 Tarefas Ativas</h5>
+          </div>
         </div>
-      </div>
-    </div>
-    
-    <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-user-friends fa-2x mb-3 text-primary"></i>
-          <h5 class="card-title">Clientes</h5>
-          <p class="card-text">Administre seus clientes e contatos.</p>
-          <a href="#" class="btn btn-primary">Ver clientes</a>
-        </div>
-      </div>
+      </a>
     </div>
 
     <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-wallet fa-2x mb-3 text-success"></i>
-          <h5 class="card-title">Financeiro</h5>
-          <p class="card-text">Controle de contas a pagar e receber.</p>
-          <a href="#" class="btn btn-success">Ver financeiro</a>
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-check-circle fa-2x mb-3 text-success"></i>
+            <h5 class="card-title">5 Concluídas</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-boxes fa-2x mb-3 text-warning"></i>
-          <h5 class="card-title">Estoque</h5>
-          <p class="card-text">Gerencie o estoque de produtos.</p>
-          <a href="#" class="btn btn-warning text-white">Ver estoque</a>
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-times-circle fa-2x mb-3 text-danger"></i>
+            <h5 class="card-title">2 Canceladas</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-chart-line fa-2x mb-3 text-danger"></i>
-          <h5 class="card-title">Relatórios</h5>
-          <p class="card-text">Visualize relatórios e estatísticas.</p>
-          <a href="#" class="btn btn-danger">Ver relatórios</a>
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-users fa-2x mb-3 text-primary"></i>
+            <h5 class="card-title">12 Clientes Cadastrados</h5>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card text-bg-light h-100 shadow-sm">
-        <div class="card-body text-center">
-          <i class="fas fa-cog fa-2x mb-3 text-secondary"></i>
-          <h5 class="card-title">Configurações</h5>
-          <p class="card-text">Personalize o sistema e preferências.</p>
-          <a href="#" class="btn btn-secondary">Configurações</a>
-        </div>
-      </div>
+      </a>
     </div>
   </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Ordem de Serviço Recentes</h4>
+    <a href="#" class="btn btn-success">
+      <i class="fas fa-plus me-1"></i> Gerar Nova Ordem
+    </a>
+  </div>
+
+  {% if ordens %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Descrição</th>
+          <th>Status</th>
+          <th>Data Criação</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ordem in ordens|slice:":5" %}
+        <tr>
+          <td>{{ ordem.id }}</td>
+          <td>{{ ordem.cliente.nome }}</td>
+          <td>{{ ordem.descricao|truncatewords:10 }}</td>
+          <td>
+            {% if ordem.status == 'pendente' %}
+              <span class="badge bg-warning text-dark">Pendentes</span>
+            {% elif ordem.status == 'concluida' %}
+              <span class="badge bg-success">Concluídas</span>
+            {% elif ordem.status == 'cancelada' %}
+              <span class="badge bg-danger">Canceladas</span>
+            {% else %}
+              <span class="badge bg-secondary">Outro</span>
+            {% endif %}
+          </td>
+          <td>{{ ordem.data_criacao|date:"d/m/Y" }}</td>
+          <td>
+            <a href="#" class="btn btn-sm btn-outline-primary" title="Editar">
+              <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Confirma exclusão?')">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-end mt-3">
+    <a href="#" class="btn btn-outline-secondary">
+      Visualizar Todas as Ordens
+    </a>
+  </div>
+  {% else %}
+    <p class="text-muted fs-5">Nenhuma ordem de serviço encontrada para o filtro selecionado.</p>
+  {% endif %}
 </div>
+
+<style>
+.hover-shadow {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-shadow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+</style>
 {% endblock %}
