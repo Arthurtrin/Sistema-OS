@@ -1,0 +1,44 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dados do Cliente{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dados do Cliente: {{ cliente.nome_cliente }}</h5>
+            <a href="{% url 'clientes:listar_clientes' %}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p><strong>Código:</strong> {{ cliente.codigo }}</p>
+                    <p><strong>Nome Fantasia:</strong> {{ cliente.nome_fantasia|default:"---" }}</p>
+                    <p><strong>Email 1:</strong> {{ cliente.email1 }}</p>
+                    <p><strong>Email 2:</strong> {{ cliente.email2|default:"---" }}</p>
+                    <p><strong>Email 3:</strong> {{ cliente.email3|default:"---" }}</p>
+                    <p><strong>CNPJ/CPF:</strong> {{ cliente.cnpj_cpf }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Telefone 1:</strong> {{ cliente.telefone1|default:"---" }}</p>
+                    <p><strong>Telefone 2:</strong> {{ cliente.telefone2|default:"---" }}</p>
+                    <p><strong>Celular 1:</strong> {{ cliente.celular1|default:"---" }}</p>
+                    <p><strong>Celular 2:</strong> {{ cliente.celular2|default:"---" }}</p>
+                    <p><strong>Inscrição Estadual:</strong> {{ cliente.inscricao_estadual|default:"---" }}</p>
+                    <p><strong>Inscrição Municipal:</strong> {{ cliente.inscricao_municipal|default:"---" }}</p>
+                    <p><strong>Data de Inclusão:</strong> {{ cliente.data_inclusao }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-primary me-2">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{% url 'clientes:excluir_cliente' cliente.id %}" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Excluir
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

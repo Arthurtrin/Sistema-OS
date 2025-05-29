@@ -9,15 +9,11 @@ def cadastrar_clientes(request):
         form = ClienteForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('listar_clientes')  # ou outra view
+            return redirect('clientes:listar_clientes')  # ou outra view
     else:
         form = ClienteForm()
 
     return render(request, 'clientes/cadastrar_clientes.html', {'form': form})
-
-
-from django.db.models import Q
-from django.core.paginator import Paginator
 
 def listar_clientes(request):
     pesquisa = request.GET.get('pesquisa', '')
@@ -60,14 +56,22 @@ def listar_clientes(request):
         'data_fim': data_fim,
     })
 
-
 def editar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    # Lógica para editar cliente
-    return redirect('listar_clientes')
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('clientes:listar_clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+    return render(request, 'clientes/editar_clientes.html', {'form': form, 'cliente': cliente})
 
 def excluir_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     cliente.delete()
-    return redirect('listar_clientes')
+    return redirect('clientes:listar_clientes')
 
+def ver_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    return render(request, 'clientes/ver_cliente.html', {'cliente': cliente})

@@ -123,7 +123,7 @@
         <a class="nav-link" href="{% url 'clientes:listar_clientes' %}"><i class="fas fa-handshake me-2"></i>Clientes</a>
       </li>
       <li class="nav-item mb-2">
-        <a class="nav-link" href="#"><i class="fas fa-box me-2"></i>Produtos</a>
+        <a class="nav-link" href="#"><i class="fas fa-tools me-2"></i>Técnicos</a>
       </li>
       <li class="nav-item mb-2">
         <a class="nav-link" href="{% url 'usuarios' user.username %}"><i class="fas fa-users me-2"></i>Usuários</a>
@@ -136,8 +136,9 @@
 
   <!-- Conteúdo Principal -->
   <div class="content" id="mainContent">
-    {% block content %}
-    {% endblock %}
+    <div class="container pt-5">
+    {% block content %}{% endblock %}
+</div>
   </div>
 
   <!-- Scripts -->

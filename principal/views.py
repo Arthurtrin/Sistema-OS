@@ -4,10 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 from usuarios.models import Perfil, Chave_Gerenciador
+from clientes.models import Cliente
 
 @login_required
 def home(request):
-    return render(request, 'principal/home.html')
+    cliente = Cliente.objects.count()
+    return render(request, 'principal/home.html', {"clientes": cliente})
 
 @login_required
 def usuarios(request, usuario):
