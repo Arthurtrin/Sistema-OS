@@ -1,0 +1,85 @@
+{% extends 'principal/base.html' %}
+{% block title %}Segmentos e Atividades{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="mb-4">Definir Segmentos e Atividades</h2>
+
+  <ul class="nav nav-tabs" id="segmentosAtividadesTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="segmentos-tab" data-bs-toggle="tab" data-bs-target="#segmentos" type="button" role="tab" aria-controls="segmentos" aria-selected="true">
+        Segmentos
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="atividades-tab" data-bs-toggle="tab" data-bs-target="#atividades" type="button" role="tab" aria-controls="atividades" aria-selected="false">
+        Atividades
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content border border-top-0 p-4 rounded-bottom shadow-sm">
+    
+    <!-- Segmentos Tab -->
+    <div class="tab-pane fade show active" id="segmentos" role="tabpanel" aria-labelledby="segmentos-tab">
+      <h4>Segmentos de Clientes</h4>
+      
+      <!-- Lista Segmentos -->
+      <ul class="list-group mb-4" id="lista-segmentos">
+        <!-- Aqui você pode iterar segmentos: -->
+        {# Exemplo: #}
+        {% for segmento in segmentos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ segmento.nome }}
+            <div>
+              <a href="" class="btn btn-sm btn-outline-secondary me-2">Editar</a>
+              <a href="" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhum segmento cadastrado.</li>
+        {% endfor %}
+      </ul>
+      
+      <!-- Formulário Segmentos (exemplo simples) -->
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="text" name="nome" class="form-control" placeholder="Novo segmento" required>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Atividades Tab -->
+    <div class="tab-pane fade" id="atividades" role="tabpanel" aria-labelledby="atividades-tab">
+      <h4>Ramos de Atividade</h4>
+      
+      <!-- Lista Atividades -->
+      <ul class="list-group mb-4" id="lista-atividades">
+        {% for atividade in atividades %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ atividade.nome }}
+            <div>
+              <a href="" class="btn btn-sm btn-outline-secondary me-2">Editar</a>
+              <a href="" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhuma atividade cadastrada.</li>
+        {% endfor %}
+      </ul>
+      
+      <!-- Formulário Atividades -->
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="text" name="nome" class="form-control" placeholder="Nova atividade" required>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -100,7 +100,7 @@
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ms-auto d-flex align-items-center">
           <li class="nav-item me-3">
-            <span class="nav-link text-white">Olá, {{ user.username }}</span>
+            <span class="nav-link text-white"><i class="fa fa-user me-2"></i>{{ user.username }}</span>
           </li>
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="m-0 p-0">
@@ -116,7 +116,7 @@
   </nav>
   
 
-  <!-- Sidebar Lateral -->
+  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <ul class="nav flex-column px-3">
       <li class="nav-item mb-2">
@@ -129,7 +129,7 @@
         <a class="nav-link" href="{% url 'usuarios' user.username %}"><i class="fas fa-users me-2"></i>Usuários</a>
       </li>
       <li class="nav-item mb-2">
-        <a class="nav-link" href="#"><i class="fas fa-cog me-2"></i>Configurações</a>
+          <a class="nav-link" href="{% url 'configuracoes' %}"><i class="fas fa-cog me-2"></i>Configurações</a>
       </li>
     </ul>
   </div>

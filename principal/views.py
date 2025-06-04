@@ -5,6 +5,7 @@ from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 from usuarios.models import Perfil, Chave_Gerenciador
 from clientes.models import Cliente
+from .models import Atividade, Segmento
 
 @login_required
 def home(request):
@@ -59,3 +60,13 @@ def ordem_servico(request):
 @login_required
 def criar_os(request):
     return render(request, 'principal/criar_os.html')
+
+@login_required
+def configuracoes(request):
+    return render(request, 'principal/configuracoes.html')
+
+@login_required
+def segmentos_atividades(request):
+    segmento = Segmento.objects.all()
+    atividade = Atividade.objects.all()
+    return render(request, 'principal/segmentos_atividade.html', {"atividades": atividade, "segmentos": segmento})

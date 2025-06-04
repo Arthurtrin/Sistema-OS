@@ -11,25 +11,66 @@
             </a>
         </div>
         <div class="card-body">
-            <div class="row g-3">
+
+            <!-- Informações básicas -->
+            <div class="row g-3 mb-4">
                 <div class="col-md-6">
                     <p><strong>Código:</strong> {{ cliente.codigo }}</p>
+                    <p><strong>Nome Cliente:</strong> {{ cliente.nome_cliente|default:"---" }}</p>
                     <p><strong>Nome Fantasia:</strong> {{ cliente.nome_fantasia|default:"---" }}</p>
-                    <p><strong>Email 1:</strong> {{ cliente.email1 }}</p>
-                    <p><strong>Email 2:</strong> {{ cliente.email2|default:"---" }}</p>
-                    <p><strong>Email 3:</strong> {{ cliente.email3|default:"---" }}</p>
                     <p><strong>CNPJ/CPF:</strong> {{ cliente.cnpj_cpf }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Telefone 1:</strong> {{ cliente.telefone1|default:"---" }}</p>
-                    <p><strong>Telefone 2:</strong> {{ cliente.telefone2|default:"---" }}</p>
-                    <p><strong>Celular 1:</strong> {{ cliente.celular1|default:"---" }}</p>
-                    <p><strong>Celular 2:</strong> {{ cliente.celular2|default:"---" }}</p>
                     <p><strong>Inscrição Estadual:</strong> {{ cliente.inscricao_estadual|default:"---" }}</p>
                     <p><strong>Inscrição Municipal:</strong> {{ cliente.inscricao_municipal|default:"---" }}</p>
                     <p><strong>Data de Inclusão:</strong> {{ cliente.data_inclusao }}</p>
                 </div>
+                <div class="col-md-6">
+                    <p><strong>Email 1:</strong> {{ cliente.email1 }}</p>
+                    <p><strong>Email 2:</strong> {{ cliente.email2|default:"---" }}</p>
+                    <p><strong>Telefone 1:</strong> {{ cliente.telefone1|default:"---" }}</p>
+                    <p><strong>Telefone 2:</strong> {{ cliente.telefone2|default:"---" }}</p>
+                    <p><strong>Celular 1:</strong> {{ cliente.celular1|default:"---" }}</p>
+                    <p><strong>Celular 2:</strong> {{ cliente.celular2|default:"---" }}</p>
+                    
+                </div>
             </div>
+
+            
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6"><h5>Endereço Real</h5>
+                    <p><strong>Logradouro:</strong> {{ cliente.logradouro_real }}</p>
+                    <p><strong>Número:</strong> {{ cliente.numero_real }}</p>
+                    <p><strong>Complemento:</strong> {{ cliente.complemento_real|default:"---" }}</p>
+                    <p><strong>Bairro:</strong> {{ cliente.bairro_real }}</p>
+                    <p><strong>Cidade:</strong> {{ cliente.cidade_real }}</p>
+                    <p><strong>Estado:</strong> {{ cliente.estado_real }}</p>
+                    <p><strong>CEP:</strong> {{ cliente.cep_real }}</p>
+                </div>
+                <div class="col-md-6"><h5>Endereço de Cobrança</h5>
+                    <p><strong>Logradouro:</strong> {{ cliente.logradouro_cobranca|default:"---" }}</p>
+                    <p><strong>Número:</strong> {{ cliente.numero_cobranca|default:"---" }}</p>
+                    <p><strong>Complemento:</strong> {{ cliente.complemento_cobranca|default:"---" }}</p>
+                    <p><strong>Bairro:</strong> {{ cliente.bairro_cobranca|default:"---" }}</p>
+                    <p><strong>Cidade:</strong> {{ cliente.cidade_cobranca|default:"---" }}</p>
+                    <p><strong>Estado:</strong> {{ cliente.estado_cobranca|default:"---" }}</p>
+                    <p><strong>CEP:</strong> {{ cliente.cep_cobranca|default:"---" }}</p>
+                </div>
+            </div>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <p><strong>Atividade:</strong> {{ cliente.atividade }}</p>
+                    <p><strong>Segmento:</strong> {{ cliente.segmento }}</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <p><strong>Observação:</strong></p>
+                <p>{{ cliente.observacao|default:"---" }}</p>
+            </div>
+
+            
+
         </div>
         <div class="card-footer text-end">
             <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-primary me-2">
