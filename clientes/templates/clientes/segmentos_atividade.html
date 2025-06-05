@@ -2,6 +2,46 @@
 {% block title %}Segmentos e Atividades{% endblock %}
 
 {% block content %}
+
+<style>
+  /* Botão personalizado, mais escuro e menor */
+    .btn-dark-custom {
+        background-color: #2c2f33;
+        border-color: #23272a;
+        color: #fff;
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .btn-dark-custom:hover {
+        background-color: #23272a;
+        border-color: #1c1e21;
+        color: #fff;
+    }
+
+/* Abas inativas */
+  .nav-tabs .nav-link {
+    color: #343a40; /* Cinza escuro */
+    background-color: #f8f9fa; /* Cinza bem claro */
+    border-color: transparent;
+    transition: all 0.3s ease;
+  }
+
+  /* Hover nas abas inativas */
+  .nav-tabs .nav-link:hover {
+    color: #212529; /* Preto suave */
+    background-color: #e9ecef; /* Cinza um pouco mais escuro */
+  }
+
+  /* Aba ativa */
+  .nav-tabs .nav-link.active {
+    color: #fff; /* Branco no texto */
+    background-color: #343a40; /* Cinza escuro */
+    border-color: #343a40 #343a40 #fff; /* Bordas superiores e laterais, sem borda inferior */
+  }
+
+</style>
+
 <div class="container my-4">
   <h2 class="mb-4">Definir Segmentos e Atividades</h2>
 
@@ -32,8 +72,8 @@
           <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ segmento.nome }}
             <div>
-              <a href="" class="btn btn-sm btn-outline-secondary me-2">Editar</a>
-              <a href="" class="btn btn-sm btn-outline-danger">Excluir</a>
+              <a href="" class="btn btn-sm btn-primary me-2">Editar</a>
+              <a href="{% url 'clientes:excluir_segmento' segmento.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
@@ -46,7 +86,7 @@
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Novo segmento" required>
-          <button type="submit" class="btn btn-primary">Adicionar</button>
+          <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
     </div>
@@ -61,8 +101,8 @@
           <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ atividade.nome }}
             <div>
-              <a href="" class="btn btn-sm btn-outline-secondary me-2">Editar</a>
-              <a href="" class="btn btn-sm btn-outline-danger">Excluir</a>
+              <a href="" class="btn btn-sm btn-primary me-2">Editar</a>
+              <a href="{% url 'clientes:excluir_atividade' atividade.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
@@ -75,7 +115,7 @@
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Nova atividade" required>
-          <button type="submit" class="btn btn-primary">Adicionar</button>
+          <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
     </div>

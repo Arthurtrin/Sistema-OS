@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, Segmento, Atividade
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -29,3 +29,14 @@ class ClienteForm(forms.ModelForm):
         # Adiciona o atributo required para forçar validação se quiser
         self.fields['segmento'].required = False
         self.fields['atividade'].required = False
+
+
+class SegmentoForm(forms.ModelForm):
+    class Meta:
+        model = Segmento
+        fields = ['nome']
+
+class AtividadeForm(forms.ModelForm):
+    class Meta:
+        model = Atividade
+        fields = ['nome']

@@ -4,8 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 from usuarios.models import Perfil, Chave_Gerenciador
-from clientes.models import Cliente
-from .models import Atividade, Segmento
+from clientes.models import Cliente, Atividade, Segmento
 
 @login_required
 def home(request):
@@ -69,4 +68,5 @@ def configuracoes(request):
 def segmentos_atividades(request):
     segmento = Segmento.objects.all()
     atividade = Atividade.objects.all()
-    return render(request, 'principal/segmentos_atividade.html', {"atividades": atividade, "segmentos": segmento})
+    return render(request, 'clientes/segmentos_atividade.html', {"atividades": atividade, "segmentos": segmento})
+

@@ -85,6 +85,18 @@
   color: white;
 }
 
+  .sidebar .nav-link {
+    color: white;
+  }
+
+  .sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar .collapse {
+    transition: height 0.3s ease;
+    overflow: hidden; /* importante para evitar 'saltos' visuais */
+}
   </style>
 </head>
 <body>
@@ -120,8 +132,24 @@
   <div class="sidebar" id="sidebar">
     <ul class="nav flex-column px-3">
       <li class="nav-item mb-2">
-        <a class="nav-link" href="{% url 'clientes:listar_clientes' %}"><i class="fas fa-handshake me-2"></i>Clientes</a>
-      </li>
+  <a class="nav-link d-flex justify-content-between align-items-center" href="#clientesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+    <span><i class="fas fa-handshake me-2"></i>Clientes</span>
+    <i class="fas fa-chevron-down"></i>
+  </a>
+  <ul class="collapse list-unstyled ps-4" id="clientesSubmenu">
+    <li>
+      <a class="nav-link" href="{% url 'clientes:listar_clientes' %}">
+        <i class="fas fa-users me-2"></i>Ver Clientes
+      </a>
+    </li>
+    <li>
+      <a class="nav-link" href="{% url 'segmentos_atividades' %}">
+        <i class="fas fa-layer-group me-2"></i>Segmentos e Atividades
+      </a>
+    </li>
+  </ul>
+</li>
+
       <li class="nav-item mb-2">
         <a class="nav-link" href="#"><i class="fas fa-tools me-2"></i>Técnicos</a>
       </li>

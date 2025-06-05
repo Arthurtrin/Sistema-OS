@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .forms import ClienteForm
-from .models import Cliente
+from .forms import ClienteForm, SegmentoForm, AtividadeForm
+from .models import Cliente, Segmento, Atividade
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def cadastrar_clientes(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -15,6 +17,7 @@ def cadastrar_clientes(request):
 
     return render(request, 'clientes/cadastrar_clientes.html', {'form': form})
 
+@login_required
 def listar_clientes(request):
     pesquisa = request.GET.get('pesquisa', '')
     data_inicio = request.GET.get('data_inicio')
@@ -56,6 +59,7 @@ def listar_clientes(request):
         'data_fim': data_fim,
     })
 
+@login_required
 def editar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     if request.method == 'POST':
@@ -67,11 +71,82 @@ def editar_cliente(request, cliente_id):
         form = ClienteForm(instance=cliente)
     return render(request, 'clientes/editar_clientes.html', {'form': form, 'cliente': cliente})
 
+@login_required
 def excluir_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     cliente.delete()
     return redirect('clientes:listar_clientes')
 
+@login_required
 def ver_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     return render(request, 'clientes/ver_cliente.html', {'cliente': cliente})
+
+#falta editar e testar
+@login_required
+def editar_segmento(request, seg_id):
+    segmento = get_object_or_404(Segmento, id=seg_id)
+    if request.method == 'POST':
+        form = SegmentoForm(request.POST, instance=segmento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Segmento atualizado com sucesso.')
+            return redirect('nome-da-url-de-listagem-segmentos')  # Ajuste para a URL correta
+    else:
+        form = SegmentoForm(instance=segmento)
+    return render(request, 'clientes/editar_segmento.html', {'form': form, 'segmento': segmento})
+
+#funcionando
+@login_required
+def excluir_segmento(request, seg_id):
+    segmento = get_object_or_404(Segmento, id=seg_id)
+    segmento.delete()
+    return redirect ('segmentos_atividades')  
+
+#falta editar e testar
+@login_required
+def editar_atividade(request, atv_id):
+    atividade = get_object_or_404(Atividade, id=atv_id)
+    if request.method == 'POST':
+        form = AtividadeForm(request.POST, instance=atividade)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Atividade atualizada com sucesso.')
+            return redirect('nome-da-url-de-listagem-atividades')  # Ajuste para a URL correta
+    else:
+        form = AtividadeForm(instance=atividade)
+    return render(request, 'clientes/editar_atividade.html', {'form': form, 'atividade': atividade})
+
+#funcionando
+@login_required
+def excluir_atividade(request, atv_id):
+    atividade = get_object_or_404(Atividade, id=atv_id)
+    atividade.delete()
+    return redirect ('segmentos_atividades') 
+
+#falta testar
+@login_required
+def cadastrar_segmento(request):
+    if request.method == 'POST':
+        form = SegmentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Segmento cadastrado com sucesso.')
+            return redirect('nome-da-url-de-listagem-segmentos')  # Ajuste para a URL correta
+    else:
+        form = SegmentoForm()
+    return render(request, 'clientes/cadastrar_segmento.html', {'form': form})
+
+
+#falta testar
+@login_required
+def cadastrar_atividade(request):
+    if request.method == 'POST':
+        form = AtividadeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Atividade cadastrada com sucesso.')
+            return redirect('nome-da-url-de-listagem-atividades')  # Ajuste para a URL correta
+    else:
+        form = AtividadeForm()
+    return render(request, 'clientes/cadastrar_atividade.html', {'form': form})

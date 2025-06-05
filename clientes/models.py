@@ -1,5 +1,4 @@
 from django.db import models
-from principal.models import Atividade, Segmento
 
 
 # Choices para estados brasileiros
@@ -32,6 +31,18 @@ ESTADOS = [
     ('SE', 'Sergipe'),
     ('TO', 'Tocantins'),
 ]
+
+class Atividade(models.Model):
+    nome = models.CharField(max_length=60)
+
+    def __str__(self):
+        return f"{self.nome}"
+
+class Segmento(models.Model):
+    nome = models.CharField(max_length=60)
+
+    def __str__(self):
+        return f"{self.nome}"
 
 class Cliente(models.Model):
     # Identificação
@@ -77,3 +88,5 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f"{self.nome_cliente} ({self.codigo})"
+
+

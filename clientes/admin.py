@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente
+from .models import Cliente, Atividade, Segmento
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
@@ -8,3 +8,7 @@ class ClienteAdmin(admin.ModelAdmin):
     search_fields = ('codigo', 'nome_cliente', 'cnpj_cpf', 'cidade_real', 'estado_real')
     
     list_filter = ('estado_real', 'cidade_real', 'segmento')
+
+
+admin.site.register(Atividade)
+admin.site.register(Segmento)
