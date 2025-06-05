@@ -1,0 +1,91 @@
+{% extends 'principal/base.html' %}
+{% block title %}Ordens de Serviço{% endblock %}
+
+{% block content %}
+<div class="container my-4"> 
+
+ <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+  <h2>Ordens de Serviço</h2>
+  <a href="{% url 'criar_os' %}" class="btn"
+     style="background-color: #212529; color: #fff; border-radius: 5px; padding: 10px 24px; font-size: 1.1rem; transition: background-color 0.3s;"
+     onmouseover="this.style.backgroundColor='#343a40'"
+     onmouseout="this.style.backgroundColor='#212529'">
+    <i class="fas fa-plus me-2"></i> Criar nova OS
+  </a>
+</div>
+
+<!-- Filtro -->
+<form method="get" class="mb-4 d-flex align-items-center gap-2 flex-wrap">
+  <label for="filtro_status" class="me-2 mb-0">Filtrar:</label>
+  
+  <select name="filtro" id="filtro_status" class="form-select w-auto">
+    <option value="todas" {% if filtro == 'todas' %}selected{% endif %}>Todas</option>
+    <option value="pendentes" {% if filtro == 'pendentes' %}selected{% endif %}>Pendentes</option>
+    <option value="concluidas" {% if filtro == 'concluidas' %}selected{% endif %}>Concluídas</option>
+  </select>
+
+<input 
+    type="text" 
+    name="pesquisa" 
+    placeholder="Pesquisar descrição ou cliente" 
+    class="form-control"
+    style="width: 300px;"
+    value="{{ pesquisa|default:'' }}"
+>
+  <button type="submit" class="btn"
+    style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
+    onmouseover="this.style.backgroundColor='#343a40'"
+    onmouseout="this.style.backgroundColor='#212529'">
+    Filtrar
+  </button>
+</form>
+
+  <!-- Lista de ordens -->
+  {% if ordens %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Descrição</th>
+          <th>Status</th>
+          <th>Data Criação</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ordem in ordens %}
+        <tr>
+          <td>{{ ordem.id }}</td>
+          <td>{{ ordem.cliente.nome }}</td>
+          <td>{{ ordem.descricao|truncatewords:10 }}</td>
+          <td>
+            {% if ordem.status == 'pendente' %}
+              <span class="badge bg-warning text-dark">Pendentes</span>
+            {% elif ordem.status == 'concluida' %}
+              <span class="badge bg-success">Concluídas</span>
+            {% else %}
+              <span class="badge bg-secondary">Outro</span>
+            {% endif %}
+          </td>
+          <td>{{ ordem.data_criacao|date:"d/m/Y" }}</td>
+          <td>
+            <a href="#" class="btn btn-sm btn-outline-primary" title="Editar">
+              <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Confirma exclusão?')">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="text-muted fs-5">Nenhuma ordem de serviço encontrada para o filtro selecionado.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

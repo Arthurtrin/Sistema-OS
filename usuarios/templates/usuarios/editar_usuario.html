@@ -1,0 +1,47 @@
+{% extends 'principal/base.html' %}
+{% load widget_tweaks %}
+
+
+
+{% block title %}Editar Usuário{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow p-4 w-100" style="max-width: 500px;">
+        <h3 class="mb-4 text-center">Editar Usuário</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Nome de Usuário</label>
+                {{ form.username|add_class:"form-control" }}
+                {% for error in form.username.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                {{ form.email|add_class:"form-control" }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.tipo_usuario.id_for_label }}" class="form-label">Tipo de Usuário</label>
+                {{ form.tipo_usuario|add_class:"form-select" }}
+                {% for error in form.tipo_usuario.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="{% url 'usuarios' request.user.username %}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,282 @@
+{% extends 'principal/base.html' %}
+{% block title %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilo para labels profissionais */
+    .form-label-professional {
+        font-weight: 500;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 0.35rem;
+        display: inline-block;
+    }
+
+    /* Botão personalizado, mais escuro e menor */
+    .btn-dark-custom {
+        background-color: #2c2f33;
+        border-color: #23272a;
+        color: #fff;
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .btn-dark-custom:hover {
+        background-color: #23272a;
+        border-color: #1c1e21;
+        color: #fff;
+    }
+</style>
+
+<div class="container my-4">
+    <h2 class="mb-4">Cadastrar Técnicos</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Campos já existentes -->
+        <div class="row">
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Código</label>
+                {{ form.codigo }}
+                {% if form.codigo.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.codigo.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-5 mb-3">
+                <label for="{{ form.nome_cliente.id_for_label }}" class="form-label-professional">Nome do Técnico</label>
+                {{ form.nome }}
+                {% if form.nome.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.nome.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-5 mb-3">
+                <label for="{{ form.prc_comissao.id_for_label }}" class="form-label-professional">Porcentagem de Comissão</label>
+                {{ form.prc_comissao }}
+                {% if form.prc_comissao.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.prc_comissao.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.cnpj_cpf.id_for_label }}" class="form-label-professional">CNPJ/CPF</label>
+                {{ form.cnpj_cpf }}
+                {% if form.cnpj_cpf.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cnpj_cpf.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.rg.id_for_label }}" class="form-label-professional">RG</label>
+                {{ form.rg }}
+                {% if form.rg.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.rg.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.email.id_for_label }}" class="form-label-professional">E-mail</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.email.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label for="{{ form.telefone.id_for_label }}" class="form-label-professional">Telefone</label>
+                {{ form.telefone }}
+                {% if form.telefone.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.telefone.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="{{ form.celular.id_for_label }}" class="form-label-professional">Celular</label>
+                {{ form.celular }}
+                {% if form.celular.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.celular.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="{{ form.observacao.id_for_label }}" class="form-label-professional">Observação</label>
+                {{ form.observacao }}
+                {% if form.observacao.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.observacao.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <h5 class="mt-4 mb-3">Endereço</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.logradouro_real.id_for_label }}" class="form-label-professional">Logradouro</label>
+                {{ form.logradouro }}
+                {% if form.logradouro.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.logradouro.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.numero_real.id_for_label }}" class="form-label-professional">Número</label>
+                {{ form.numero }}
+                {% if form.numero.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.numero.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.complemento.id_for_label }}" class="form-label-professional">Complemento</label>
+                {{ form.complemento }}
+                {% if form.complemento.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.complemento.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.bairro.id_for_label }}" class="form-label-professional">Bairro</label>
+                {{ form.bairro }}
+                {% if form.bairro.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.bairro.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.cidade.id_for_label }}" class="form-label-professional">Cidade</label>
+                {{ form.cidade }}
+                {% if form.cidade.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cidade.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.estado.id_for_label }}" class="form-label-professional">Estado</label>
+                {{ form.estado }}
+                {% if form.estado.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.estado.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.cep.id_for_label }}" class="form-label-professional">CEP</label>
+                {{ form.cep }}
+                {% if form.cep.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cep.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- Botão submit -->
+        <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+            <i class="fas fa-save me-2"></i>Salvar Técnico
+        </button>
+    </form>
+</div>
+
+<!-- Seu JS para máscaras e outras funcionalidades fica aqui (sem alterações) -->
+
+<script>
+    // Máscara para CPF/CNPJ
+    const cnpjCpfInput = document.getElementById("{{ form.cnpj_cpf.id_for_label }}");
+    if (cnpjCpfInput) {
+        cnpjCpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            } else {
+                value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                             .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                             .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                             .replace(/(\d{4})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+
+    const rgInput = document.getElementById("{{ form.rg.id_for_label }}");
+    if (rgInput) {
+        rgInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 9) value = value.slice(0,9);  // limita a 9 números
+
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2');          // 12.3456789
+            value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');  // 12.345.6789
+            value = value.replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4'); // 12.345.678-9
+
+            e.target.value = value;
+        });
+    }
+
+    const cepInput = document.getElementById("{{ form.cep.id_for_label }}");
+    if (cepInput) {
+        cepInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);  // limita a 8 dígitos
+
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');  // adiciona hífen depois dos primeiros 5 dígitos
+
+            e.target.value = value;
+        });
+    }
+
+    // Função de máscara para telefone/celular
+    function maskPhone(input) {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            e.target.value = value;
+        });
+    }
+
+    const telefone = document.getElementById("{{ form.telefone.id_for_label }}");
+    const celular = document.getElementById("{{ form.celular.id_for_label }}");
+
+    [telefone, celular].forEach(function(input) {
+        if (input) maskPhone(input);
+    });
+</script>
+
+{% endblock %}
