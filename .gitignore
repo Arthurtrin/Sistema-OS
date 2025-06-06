@@ -1,0 +1,58 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+
+# VS Code
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos de migração se não quiser versionar (opcional, comente se quiser manter)
+# */migrations/*.py
+# */migrations/*.pyc
+
+# Arquivos de build do Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Arquivos temporários
+*.bak
+*.swp
+*.swo
+*.tmp
+~$*
+
+# Arquivos de banco de dados ou media (se forem locais e não versionados)
+media/
+staticfiles/
