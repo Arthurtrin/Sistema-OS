@@ -1,0 +1,83 @@
+{% load form_tags %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro de Usuário</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3 class="card-title mb-4 text-center">Cadastro de Usuário</h3>
+
+            <form method="post" novalidate>
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+
+              {% for field in form %}
+                {% if field.name != 'chave_acesso' %}
+                  <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {% if field.name == 'tipo_usuario' %}
+                      {{ field|adicionar_classe:"form-select" }}
+                    {% else %}
+                      {{ field|adicionar_classe:"form-control" }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                      <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+
+              <!-- Campo de chave de acesso controlado por JS -->
+              <div class="mb-3 d-none" id="chave-container">
+                <label for="chave_acesso" class="form-label">Chave de Acesso</label>
+                <input type="text" name="chave_acesso" id="chave_acesso" class="form-control" value="{{ form.data.chave_acesso }}">
+                {% for error in form.chave_acesso.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+            </form>
+
+            <p class="mt-3 text-center">
+              Já tem conta? <a href="{% url 'login' %}">Faça login</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tipoUsuario = document.querySelector('[name="tipo_usuario"]');
+      const chaveContainer = document.getElementById('chave-container');
+
+      function verificarTipoUsuario() {
+        const valor = tipoUsuario.value.toLowerCase();
+        if (valor.includes('supervisor') || valor.includes('gerenciador')) {
+          chaveContainer.classList.remove('d-none');
+        } else {
+          chaveContainer.classList.add('d-none');
+        }
+      }
+
+      tipoUsuario.addEventListener('change', verificarTipoUsuario);
+      verificarTipoUsuario(); // Verifica ao carregar também
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

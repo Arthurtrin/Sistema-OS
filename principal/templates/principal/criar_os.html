@@ -1,0 +1,344 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="mb-4">Criar Ordem de Serviço</h2>
+  <form>
+    
+    <!-- Identificação -->
+    <div class="mb-3">
+      <label for="nome" class="form-label">Título</label>
+      <input type="text" class="form-control" id="nome" placeholder="Digite o Título">
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="dataAbertura" class="form-label">Data de Abertura</label>
+        <input type="date" class="form-control" id="dataAbertura">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dataPrevista" class="form-label">Data Prevista de Conclusão</label>
+        <input type="date" class="form-control" id="dataPrevista">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="status" class="form-label">Status</label>
+      <select class="form-select" id="status">
+        <option selected>Selecione o status</option>
+        <option value="aberta">Aberta</option>
+        <option value="em_andamento">Em andamento</option>
+        <option value="aguardando">Aguardando peças</option>
+        <option value="finalizada">Finalizada</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+      </div>
+    </div>
+    
+
+    <!-- Opções de Cliente -->
+    <h5 class="mt-4">Cliente</h5>
+    <div class="mb-3">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="clienteOpcao" id="clienteCadastrado" value="cadastrado" checked>
+        <label class="form-check-label" for="clienteCadastrado">
+          Cliente já cadastrado
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="clienteOpcao" id="clienteNaoCadastrado" value="naoCadastrado">
+        <label class="form-check-label" for="clienteNaoCadastrado">
+          Cliente não cadastrado
+        </label>
+      </div>
+    </div>
+
+    <!-- Cliente já cadastrado -->
+    <div class="mb-3" id="clienteCadastradoCampos">
+      <label for="clienteSelect" class="form-label">Selecione o Cliente</label>
+      <select class="form-select" id="clienteSelect">
+        <option selected disabled>Escolha...</option>
+        {% for cliente in clientes %}
+          <option value="{{ cliente.id }}">{{ cliente.nome_fantasia }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Cliente não cadastrado -->
+<div id="clienteNaoCadastradoCampos" style="display: none;">
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="clienteCodigo" class="form-label">Código</label>
+      <input type="text" class="form-control" id="clienteCodigo" placeholder="Código do cliente">
+    </div>
+    <div class="col-md-8 mb-3">
+      <label for="clienteNome" class="form-label">Nome do Cliente</label>
+      <input type="text" class="form-control" id="clienteNome" placeholder="Nome completo">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="clienteNomeFantasia" class="form-label">Nome Fantasia</label>
+      <input type="text" class="form-control" id="clienteNomeFantasia" placeholder="Nome fantasia">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="clienteDataInclusao" class="form-label">Data de Inclusão</label>
+      <input type="date" class="form-control" id="clienteDataInclusao">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="clienteEmail1" class="form-label">1º Email</label>
+      <input type="email" class="form-control" id="clienteEmail1" placeholder="email1@exemplo.com">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="clienteEmail2" class="form-label">2º Email</label>
+      <input type="email" class="form-control" id="clienteEmail2" placeholder="email2@exemplo.com">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="clienteEmail3" class="form-label">3º Email</label>
+      <input type="email" class="form-control" id="clienteEmail3" placeholder="email3@exemplo.com">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="clienteCnpjCpf" class="form-label">CNPJ/CPF</label>
+      <input type="text" class="form-control" id="clienteCnpjCpf" placeholder="000.000.000-00 ou 00.000.000/0000-00">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="clienteInscricaoEstadual" class="form-label">Inscrição Estadual</label>
+      <input type="text" class="form-control" id="clienteInscricaoEstadual" placeholder="Inscrição Estadual">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="clienteInscricaoMunicipal" class="form-label">Inscrição Municipal</label>
+      <input type="text" class="form-control" id="clienteInscricaoMunicipal" placeholder="Inscrição Municipal">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label for="clienteTelefone1" class="form-label">1º Telefone</label>
+      <input type="tel" class="form-control" id="clienteTelefone1" placeholder="(00) 00000-0000">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="clienteTelefone2" class="form-label">2º Telefone</label>
+      <input type="tel" class="form-control" id="clienteTelefone2" placeholder="(00) 00000-0000">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="clienteCelular1" class="form-label">1º Celular</label>
+      <input type="tel" class="form-control" id="clienteCelular1" placeholder="(00) 00000-0000">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="clienteCelular2" class="form-label">2º Celular</label>
+      <input type="tel" class="form-control" id="clienteCelular2" placeholder="(00) 00000-0000">
+    </div>
+  </div>
+</div>
+
+<script>
+  // Máscara para CPF ou CNPJ
+  function aplicarMascaraCnpjCpf(valor) {
+    valor = valor.replace(/\D/g, '');
+
+    if (valor.length <= 11) {
+      // CPF: 000.000.000-00
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+      valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+      // CNPJ: 00.000.000/0000-00
+      valor = valor.replace(/^(\d{2})(\d)/, '$1.$2');
+      valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      valor = valor.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+    }
+    return valor;
+  }
+
+  // Máscara para telefone fixo: (00) 0000-0000
+  function aplicarMascaraTelefone(valor) {
+    valor = valor.replace(/\D/g, '');
+    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    return valor;
+  }
+
+  // Máscara para celular: (00) 00000-0000
+  function aplicarMascaraCelular(valor) {
+    valor = valor.replace(/\D/g, '');
+    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    return valor;
+  }
+
+  // Eventos de input para os respectivos campos
+  document.getElementById('clienteCnpjCpf').addEventListener('input', function(e) {
+    e.target.value = aplicarMascaraCnpjCpf(e.target.value);
+  });
+
+  document.getElementById('clienteTelefone1').addEventListener('input', function(e) {
+    e.target.value = aplicarMascaraTelefone(e.target.value);
+  });
+
+  document.getElementById('clienteTelefone2').addEventListener('input', function(e) {
+    e.target.value = aplicarMascaraTelefone(e.target.value);
+  });
+
+  document.getElementById('clienteCelular1').addEventListener('input', function(e) {
+    e.target.value = aplicarMascaraCelular(e.target.value);
+  });
+
+  document.getElementById('clienteCelular2').addEventListener('input', function(e) {
+    e.target.value = aplicarMascaraCelular(e.target.value);
+  });
+</script>
+
+
+
+    <!-- Descrição do Serviço -->
+    <h5 class="mt-4">Descrição do Serviço</h5>
+    <div class="mb-3">
+      <label for="descricao" class="form-label">Descrição</label>
+      <textarea class="form-control" id="descricao" rows="3" placeholder="Descreva o problema ou necessidade"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="observacoes" class="form-label">Observações Adicionais</label>
+      <textarea class="form-control" id="observacoes" rows="2"></textarea>
+    </div>
+
+   <h5 class="mt-4">Equipamentos</h5>
+
+<!-- Botão para adicionar equipamento -->
+<button id="btnAdicionarEquipamento" type="button" class="btn btn-primary mb-3">
+  <i class="fas fa-plus me-2"></i>Adicionar Equipamento
+</button>
+
+<!-- Container onde os equipamentos serão adicionados -->
+<div id="equipamentosContainer"></div>
+
+<script>
+  const btnAdicionar = document.getElementById('btnAdicionarEquipamento');
+  const container = document.getElementById('equipamentosContainer');
+  let equipamentoCount = 0;
+
+  btnAdicionar.addEventListener('click', () => {
+    equipamentoCount++;
+
+    const div = document.createElement('div');
+    div.className = 'row mb-3 equipamento-item';
+    div.innerHTML = `
+      <div class="col-md-4">
+        <label for="modelo_${equipamentoCount}" class="form-label">Modelo</label>
+        <input type="text" class="form-control" id="modelo_${equipamentoCount}" name="modelo_${equipamentoCount}">
+      </div>
+      <div class="col-md-4">
+        <label for="numeroSerie_${equipamentoCount}" class="form-label">Número de Série</label>
+        <input type="text" class="form-control" id="numeroSerie_${equipamentoCount}" name="numeroSerie_${equipamentoCount}">
+      </div>
+      <div class="col-md-3">
+        <label for="acessorios_${equipamentoCount}" class="form-label">Acessórios Enviados</label>
+        <input type="text" class="form-control" id="acessorios_${equipamentoCount}" name="acessorios_${equipamentoCount}">
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button type="button" class="btn btn-danger btn-sm btn-remover" title="Remover">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+
+    container.appendChild(div);
+
+    // Adiciona evento para remover este equipamento
+    div.querySelector('.btn-remover').addEventListener('click', () => {
+      container.removeChild(div);
+    });
+  });
+</script>
+
+    <!-- Diagnóstico -->
+    <h5 class="mt-4">Diagnóstico Técnico</h5>
+    <div class="mb-3">
+      <label for="diagnostico" class="form-label">Descrição</label>
+      <textarea class="form-control" id="diagnostico" rows="3"></textarea>
+    </div>
+
+    <!-- Responsáveis -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="tecnico" class="form-label">Técnico Responsável</label>
+        <input type="text" class="form-control" id="tecnico">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="supervisor" class="form-label">Supervisor</label>
+        <input type="text" class="form-control" id="supervisor">
+      </div>
+    </div>
+
+    <!-- Custos -->
+    <h5 class="mt-4">Custos</h5>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="maoDeObra" class="form-label">Mão de Obra (R$)</label>
+        <input type="number" class="form-control" id="maoDeObra" step="0.01">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="pecas" class="form-label">Peças (R$)</label>
+        <input type="number" class="form-control" id="pecas" step="0.01">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="total" class="form-label">Valor Total (R$)</label>
+        <input type="number" class="form-control" id="total" step="0.01">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="pagamento" class="form-label">Forma de Pagamento</label>
+      <input type="text" class="form-control" id="pagamento" placeholder="Dinheiro, cartão, transferência...">
+    </div>
+
+    <!-- Anexos -->
+    <h5 class="mt-4">Anexos</h5>
+    <div class="mb-3">
+      <label for="anexos" class="form-label">Enviar Fotos ou Documentos</label>
+      <input class="form-control" type="file" id="anexos" multiple>
+    </div>
+
+    <!-- Botão -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-save me-2"></i>Salvar Ordem de Serviço
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const clienteCadastrado = document.getElementById('clienteCadastrado');
+    const clienteNaoCadastrado = document.getElementById('clienteNaoCadastrado');
+    const clienteCadastradoCampos = document.getElementById('clienteCadastradoCampos');
+    const clienteNaoCadastradoCampos = document.getElementById('clienteNaoCadastradoCampos');
+
+    function toggleClienteCampos() {
+      if (clienteCadastrado.checked) {
+        clienteCadastradoCampos.style.display = 'block';
+        clienteNaoCadastradoCampos.style.display = 'none';
+      } else {
+        clienteCadastradoCampos.style.display = 'none';
+        clienteNaoCadastradoCampos.style.display = 'block';
+      }
+    }
+
+    clienteCadastrado.addEventListener('change', toggleClienteCampos);
+    clienteNaoCadastrado.addEventListener('change', toggleClienteCampos);
+
+    // Executar ao carregar a página
+    toggleClienteCampos();
+  });
+</script>
+
+{% endblock %}

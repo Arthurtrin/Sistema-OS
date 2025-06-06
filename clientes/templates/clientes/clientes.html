@@ -1,0 +1,139 @@
+{% extends 'principal/base.html' %}
+{% block title %}Gerenciar Clientes{% endblock %}
+
+{% block content %}
+<style>
+    .table-pagination-container {
+        min-height: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
+
+<div class="container my-4">
+    <h2 class="mb-4">Lista de Clientes</h2>
+    <div class="table-responsive">
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
+                    value="{{ pesquisa|default:'' }}">
+                <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
+                <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
+                <button type="submit" class="btn"
+                    style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
+                    onmouseover="this.style.backgroundColor='#343a40'"
+                    onmouseout="this.style.backgroundColor='#212529'">
+                    Pesquisar
+                </button>
+            </form>
+
+            <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Cadastrar Novo Cliente
+            </a>
+        </div>
+
+
+        <div class="table-pagination-container">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col">CNPJ/CPF</th>
+                        <th scope="col">Data da inclusão</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in page_obj %}
+                    <tr data-bs-toggle="modal"
+                        data-bs-target="#modalCliente{{ cliente.id }}"
+                        style="cursor: pointer;">
+                        <td>{{ cliente.codigo}}</td>
+                        <td>{{ cliente.nome_cliente}}</td>
+                        <td>{{ cliente.email1 }}</td>
+                        <td>{{ cliente.telefone1 }}</td>
+                        <td>{{ cliente.cnpj_cpf }}</td>
+                        <td>{{ cliente.data_inclusao }}</td>
+                    </tr>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalCliente{{ cliente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ cliente.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ cliente.id }}">Cliente: {{ cliente.nome_cliente }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Escolha uma das ações para {{ cliente.nome_cliente }}.</p>
+                                </div>
+                                <div class="modal-footer" style="padding-top: 0px;"></div>
+                                <div class="modal-body d-flex justify-content-around">
+                                    <a href="{% url 'clientes:ver_cliente' cliente.id %}" class="btn btn-success">
+                                        <i class="fas fa-eye"></i> Ver Cliente
+                                    </a>
+                                    <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a href="{% url 'clientes:excluir_cliente' cliente.id %}" class="btn btn-danger">
+                                        <i class="fas fa-trash-alt"></i> Excluir
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhum cliente encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Paginação -->
+            <nav aria-label="Navegação de página">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num == page_obj.number %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

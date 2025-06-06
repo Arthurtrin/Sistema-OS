@@ -1,0 +1,146 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .table-pagination-container {
+        min-height: 350px; /* ajuste se precisar */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
+
+<div class="container my-4">
+    <h2 class="mb-4">Lista de Usuários</h2>
+    <div class="table-responsive">
+        <form method="get" class="mb-3 d-flex align-items-center gap-2">
+            <label for="tipo" class="me-2">Filtrar:</label>
+            <select name="tipo" id="tipo" class="form-select w-auto">
+                <option value="">Todos</option>
+                <option value="normal" {% if tipo_filtro == "normal" %}selected{% endif %}>Normal</option>
+                <option value="supervisor" {% if tipo_filtro == "supervisor" %}selected{% endif %}>Supervisor</option>
+                <option value="gerenciador" {% if tipo_filtro == "gerenciador" %}selected{% endif %}>Gerenciador</option>
+            </select>
+
+            <input type="text" name="pesquisa" placeholder="Pesquisar usuário" class="form-control w-auto"
+                value="{{ pesquisa|default:'' }}">
+
+            <button type="submit" class="btn"
+                style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
+                onmouseover="this.style.backgroundColor='#343a40'"
+                onmouseout="this.style.backgroundColor='#212529'">
+                Filtrar
+            </button>
+        </form>
+
+        <!-- Aqui começa a div que vai garantir altura fixa -->
+        <div class="table-pagination-container">
+
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Usuário</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Tipo de Usuário</th>
+                        <th scope="col">Chave de Acesso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, perfil, chave in page_obj %}
+                    {% if user.username != 'admin' %}
+                    <tr data-bs-toggle="modal" 
+                        data-bs-target="#modalUser{{ user.id }}"
+                        style="cursor: pointer;">
+                        
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ perfil.tipo|title }}</td>
+                        <td>
+                            {% if chave %}
+                                {{ chave.chave }}
+                            {% else %}
+                                Sem chave
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalUser{{ user.id }}" tabindex="-1" aria-labelledby="modalLabel{{ user.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ user.id }}">Usuário: {{ user.username }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+                                 <div class="modal-body">
+                                    <p>Escolha uma das ações para {{ user.username }}.</p>
+                                </div>
+                                <div class="modal-footer" style="padding-top: 0px;"></div>
+                                    <div class="modal-body d-flex justify-content-around">
+                                        <a href="{% url 'editar_usuario' user.id %}" class="btn btn-primary">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a href="{% url 'excluir_usuario' user.id %}" class="btn btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Excluir
+                                        </a>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhum usuário encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Paginação -->
+            <nav aria-label="Navegação de página">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num == page_obj.number %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+        </div> <!-- fim da table-pagination-container -->
+    </div>
+</div>
+{% endblock %}
