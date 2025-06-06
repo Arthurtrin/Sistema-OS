@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'widget_tweaks',
     'usuarios',
     'principal',
@@ -44,6 +45,12 @@ INSTALLED_APPS = [
     'tecnicos',
     'transportadoras'
     
+=======
+    'usuarios',
+    'principal',
+    'clientes',
+    'widget_tweaks',
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 ]
 
 MIDDLEWARE = [

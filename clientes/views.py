@@ -4,8 +4,11 @@ from django.db.models import Q
 from .forms import ClienteForm, SegmentoForm, AtividadeForm
 from .models import Cliente, Segmento, Atividade
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+=======
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 
 @login_required
 def cadastrar_clientes(request):
@@ -84,6 +87,10 @@ def ver_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     return render(request, 'clientes/ver_cliente.html', {'cliente': cliente})
 
+<<<<<<< HEAD
+=======
+#falta editar e testar
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def editar_segmento(request, seg_id):
     segmento = get_object_or_404(Segmento, id=seg_id)
@@ -91,17 +98,30 @@ def editar_segmento(request, seg_id):
         form = SegmentoForm(request.POST, instance=segmento)
         if form.is_valid():
             form.save()
+<<<<<<< HEAD
             return redirect('segmentos_atividades')  # Ajuste para a URL correta
+=======
+            messages.success(request, 'Segmento atualizado com sucesso.')
+            return redirect('nome-da-url-de-listagem-segmentos')  # Ajuste para a URL correta
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
     else:
         form = SegmentoForm(instance=segmento)
     return render(request, 'clientes/editar_segmento.html', {'form': form, 'segmento': segmento})
 
+<<<<<<< HEAD
+=======
+#funcionando
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def excluir_segmento(request, seg_id):
     segmento = get_object_or_404(Segmento, id=seg_id)
     segmento.delete()
     return redirect ('segmentos_atividades')  
 
+<<<<<<< HEAD
+=======
+#falta editar e testar
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def editar_atividade(request, atv_id):
     atividade = get_object_or_404(Atividade, id=atv_id)
@@ -109,35 +129,65 @@ def editar_atividade(request, atv_id):
         form = AtividadeForm(request.POST, instance=atividade)
         if form.is_valid():
             form.save()
+<<<<<<< HEAD
             return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
+=======
+            messages.success(request, 'Atividade atualizada com sucesso.')
+            return redirect('nome-da-url-de-listagem-atividades')  # Ajuste para a URL correta
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
     else:
         form = AtividadeForm(instance=atividade)
     return render(request, 'clientes/editar_atividade.html', {'form': form, 'atividade': atividade})
 
+<<<<<<< HEAD
+=======
+#funcionando
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def excluir_atividade(request, atv_id):
     atividade = get_object_or_404(Atividade, id=atv_id)
     atividade.delete()
+<<<<<<< HEAD
     return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
 
+=======
+    return redirect ('segmentos_atividades') 
+
+#falta testar
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def cadastrar_segmento(request):
     if request.method == 'POST':
         form = SegmentoForm(request.POST)
         if form.is_valid():
             form.save()
+<<<<<<< HEAD
             return redirect('segmentos_atividades')  # Ajuste para a URL correta
+=======
+            messages.success(request, 'Segmento cadastrado com sucesso.')
+            return redirect('nome-da-url-de-listagem-segmentos')  # Ajuste para a URL correta
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
     else:
         form = SegmentoForm()
     return render(request, 'clientes/cadastrar_segmento.html', {'form': form})
 
+<<<<<<< HEAD
+=======
+
+#falta testar
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 @login_required
 def cadastrar_atividade(request):
     if request.method == 'POST':
         form = AtividadeForm(request.POST)
         if form.is_valid():
             form.save()
+<<<<<<< HEAD
             return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
+=======
+            messages.success(request, 'Atividade cadastrada com sucesso.')
+            return redirect('nome-da-url-de-listagem-atividades')  # Ajuste para a URL correta
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
     else:
         form = AtividadeForm()
     return render(request, 'clientes/cadastrar_atividade.html', {'form': form})

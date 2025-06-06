@@ -66,6 +66,7 @@ def configuracoes(request):
 
 @login_required
 def segmentos_atividades(request):
+<<<<<<< HEAD
     usuario = request.user
     try:
         perfil = Perfil.objects.get(usuario=usuario)
@@ -84,3 +85,9 @@ def segmentos_atividades(request):
         "atividades": atividade,
         "segmentos": segmento
     })
+=======
+    segmento = Segmento.objects.all()
+    atividade = Atividade.objects.all()
+    return render(request, 'clientes/segmentos_atividade.html', {"atividades": atividade, "segmentos": segmento})
+
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708

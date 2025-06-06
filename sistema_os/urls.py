@@ -11,5 +11,8 @@ urlpatterns += i18n_patterns(
     path('', include('usuarios.urls')),
     path('painel/', include('principal.urls')),
     path('clientes/', include('clientes.urls')),
+<<<<<<< HEAD
     path('tecnicos/', include('tecnicos.urls')),
+=======
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 )

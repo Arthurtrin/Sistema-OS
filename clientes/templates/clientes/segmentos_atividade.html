@@ -4,6 +4,7 @@
 {% block content %}
 
 <style>
+<<<<<<< HEAD
   .btn-dark-custom {
     background-color: #2c2f33;
     border-color: #23272a;
@@ -21,10 +22,32 @@
   .nav-tabs .nav-link {
     color: #343a40;
     background-color: #f8f9fa;
+=======
+  /* Botão personalizado, mais escuro e menor */
+    .btn-dark-custom {
+        background-color: #2c2f33;
+        border-color: #23272a;
+        color: #fff;
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .btn-dark-custom:hover {
+        background-color: #23272a;
+        border-color: #1c1e21;
+        color: #fff;
+    }
+
+/* Abas inativas */
+  .nav-tabs .nav-link {
+    color: #343a40; /* Cinza escuro */
+    background-color: #f8f9fa; /* Cinza bem claro */
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
     border-color: transparent;
     transition: all 0.3s ease;
   }
 
+<<<<<<< HEAD
   .nav-tabs .nav-link:hover {
     color: #212529;
     background-color: #e9ecef;
@@ -35,11 +58,27 @@
     background-color: #343a40;
     border-color: #343a40 #343a40 #fff;
   }
+=======
+  /* Hover nas abas inativas */
+  .nav-tabs .nav-link:hover {
+    color: #212529; /* Preto suave */
+    background-color: #e9ecef; /* Cinza um pouco mais escuro */
+  }
+
+  /* Aba ativa */
+  .nav-tabs .nav-link.active {
+    color: #fff; /* Branco no texto */
+    background-color: #343a40; /* Cinza escuro */
+    border-color: #343a40 #343a40 #fff; /* Bordas superiores e laterais, sem borda inferior */
+  }
+
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 </style>
 
 <div class="container my-4">
   <h2 class="mb-4">Definir Segmentos e Atividades</h2>
 
+<<<<<<< HEAD
   {% with aba=request.GET.aba %}
   <ul class="nav nav-tabs" id="segmentosAtividadesTab" role="tablist">
     <li class="nav-item" role="presentation">
@@ -64,12 +103,23 @@
               role="tab"
               aria-controls="atividades"
               aria-selected="{% if aba == 'atividades' %}true{% else %}false{% endif %}">
+=======
+  <ul class="nav nav-tabs" id="segmentosAtividadesTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="segmentos-tab" data-bs-toggle="tab" data-bs-target="#segmentos" type="button" role="tab" aria-controls="segmentos" aria-selected="true">
+        Segmentos
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="atividades-tab" data-bs-toggle="tab" data-bs-target="#atividades" type="button" role="tab" aria-controls="atividades" aria-selected="false">
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
         Atividades
       </button>
     </li>
   </ul>
 
   <div class="tab-content border border-top-0 p-4 rounded-bottom shadow-sm">
+<<<<<<< HEAD
     <!-- Segmentos Tab -->
     <div class="tab-pane fade {% if aba == 'segmentos' or not aba %}show active{% endif %}" 
          id="segmentos" 
@@ -78,10 +128,22 @@
       <h4>Segmentos de Clientes</h4>
 
       <ul class="list-group mb-4" id="lista-segmentos">
+=======
+    
+    <!-- Segmentos Tab -->
+    <div class="tab-pane fade show active" id="segmentos" role="tabpanel" aria-labelledby="segmentos-tab">
+      <h4>Segmentos de Clientes</h4>
+      
+      <!-- Lista Segmentos -->
+      <ul class="list-group mb-4" id="lista-segmentos">
+        <!-- Aqui você pode iterar segmentos: -->
+        {# Exemplo: #}
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
         {% for segmento in segmentos %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ segmento.nome }}
             <div>
+<<<<<<< HEAD
               <button type="button"
                       class="btn btn-sm btn-primary me-2"
                       data-bs-toggle="modal"
@@ -91,6 +153,9 @@
                       data-tipo="segmento">
                 Editar
               </button>
+=======
+              <a href="" class="btn btn-sm btn-primary me-2">Editar</a>
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
               <a href="{% url 'clientes:excluir_segmento' segmento.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
@@ -98,8 +163,14 @@
           <li class="list-group-item">Nenhum segmento cadastrado.</li>
         {% endfor %}
       </ul>
+<<<<<<< HEAD
 
       <form method="post" action="{% url 'clientes:cadastrar_segmento' %}">
+=======
+      
+      <!-- Formulário Segmentos (exemplo simples) -->
+      <form method="post" action="">
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Novo segmento" required>
@@ -109,17 +180,25 @@
     </div>
 
     <!-- Atividades Tab -->
+<<<<<<< HEAD
     <div class="tab-pane fade {% if aba == 'atividades' %}show active{% endif %}" 
          id="atividades" 
          role="tabpanel" 
          aria-labelledby="atividades-tab">
       <h4>Ramos de Atividade</h4>
 
+=======
+    <div class="tab-pane fade" id="atividades" role="tabpanel" aria-labelledby="atividades-tab">
+      <h4>Ramos de Atividade</h4>
+      
+      <!-- Lista Atividades -->
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
       <ul class="list-group mb-4" id="lista-atividades">
         {% for atividade in atividades %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ atividade.nome }}
             <div>
+<<<<<<< HEAD
               <button type="button"
                       class="btn btn-sm btn-primary me-2"
                       data-bs-toggle="modal"
@@ -129,6 +208,9 @@
                       data-tipo="atividade">
                 Editar
               </button>
+=======
+              <a href="" class="btn btn-sm btn-primary me-2">Editar</a>
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
               <a href="{% url 'clientes:excluir_atividade' atividade.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
@@ -136,8 +218,14 @@
           <li class="list-group-item">Nenhuma atividade cadastrada.</li>
         {% endfor %}
       </ul>
+<<<<<<< HEAD
 
       <form method="post" action="{% url 'clientes:cadastrar_atividade' %}">
+=======
+      
+      <!-- Formulário Atividades -->
+      <form method="post" action="">
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Nova atividade" required>
@@ -145,6 +233,7 @@
         </div>
       </form>
     </div>
+<<<<<<< HEAD
   </div>
   {% endwith %}
 </div>
@@ -200,4 +289,9 @@
   });
 </script>
 
+=======
+
+  </div>
+</div>
+>>>>>>> ba9e299152ba5cd0e8466fd872595f1fc748b708
 {% endblock %}
