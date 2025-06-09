@@ -12,4 +12,5 @@ urlpatterns += i18n_patterns(
     path('painel/', include('principal.urls')),
     path('clientes/', include('clientes.urls')),
     path('tecnicos/', include('tecnicos.urls')),
+    path('atividades/', include('atividades.urls')),
 )

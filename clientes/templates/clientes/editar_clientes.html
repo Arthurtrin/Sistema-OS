@@ -29,6 +29,7 @@
     <form method="post" novalidate>
         {% csrf_token %}
         
+        <!-- Campos já existentes -->
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Código</label>
@@ -50,7 +51,8 @@
             </div>
         </div>
 
-        <div class="row">
+        <!-- Restante dos campos já existentes omitidos para foco no endereço -->
+          <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="{{ form.nome_fantasia.id_for_label }}" class="form-label-professional">Nome Fantasia</label>
                 {{ form.nome_fantasia }}
@@ -73,8 +75,8 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.email1.id_for_label }}" class="form-label-professional">1º Email</label>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.email1.id_for_label }}" class="form-label-professional">1º E-mail</label>
                 {{ form.email1 }}
                 {% if form.email1.errors %}
                 <div class="invalid-feedback d-block">
@@ -82,21 +84,12 @@
                 </div>
                 {% endif %}
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.email2.id_for_label }}" class="form-label-professional">2º Email</label>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.email2.id_for_label }}" class="form-label-professional">2º E-mail</label>
                 {{ form.email2 }}
                 {% if form.email2.errors %}
                 <div class="invalid-feedback d-block">
                     {{ form.email2.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.email3.id_for_label }}" class="form-label-professional">3º Email</label>
-                {{ form.email3 }}
-                {% if form.email3.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.email3.errors|striptags }}
                 </div>
                 {% endif %}
             </div>
@@ -166,6 +159,201 @@
                 {% if form.celular2.errors %}
                 <div class="invalid-feedback d-block">
                     {{ form.celular2.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Campos Segmento, Atividade e Observação -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_segmento" class="form-label-professional">Segmento</label>
+                <select name="segmento" id="id_segmento" class="form-control">
+                    <option value="" disabled selected>Selecione um segmento</option>
+                    {% for option in form.segmento.field.queryset %}
+                        <option value="{{ option.pk }}"
+                            {% if form.segmento.value|stringformat:"s" == option.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ option }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if form.segmento.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.segmento.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="id_atividade" class="form-label-professional">Atividade</label>
+                <select name="atividade" id="id_atividade" class="form-control">
+                    <option value="" disabled selected>Escolha uma atividade</option>
+                    {% for option in form.atividade.field.queryset %}
+                        <option value="{{ option.pk }}"
+                            {% if form.atividade.value|stringformat:"s" == option.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ option }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if form.atividade.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.atividade.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="{{ form.observacao.id_for_label }}" class="form-label-professional">Observação</label>
+                {{ form.observacao }}
+                {% if form.observacao.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.observacao.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Endereço Real -->
+        <h5 class="mt-4 mb-3">Endereço Real</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.logradouro_real.id_for_label }}" class="form-label-professional">Logradouro</label>
+                {{ form.logradouro_real }}
+                {% if form.logradouro_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.logradouro_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.numero_real.id_for_label }}" class="form-label-professional">Número</label>
+                {{ form.numero_real }}
+                {% if form.numero_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.numero_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.complemento_real.id_for_label }}" class="form-label-professional">Complemento</label>
+                {{ form.complemento_real }}
+                {% if form.complemento_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.complemento_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.bairro_real.id_for_label }}" class="form-label-professional">Bairro</label>
+                {{ form.bairro_real }}
+                {% if form.bairro_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.bairro_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.cidade_real.id_for_label }}" class="form-label-professional">Cidade</label>
+                {{ form.cidade_real }}
+                {% if form.cidade_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cidade_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.estado_real.id_for_label }}" class="form-label-professional">Estado</label>
+                {{ form.estado_real }}
+                {% if form.estado_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.estado_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.cep_real.id_for_label }}" class="form-label-professional">CEP</label>
+                {{ form.cep_real }}
+                {% if form.cep_real.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cep_real.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        
+
+        <!-- Endereço de Cobrança -->
+        <h5 class="mt-4 mb-3">Endereço de Cobrança</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.logradouro_cobranca.id_for_label }}" class="form-label-professional">Logradouro</label>
+                {{ form.logradouro_cobranca }}
+                {% if form.logradouro_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.logradouro_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.numero_cobranca.id_for_label }}" class="form-label-professional">Número</label>
+                {{ form.numero_cobranca }}
+                {% if form.numero_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.numero_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.complemento_cobranca.id_for_label }}" class="form-label-professional">Complemento</label>
+                {{ form.complemento_cobranca }}
+                {% if form.complemento_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.complemento_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.bairro_cobranca.id_for_label }}" class="form-label-professional">Bairro</label>
+                {{ form.bairro_cobranca }}
+                {% if form.bairro_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.bairro_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.cidade_cobranca.id_for_label }}" class="form-label-professional">Cidade</label>
+                {{ form.cidade_cobranca }}
+                {% if form.cidade_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cidade_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.estado_cobranca.id_for_label }}" class="form-label-professional">Estado</label>
+                {{ form.estado_cobranca }}
+                {% if form.estado_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.estado_cobranca.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 mb-3">
+                <label for="{{ form.cep_cobranca.id_for_label }}" class="form-label-professional">CEP</label>
+                {{ form.cep_cobranca }}
+                {% if form.cep_cobranca.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.cep_cobranca.errors|striptags }}
                 </div>
                 {% endif %}
             </div>

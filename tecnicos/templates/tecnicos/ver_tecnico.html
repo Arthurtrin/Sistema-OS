@@ -1,0 +1,68 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dados do Técnico{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dados do Técnico: {{ tecnico.nome }}</h5>
+            <a href="{% url 'tecnicos:listar_tecnicos' %}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+        <div class="card-body">
+
+            <!-- Informações básicas -->
+            <div class="row g-3 mb-4">
+                <h5>Informações Básicas:</h5>
+                <div class="col-md-6">
+                    <p><strong>Código:</strong> {{ tecnico.codigo }}</p>
+                    <p><strong>Nome:</strong> {{ tecnico.nome|default:"---" }}</p>
+                    <p><strong>CNPJ/CPF:</strong> {{ tecnico.cnpj_cpf }}</p>
+                    <p><strong>RG:</strong> {{ tecnico.rg }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>E-mail:</strong> {{ tecnico.email }}</p>
+                    <p><strong>Telefone:</strong> {{ tecnico.telefone|default:"---" }}</p>
+                    <p><strong>Celular:</strong> {{ tecnico.celular|default:"---" }}</p>
+                    <p><strong>Porcentagem de Comissão:</strong> {{ tecnico.prc_comissao|default:"---" }}</p>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <h5>Endereço:</h5>
+                <div class="col-md-6">
+                    <p><strong>Logradouro:</strong> {{ tecnico.logradouro }}</p>
+                    <p><strong>Número:</strong> {{ tecnico.numero }}</p>
+                    <p><strong>Bairro:</strong> {{ tecnico.bairro }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Cidade:</strong> {{ tecnico.cidade }}</p>
+                    <p><strong>Estado:</strong> {{ tecnico.estado }}</p>
+                    <p><strong>CEP:</strong> {{ tecnico.cep }}</p>
+                    <p><strong>Complemento:</strong> {{ tecnico.complemento|default:"---" }}</p>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <h5>Adicionais:</h5>
+                <div class="col-md-12">
+                    <p><strong>Observação:</strong></p>
+                    <p>{{ tecnico.observacao|default:"---" }}</p>
+                </div>
+            </div>
+
+            
+
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'tecnicos:editar_tecnico' tecnico.id %}" class="btn btn-primary me-2">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{% url 'tecnicos:excluir_tecnico' tecnico.id %}" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Excluir
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

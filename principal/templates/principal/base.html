@@ -24,27 +24,53 @@
 
     .sidebar {
       width: 250px;
-      background-color: #212529;
+      background-color: #2c3e50;/* tom claro e clean */
       padding-top: 60px;
       position: fixed;
       top: 0;
       bottom: 0;
       left: 0;
       z-index: 1000;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #dee2e6;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
       transition: all 0.3s;
     }
 
-    .sidebar .nav-link {
-  color: white;
-}
-
-.sidebar .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
     .sidebar.collapsed {
       margin-left: -250px;
+    }
+
+    .sidebar .nav-link {
+      color: #ecf0f1;
+      font-weight: 500;
+      padding: 10px 15px;
+      border-radius: 6px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .sidebar .nav-link i {
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar .collapse {
+      transition: height 0.3s ease;
+      overflow: hidden;
+    }
+
+    .sidebar .nav-item > a[aria-expanded="true"] i.fas.fa-chevron-down {
+      transform: rotate(180deg);
+      transition: transform 0.3s;
+    }
+
+    .sidebar .nav-item > a i.fas.fa-chevron-down {
+      transition: transform 0.3s;
     }
 
     .content {
@@ -64,45 +90,43 @@
         width: 100%;
         height: auto;
         border-right: none;
+        box-shadow: none;
+        padding-top: 0;
       }
+
       .content {
         margin-left: 0;
       }
     }
 
-    .text-purple {
-  color: #6f42c1 !important;
-}
+    .custom-navbar {
+      background-color: #1a252f; /* cinza bem suave */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* sombra mais visível para baixo */
+    }
 
-.btn-purple {
-  background-color: #6f42c1;
-  color: white;
-  border: none;
-}
+    .custom-navbar .navbar-brand{
+      color: white !important; /* cinza escuro para melhor leitura */
+    }
 
-.btn-purple:hover {
-  background-color: #5a32a3;
-  color: white;
-}
+    .custom-navbar .btn-link,
+    .custom-navbar .nav-link {
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
 
-  .sidebar .nav-link {
-    color: white;
-  }
-
-  .sidebar .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .sidebar .collapse {
-    transition: height 0.3s ease;
-    overflow: hidden; /* importante para evitar 'saltos' visuais */
-}
+    .custom-navbar .btn-link:hover,
+    .custom-navbar .nav-link:hover {
+      color: #dcdcdc !important; /* tom mais claro, suave */
+      transform: scale(1.05); /* leve aumento */
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+    }
   </style>
+
 </head>
 <body>
 
   <!-- Navbar Superior -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-light custom-navbar fixed-top">
     <div class="container-fluid">
       <button class="btn btn-link text-white me-3" id="toggleSidebar">
         <i class="fas fa-bars"></i>
@@ -127,7 +151,6 @@
     </div>
   </nav>
   
-
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <ul class="nav flex-column px-3">
@@ -167,8 +190,27 @@
             </a>
           </li>
           <li>
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}">
               <i class="fas fa-users me-2"></i>Ver Técnicos
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex justify-content-between align-items-center" href="#produtosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+          <span><i class="fas fa-box me-2"></i>Produtos</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="collapse list-unstyled ps-4" id="produtosSubmenu">
+          <li>
+            <a class="nav-link" href="">
+              <i class="fa-solid fa-plus me-2"></i>cadastrar
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="">
+              <i class="fas fa-box me-2"></i>Ver Produtos
             </a>
           </li>
         </ul>
@@ -195,6 +237,9 @@
 
       <li class="nav-item mb-2">
         <a class="nav-link" href="{% url 'usuarios' user.username %}"><i class="fas fa-users me-2"></i>Usuários</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="{% url 'atividades:ver_atividades' %}"><i class="fas fa-tasks me-2"></i>Atividades</a>
       </li>
       <li class="nav-item mb-2">
           <a class="nav-link" href="{% url 'configuracoes' %}"><i class="fas fa-cog me-2"></i>Configurações</a>

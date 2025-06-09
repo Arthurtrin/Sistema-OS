@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .forms import ClienteForm, SegmentoForm, AtividadeForm
 from .models import Cliente, Segmento, Atividade
+from atividades.models import AtividadeUsuarioCliente
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -12,8 +13,14 @@ def cadastrar_clientes(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('clientes:listar_clientes')  # ou outra view
+            cliente = form.save()  # salva o cliente e guarda o objeto
+            # registra a atividade do usuário
+            AtividadeUsuarioCliente.objects.create(
+                usuario=request.user,
+                cliente=cliente.nome_cliente,
+                descricao="Cadastrou um novo cliente"
+            )
+            return redirect('clientes:listar_clientes')
     else:
         form = ClienteForm()
 
@@ -67,7 +74,13 @@ def editar_cliente(request, cliente_id):
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
-            form.save()
+            cliente = form.save()  # salva o cliente e guarda o objeto
+            # registra a atividade do usuário
+            AtividadeUsuarioCliente.objects.create(
+                usuario=request.user,
+                cliente=cliente,
+                descricao="Editou um cliente"
+            )
             return redirect('clientes:listar_clientes')
     else:
         form = ClienteForm(instance=cliente)

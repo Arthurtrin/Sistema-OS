@@ -9,6 +9,61 @@
         flex-direction: column;
         justify-content: space-between;
     }
+
+    
+    .custom-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background-color: transparent;
+    }
+
+    .custom-table thead {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .custom-table th {
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+    }
+
+    .custom-table tbody tr {
+        background-color: #ffffff;
+        transition: box-shadow 0.2s ease;
+        border-radius: 8px;
+    }
+
+    .custom-table tbody tr:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .custom-table td {
+        border: none;
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr td:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+
+    .custom-table tbody tr td:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .custom-thead {
+        background-color: #f8f9fa; /* tom claro, tipo cinza claro */
+        color: black; /* preto acinzentado, boa leitura */
+    }
+
+    .custom-thead th {
+        font-weight: 600;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+    }
 </style>
 
 <div class="container my-4">
@@ -36,9 +91,8 @@
 
         <!-- Aqui começa a div que vai garantir altura fixa -->
         <div class="table-pagination-container">
-
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="table-dark">
+            <table class="table table-hover custom-table">
+                <thead class="custom-thead">
                     <tr>
                         <th scope="col">Usuário</th>
                         <th scope="col">Email</th>

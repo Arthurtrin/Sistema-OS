@@ -14,6 +14,7 @@
 
             <!-- Informações básicas -->
             <div class="row g-3 mb-4">
+                <h5>Informações Básicas:</h5>
                 <div class="col-md-6">
                     <p><strong>Código:</strong> {{ cliente.codigo }}</p>
                     <p><strong>Nome Cliente:</strong> {{ cliente.nome_cliente|default:"---" }}</p>
@@ -34,9 +35,8 @@
                 </div>
             </div>
 
-            
-            
             <div class="row g-3 mb-4">
+                <h5>Endereços (Real e Cobrança):</h5>
                 <div class="col-md-6"><h5>Endereço Real</h5>
                     <p><strong>Logradouro:</strong> {{ cliente.logradouro_real }}</p>
                     <p><strong>Número:</strong> {{ cliente.numero_real }}</p>
@@ -57,18 +57,22 @@
                 </div>
             </div>
             
+            
+
             <div class="row g-3 mb-4">
+                <h5>Informações Adicionais: </h5>
                 <div class="col-md-6">
                     <p><strong>Atividade:</strong> {{ cliente.atividade }}</p>
                     <p><strong>Segmento:</strong> {{ cliente.segmento }}</p>
                 </div>
             </div>
 
-            <div class="mb-4">
-                <p><strong>Observação:</strong></p>
-                <p>{{ cliente.observacao|default:"---" }}</p>
+            <div class="row">
+                <div class="col-md-12">
+                    <p><strong>Observação:</strong></p>
+                    <p>{{ cliente.observacao|default:"---" }}</p>
+                </div>
             </div>
-
             
 
         </div>

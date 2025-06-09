@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Gerenciar Clientes{% endblock %}
+{% block title %}Atividades de Usuários{% endblock %}
 
 {% block content %}
 <style>
@@ -66,14 +66,13 @@
 </style>
 
 <div class="container my-4">
-    <h2 class="mb-4">Lista de Clientes</h2>
+    <h2 class="mb-4">Atividades dos Usuários</h2>
     <div class="table-responsive">
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <form method="get" class="d-flex align-items-center gap-2">
-                <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
+
+                <input type="text" name="pesquisa" placeholder="Pesquisar" class="form-control w-auto"
                     value="{{ pesquisa|default:'' }}">
-                <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
-                <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
                 <button type="submit" class="btn"
                     style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
                     onmouseover="this.style.backgroundColor='#343a40'"
@@ -81,58 +80,49 @@
                     Pesquisar
                 </button>
             </form>
-
-            <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Cadastrar Novo Cliente
-            </a>
         </div>
-
 
         <div class="table-pagination-container">
             <table class="table table-hover custom-table">
                 <thead class="custom-thead">
                     <tr>
-                        <th scope="col">Código</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">E-mail</th>
-                        <th scope="col">Telefone</th>
-                        <th scope="col">CNPJ/CPF</th>
-                        <th scope="col">Data da inclusão</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Ação</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Data</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cliente in page_obj %}
+                    {% for atividade in page_obj %}
                     <tr data-bs-toggle="modal"
-                        data-bs-target="#modalCliente{{ cliente.id }}"
+                        data-bs-target="#modalAtividade{{ atividade.id }}"
                         style="cursor: pointer;">
-                        <td>{{ cliente.codigo}}</td>
-                        <td>{{ cliente.nome_cliente}}</td>
-                        <td>{{ cliente.email1 }}</td>
-                        <td>{{ cliente.telefone1 }}</td>
-                        <td>{{ cliente.cnpj_cpf }}</td>
-                        <td>{{ cliente.data_inclusao }}</td>
+                        <td>{{ atividade.usuario }}</td>
+                        <td>{{ atividade.descricao }}</td>
+                        <td>{{ atividade.cliente }}</td>
+                        <td>{{ atividade.data }}</td>
                     </tr>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="modalCliente{{ cliente.id }}" tabindex="-1" aria-labelledby="modalLabel{{ cliente.id }}" aria-hidden="true">
+                    <div class="modal fade" id="modalAtividade{{ atividade.id }}" tabindex="-1" aria-labelledby="modalLabel{{ atividade.id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel{{ cliente.id }}">Cliente: {{ cliente.nome_cliente }}</h5>
+                                    <h5 class="modal-title" id="modalLabel{{ atividade.id }}">Técnico: {{ tecnico.nome }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Escolha uma das ações para {{ cliente.nome_cliente }}.</p>
+                                    <p>Escolha uma das ações para {{ tecnico.nome }}.</p>
                                 </div>
                                 <div class="modal-footer" style="padding-top: 0px;"></div>
                                 <div class="modal-body d-flex justify-content-around">
-                                    <a href="{% url 'clientes:ver_cliente' cliente.id %}" class="btn btn-success">
-                                        <i class="fas fa-eye"></i> Ver Cliente
+                                    <a href="" class="btn btn-success">
+                                        <i class="fas fa-eye"></i> Ver Técnico
                                     </a>
-                                    <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-primary">
+                                    <a href="" class="btn btn-primary">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
-                                    <a href="{% url 'clientes:excluir_cliente' cliente.id %}" class="btn btn-danger">
+                                    <a href="" class="btn btn-danger">
                                         <i class="fas fa-trash-alt"></i> Excluir
                                     </a>
                                 </div>
@@ -141,7 +131,7 @@
                     </div>
                     {% empty %}
                     <tr>
-                        <td colspan="4">Nenhum cliente encontrado.</td>
+                        <td colspan="4">Nenhum Técnico encontrado.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

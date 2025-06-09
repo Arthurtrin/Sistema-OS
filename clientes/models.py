@@ -87,7 +87,7 @@ class Cliente(models.Model):
     cep_cobranca = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
-        return f"{self.nome_cliente} ({self.codigo})"
+        return f"{self.nome_cliente}"
 
     def save(self, *args, **kwargs):
         if not self.codigo:
