@@ -54,8 +54,8 @@
     }
 
     .custom-thead {
-        background-color: #f8f9fa; /* tom claro, tipo cinza claro */
-        color: black; /* preto acinzentado, boa leitura */
+        background-color: #f8f9fa;
+        color: black;
     }
 
     .custom-thead th {
@@ -68,7 +68,7 @@
 <div class="container my-4">
     <h2 class="mb-4">Lista de Produtos</h2>
     <div class="table-responsive">
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between align-items-center">
             <form method="get" class="row g-2 align-items-end">
                 <div class="col-md-2">
                     <input type="text" name="pesquisa" placeholder="Pesquisar" class="form-control"
@@ -101,16 +101,21 @@
                         {% endfor %}
                     </select>
                 </div>
+
                 <div class="col-md-2">
                     <input type="date" name="data_ultima_compra" class="form-control"
                         value="{{ data_ultima_compra|default:'' }}">
                 </div>
+
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-dark px-4">
                         Pesquisar
                     </button>
                 </div>
             </form>
+            <a href="{% url 'produtos:cadastrar_produto' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Cadastrar Novo Produto
+            </a>
         </div>
 
         <div class="table-pagination-container">
@@ -130,43 +135,16 @@
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalProduto{{ produto.id }}"
                         style="cursor: pointer;">
-                        <td>{{ produto.codigo}}</td>
-                        <td>{{ produto.nome}}</td>
+                        <td>{{ produto.codigo }}</td>
+                        <td>{{ produto.nome }}</td>
                         <td>{{ produto.situacao }}</td>
                         <td>{{ produto.marca }}</td>
                         <td>{{ produto.cod_barra }}</td>
                         <td>{{ produto.data_ultima_compra }}</td>
                     </tr>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="modalProduto{{ produto.id }}" tabindex="-1" aria-labelledby="modalLabel{{ produto.id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel{{ produto.id }}">Produto: {{ produto.nome }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Escolha uma das ações para {{ produto }}.</p>
-                                </div>
-                                <div class="modal-footer" style="padding-top: 0px;"></div>
-                                <div class="modal-body d-flex justify-content-around">
-                                    <a href="" class="btn btn-success">
-                                        <i class="fas fa-eye"></i> Ver Produto
-                                    </a>
-                                    <a href="" class="btn btn-primary">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <a href="" class="btn btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Excluir
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% empty %}
                     <tr>
-                        <td colspan="4">Nenhum produto encontrado.</td>
+                        <td colspan="6">Nenhum produto encontrado.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -176,43 +154,66 @@
             <nav aria-label="Navegação de página">
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
+                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                     {% endif %}
 
                     {% for num in page_obj.paginator.page_range %}
                         {% if num == page_obj.number %}
-                            <li class="page-item active">
-                                <span class="page-link">{{ num }}</span>
-                            </li>
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                         {% else %}
                             <li class="page-item">
-                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ num }}">{{ num }}</a>
+                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ num }}">{{ num }}</a>
                             </li>
                         {% endif %}
                     {% endfor %}
 
                     {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
+                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </div>
 </div>
+
+<!-- Modais -->
+{% for produto in page_obj %}
+<div class="modal fade" id="modalProduto{{ produto.id }}" tabindex="-1" aria-labelledby="modalLabel{{ produto.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel{{ produto.id }}">Produto: {{ produto.nome }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Escolha uma das ações para <strong>{{ produto.nome }}</strong>.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a href="" class="btn btn-success">
+                    <i class="fas fa-eye"></i> Ver Produto
+                </a>
+                <a href="" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <a href="" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 {% endblock %}
