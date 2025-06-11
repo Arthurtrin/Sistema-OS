@@ -17,7 +17,7 @@ def cadastrar_clientes(request):
             # registra a atividade do usuário
             AtividadeUsuarioCliente.objects.create(
                 usuario=request.user,
-                cliente=cliente.nome_cliente,
+                cliente=cliente,
                 descricao="Cadastrou um novo cliente"
             )
             return redirect('clientes:listar_clientes')
@@ -41,7 +41,6 @@ def listar_clientes(request):
             Q(nome_fantasia__icontains=pesquisa) |
             Q(email1__icontains=pesquisa) |
             Q(email2__icontains=pesquisa) |
-            Q(email3__icontains=pesquisa) |
             Q(cnpj_cpf__icontains=pesquisa) |
             Q(telefone1__icontains=pesquisa) |
             Q(telefone2__icontains=pesquisa) |
