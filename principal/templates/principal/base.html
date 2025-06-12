@@ -171,7 +171,7 @@
             </a>
           </li>
           <li>
-            <a class="nav-link" href="{% url 'segmentos_atividades' %}">
+            <a class="nav-link" href="{% url 'clientes:segmentos_atividades' %}">
               <i class="fas fa-layer-group me-2"></i>Segmentos e Atividades
             </a>
           </li>
@@ -211,6 +211,9 @@
           <li>
             <a class="nav-link" href="{% url 'produtos:listar_produtos' %}">
               <i class="fas fa-box me-2"></i>Ver Produtos
+            </a>
+            <a class="nav-link" href="{% url 'produtos:fabricante_marca' %}">
+              <i class="fas fa-layer-group me-2"></i>Marcas e Fabricantes
             </a>
           </li>
         </ul>

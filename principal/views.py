@@ -63,24 +63,3 @@ def criar_os(request):
 @login_required
 def configuracoes(request):
     return render(request, 'principal/configuracoes.html')
-
-@login_required
-def segmentos_atividades(request):
-    usuario = request.user
-    try:
-        perfil = Perfil.objects.get(usuario=usuario)
-    except Perfil.DoesNotExist:
-        mensagem = 'Perfil não encontrado'
-        return render(request, 'principal/erro.html', {'mensagem': mensagem})
-
-    if perfil.tipo not in ['gerenciador', 'supervisor']:
-        mensagem = 'Você não tem permissão para acessar esta página.'
-        return render(request, 'principal/erro.html', {'mensagem': mensagem})
-
-    segmento = Segmento.objects.all()
-    atividade = Atividade.objects.all()
-    
-    return render(request, 'clientes/segmentos_atividade.html', {
-        "atividades": atividade,
-        "segmentos": segmento
-    })

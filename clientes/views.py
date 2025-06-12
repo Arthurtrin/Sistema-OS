@@ -5,6 +5,7 @@ from .forms import ClienteForm, SegmentoForm, AtividadeForm
 from .models import Cliente, Segmento, Atividade
 from atividades.models import AtividadeUsuarioCliente
 from django.contrib.auth.decorators import login_required
+from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
@@ -97,13 +98,34 @@ def ver_cliente(request, cliente_id):
     return render(request, 'clientes/ver_cliente.html', {'cliente': cliente})
 
 @login_required
+def segmentos_atividades(request):
+    usuario = request.user
+    try:
+        perfil = Perfil.objects.get(usuario=usuario)
+    except Perfil.DoesNotExist:
+        mensagem = 'Perfil não encontrado'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+    if perfil.tipo not in ['gerenciador', 'supervisor']:
+        mensagem = 'Você não tem permissão para acessar esta página.'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+    segmento = Segmento.objects.all()
+    atividade = Atividade.objects.all()
+    
+    return render(request, 'clientes/segmentos_atividade.html', {
+        "atividades": atividade,
+        "segmentos": segmento
+    })
+
+@login_required
 def editar_segmento(request, seg_id):
     segmento = get_object_or_404(Segmento, id=seg_id)
     if request.method == 'POST':
         form = SegmentoForm(request.POST, instance=segmento)
         if form.is_valid():
             form.save()
-            return redirect('segmentos_atividades')  # Ajuste para a URL correta
+            return redirect('clientes:segmentos_atividades')  # Ajuste para a URL correta
     else:
         form = SegmentoForm(instance=segmento)
     return render(request, 'clientes/editar_segmento.html', {'form': form, 'segmento': segmento})
@@ -112,7 +134,7 @@ def editar_segmento(request, seg_id):
 def excluir_segmento(request, seg_id):
     segmento = get_object_or_404(Segmento, id=seg_id)
     segmento.delete()
-    return redirect ('segmentos_atividades')  
+    return redirect ('clientes:segmentos_atividades')  
 
 @login_required
 def editar_atividade(request, atv_id):
@@ -121,7 +143,7 @@ def editar_atividade(request, atv_id):
         form = AtividadeForm(request.POST, instance=atividade)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
+            return HttpResponseRedirect(reverse('clientes:segmentos_atividades') + '?aba=atividades')
     else:
         form = AtividadeForm(instance=atividade)
     return render(request, 'clientes/editar_atividade.html', {'form': form, 'atividade': atividade})
@@ -130,7 +152,7 @@ def editar_atividade(request, atv_id):
 def excluir_atividade(request, atv_id):
     atividade = get_object_or_404(Atividade, id=atv_id)
     atividade.delete()
-    return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
+    return HttpResponseRedirect(reverse('clientes:segmentos_atividades') + '?aba=atividades')
 
 @login_required
 def cadastrar_segmento(request):
@@ -138,7 +160,7 @@ def cadastrar_segmento(request):
         form = SegmentoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('segmentos_atividades')  # Ajuste para a URL correta
+            return redirect('clientes:segmentos_atividades')  # Ajuste para a URL correta
     else:
         form = SegmentoForm()
     return render(request, 'clientes/cadastrar_segmento.html', {'form': form})
@@ -149,7 +171,7 @@ def cadastrar_atividade(request):
         form = AtividadeForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('segmentos_atividades') + '?aba=atividades')
+            return HttpResponseRedirect(reverse('clientes:segmentos_atividades') + '?aba=atividades')
     else:
         form = AtividadeForm()
     return render(request, 'clientes/cadastrar_atividade.html', {'form': form})
