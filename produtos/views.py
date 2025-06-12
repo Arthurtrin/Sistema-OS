@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
 from .forms import ProdutoForm, MarcaForm, FabricanteForm
-from .models import Produto, Marca, Fabricante
+from .models import Produto, Marca, Fabricante, Grupo
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -76,7 +76,7 @@ def listar_produtos(request):
     })
 
 @login_required
-def fabricante_marca(request):
+def fabricante_marca_grupo(request):
     usuario = request.user
     try:
         perfil = Perfil.objects.get(usuario=usuario)
@@ -90,10 +90,12 @@ def fabricante_marca(request):
 
     marca = Marca.objects.all()
     fabricante = Fabricante.objects.all()
-    
-    return render(request, 'produtos/fabricante_marca.html', {
+    grupo = Grupo.objects.all()
+
+    return render(request, 'produtos/fabricante_marca_grupo.html', {
         "marcas": marca,
-        "fabricantes": fabricante
+        "fabricantes": fabricante,
+        "grupos":grupo
     })
 
 @login_required
@@ -149,3 +151,7 @@ def excluir_fabricante(request, fabricante_id):
     fabricante = get_object_or_404(Fabricante, id=fabricante_id)
     fabricante.delete()
     return HttpResponseRedirect(reverse('produtos:fabricante_marca') + '?aba=fabricantes')
+
+@login_required
+def editar_grupo(request, grupo_id):
+    pass

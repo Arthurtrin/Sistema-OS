@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Marcas e Fabricantes{% endblock %}
+{% block title %}Marcas, Fabricantes e Grupos{% endblock %}
 
 {% block content %}
 
@@ -38,7 +38,7 @@
 </style>
 
 <div class="container my-4">
-  <h2 class="mb-4">Definir Marcas e Fabricantes</h2>
+  <h2 class="mb-4">Definir Marcas, Fabricantes e Grupos</h2>
 
   {% with aba=request.GET.aba %}
   <ul class="nav nav-tabs" id="marcaFabricanteTab" role="tablist">
@@ -67,6 +67,19 @@
         Fabricantes
       </button>
     </li>
+
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if aba == 'grupos' %}active{% endif %}"
+              id="grupos-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#grupos"
+              type="button"
+              role="tab"
+              aria-controls="grupos"
+              aria-selected="{% if aba == 'grupos' %}true{% else %}false{% endif %}">
+        Grupos
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content border border-top-0 p-4 rounded-bottom shadow-sm">
@@ -76,7 +89,6 @@
          role="tabpanel" 
          aria-labelledby="marcas-tab">
       <h4>Marcas</h4>
-
       <ul class="list-group mb-4" id="lista-marcas">
         {% for marca in marcas %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -114,7 +126,6 @@
          role="tabpanel" 
          aria-labelledby="fabricantes-tab">
       <h4>Fabricantes</h4>
-
       <ul class="list-group mb-4" id="lista-fabricantes">
         {% for fabricante in fabricantes %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -141,6 +152,43 @@
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Novo fabricante" required>
+          <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Grupos Tab -->
+    <div class="tab-pane fade {% if aba == 'grupos' %}show active{% endif %}" 
+         id="grupos" 
+         role="tabpanel" 
+         aria-labelledby="grupos-tab">
+      <h4>Grupos</h4>
+      <ul class="list-group mb-4" id="lista-grupos">
+        {% for grupo in grupos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ grupo.nome }}
+            <div>
+              <button type="button"
+                      class="btn btn-sm btn-primary me-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editarModal"
+                      data-id="{{ grupo.id }}"
+                      data-nome="{{ grupo.nome }}"
+                      data-tipo="grupo">
+                Editar
+              </button>
+              <a href="" class="btn btn-sm btn-danger">Excluir</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhum grupo cadastrado.</li>
+        {% endfor %}
+      </ul>
+
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="text" name="nome" class="form-control" placeholder="Novo grupo" required>
           <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
@@ -188,14 +236,16 @@
     const inputNome = editarModal.querySelector('#editar-nome');
     const form = editarModal.querySelector('#editarForm');
 
-    modalTitle.textContent = 'Editar ' + (tipo === 'marca' ? 'Marca' : 'Fabricante');
+    modalTitle.textContent = 'Editar ' + tipo.charAt(0).toUpperCase() + tipo.slice(1);
     inputId.value = id;
     inputNome.value = nome;
 
     if (tipo === 'marca') {
       form.action = "{% url 'produtos:editar_marca' 0 %}".replace('0', id);
-    } else {
+    } else if (tipo === 'fabricante') {
       form.action = "{% url 'produtos:editar_fabricante' 0 %}".replace('0', id);
+    } else if (tipo === 'grupo') {
+      form.action = "{% url 'produtos:editar_grupo' 0 %}".replace('0', id);
     }
   });
 </script>
