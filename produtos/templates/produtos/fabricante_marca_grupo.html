@@ -177,7 +177,7 @@
                       data-tipo="grupo">
                 Editar
               </button>
-              <a href="" class="btn btn-sm btn-danger">Excluir</a>
+              <a href="{% url 'produtos:excluir_grupo' grupo.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
@@ -185,7 +185,7 @@
         {% endfor %}
       </ul>
 
-      <form method="post" action="">
+      <form method="post" action="{% url 'produtos:cadastrar_grupo' %}">
         {% csrf_token %}
         <div class="input-group">
           <input type="text" name="nome" class="form-control" placeholder="Novo grupo" required>

@@ -13,6 +13,8 @@ urlpatterns = [
     path('produtos/fabricante/excluir/<int:fabricante_id>/', views.excluir_fabricante, name='excluir_fabricante'),
     path('produtos/marca/cadastrar/', views.cadastrar_marca, name='cadastrar_marca'),
     path('produtos/fabricante/cadastrar/', views.cadastrar_fabricante, name='cadastrar_fabricante'),
+    path('produtos/grupo/cadastrar/', views.cadastrar_grupo, name='cadastrar_grupo'),
     path('produtos/grupo/editar/<int:grupo_id>', views.editar_grupo, name='editar_grupo'),
+    path('produtos/grupo/excluir/<int:grupo_id>', views.excluir_grupo, name='excluir_grupo'),
     
 ]

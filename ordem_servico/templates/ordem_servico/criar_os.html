@@ -1,0 +1,234 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+  .form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+  }
+  .form-label {
+    font-weight: 500;
+    font-size: 0.825rem;
+  }
+  .form-control, .form-select {
+    font-size: 0.825rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+  .btn-lg {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  .card-collapse {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  .card-collapse .card-header {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+  }
+  .card-collapse .card-body {
+    padding: 1rem;
+  }
+</style>
+
+<div class="container py-3">
+  <h2 class="mb-3">Nova Ordem de Serviço</h2>
+  <form>
+
+    <div class="accordion" id="formAccordion">
+      <!-- Identificação -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
+          Identificação
+        </div>
+        <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label for="nome" class="form-label">Título</label>
+                <input type="text" class="form-control" id="nome">
+              </div>
+              <div class="col-md-4">
+                <label for="dataAbertura" class="form-label">Data de Abertura</label>
+                <input type="date" class="form-control" id="dataAbertura">
+              </div>
+              <div class="col-md-4">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status">
+                  <option selected disabled>Selecione</option>
+                  <option value="aberta">Aberta</option>
+                  <option value="em_andamento">Em andamento</option>
+                  <option value="aguardando">Aguardando peças</option>
+                  <option value="finalizada">Finalizada</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cliente -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#cliente">
+          Cliente
+        </div>
+        <div id="cliente" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-3">
+                <label class="form-label">Cliente</label>
+                <select name="grupo" class="form-select">
+                  <option value=""></option>
+                  {% for g in grupos %}
+                    <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Nº Proposta</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Nº Desenho</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Solicitante</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#informacoes">
+          Informações
+        </div>
+        <div id="informacoes" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              {% for label in labels %}
+              <div class="col-md-4">
+                <label class="form-label">{{ label }}</label>
+                <select name="grupo" class="form-select">
+                  <option value=""></option>
+                  {% for g in grupos %}
+                    <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Obra -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#obra">
+          Obra
+        </div>
+        <div id="obra" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              {% for label in obra_campos %}
+              <div class="col-md-3">
+                <label class="form-label">{{ label }}</label>
+                <input type="text" class="form-control">
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Descrição do Serviço -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#descricao">
+          Descrição do Serviço
+        </div>
+        <div id="descricao" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <textarea class="form-control" rows="3" placeholder="Descreva o serviço..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local dos Serviços -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#local">
+          Local dos Serviços
+        </div>
+        <div id="local" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label class="form-label">Município</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">UF</label>
+                <select name="grupo" class="form-select">
+                  <option value=""></option>
+                  {% for g in grupos %}
+                    <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">UC/OS</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">OC</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anexos -->
+      <div class="card-collapse">
+        <div class="card-header collapsed"
+     data-bs-toggle="collapse"
+     data-bs-target="#anexos"
+     aria-expanded="false"
+     aria-controls="anexos"
+     role="button">
+  Anexos
+</div>
+        <div id="anexos" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <input class="form-control" type="file" id="anexos" multiple>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end mt-3">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-save me-2"></i>Salvar Ordem de Serviço
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

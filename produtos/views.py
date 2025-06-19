@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
-from .forms import ProdutoForm, MarcaForm, FabricanteForm
+from .forms import ProdutoForm, MarcaForm, FabricanteForm, GrupoForm
 from .models import Produto, Marca, Fabricante, Grupo
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -23,7 +23,7 @@ def cadastrar_produto(request):
 def listar_produtos(request):
     pesquisa = request.GET.get('pesquisa', '')
     situacao = request.GET.get('situacao', '')
-    marca = request.GET.get('marca', '')
+    grupo = request.GET.get('grupo', '')
     fabricante = request.GET.get('fabricante', '')
     data_ultima_compra = request.GET.get('data_ultima_compra', '')
 
@@ -47,8 +47,8 @@ def listar_produtos(request):
     if situacao:
         produtos = produtos.filter(situacao=situacao)
 
-    if marca:
-        produtos = produtos.filter(marca_id=marca)
+    if grupo:
+        produtos = produtos.filter(grupo_id=grupo)
 
     if fabricante:
         produtos = produtos.filter(fabricante_id=fabricante)
@@ -60,17 +60,17 @@ def listar_produtos(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    marcas = Marca.objects.all()
+    grupos = Grupo.objects.all()
     fabricantes = Fabricante.objects.all()
 
     return render(request, 'produtos/produtos.html', {
         'page_obj': page_obj,
         'pesquisa': pesquisa,
         'situacao': situacao,
-        'marca': marca,
+        'grupo': grupo,
         'fabricante': fabricante,
         'data_ultima_compra': data_ultima_compra,
-        'marcas': marcas,
+        'grupos': grupos,
         'fabricantes': fabricantes,
         'Produto': Produto,  # usado para acessar Produto.SITUACAO_CHOICES no template
     })
@@ -104,9 +104,9 @@ def cadastrar_marca(request):
         form = MarcaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('produtos:fabricante_marca')
+            return redirect('produtos:fabricante_marca_grupo')
     else:
-        return redirect('produtos:fabricante_marca')
+        return redirect('produtos:fabricante_marca_grupo')
 
 @login_required
 def cadastrar_fabricante(request):
@@ -114,9 +114,9 @@ def cadastrar_fabricante(request):
         form = FabricanteForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('produtos:fabricante_marca') + '?aba=fabricantes')
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=fabricantes')
     else:
-        return redirect('produtos:fabricante_marca')
+        return redirect('produtos:fabricante_marca_grupo')
 
 @login_required
 def editar_marca(request, marca_id):
@@ -125,15 +125,15 @@ def editar_marca(request, marca_id):
         form = MarcaForm(request.POST, instance=marca)
         if form.is_valid():
             form.save()
-            return redirect('produtos:fabricante_marca')  # Ajuste para a URL correta
+            return redirect('produtos:fabricante_marca_grupo')  # Ajuste para a URL correta
     else:
-        return redirect('produtos:fabricante_marca')
+        return redirect('produtos:fabricante_marca_grupo')
 
 @login_required
 def excluir_marca(request, marca_id):
     marca = get_object_or_404(Marca, id=marca_id)
     marca.delete()
-    return redirect ('produtos:fabricante_marca')
+    return redirect ('produtos:fabricante_marca_grupo')
 
 @login_required
 def editar_fabricante(request, fabricante_id):
@@ -142,16 +142,39 @@ def editar_fabricante(request, fabricante_id):
         form = FabricanteForm(request.POST, instance=fabricante)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('produtos:fabricante_marca') + '?aba=fabricantes')
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=fabricantes')
     else:
-        return HttpResponseRedirect(reverse('produtos:fabricante_marca') + '?aba=fabricantes')
+        return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=fabricantes')
 
 @login_required
 def excluir_fabricante(request, fabricante_id):
     fabricante = get_object_or_404(Fabricante, id=fabricante_id)
     fabricante.delete()
-    return HttpResponseRedirect(reverse('produtos:fabricante_marca') + '?aba=fabricantes')
+    return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=fabricantes')
+
+@login_required
+def cadastrar_grupo(request):
+    if request.method == 'POST':
+        form = GrupoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=grupos')
+    else:
+        return redirect('produtos:fabricante_marca_grupo')
 
 @login_required
 def editar_grupo(request, grupo_id):
-    pass
+    grupo = get_object_or_404(Grupo, id=grupo_id)
+    if request.method == 'POST':
+        form = GrupoForm(request.POST, instance=grupo)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=grupos')
+    else:
+        return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=grupos')
+
+@login_required
+def excluir_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, id=grupo_id)
+    grupo.delete()
+    return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=grupos')

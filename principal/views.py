@@ -5,6 +5,7 @@ from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 from usuarios.models import Perfil, Chave_Gerenciador
 from clientes.models import Cliente, Atividade, Segmento
+from produtos.models import Grupo
 
 @login_required
 def home(request):
@@ -58,7 +59,15 @@ def ordem_servico(request):
 
 @login_required
 def criar_os(request):
-    return render(request, 'principal/criar_os.html')
+    grupos = Grupo.objects.all()  # ou como você busca seus dados
+    labels = ['Digitador', 'Unidade', 'Segmento']
+    obra_campos = ['Início', 'Término', 'Nº ART', 'Nome']
+    return render(request, 'ordem_servico/criar_os.html', {
+        'grupos': grupos,
+        'grupo': '',  # ou o ID do grupo selecionado
+        'labels': labels,
+        'obra_campos': obra_campos,
+    })
 
 @login_required
 def configuracoes(request):

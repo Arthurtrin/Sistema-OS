@@ -1,5 +1,5 @@
 from django import forms
-from .models import Produto, Marca, Fabricante
+from .models import Produto, Marca, Fabricante, Grupo
 
 class ProdutoForm(forms.ModelForm):
     class Meta:
@@ -40,4 +40,9 @@ class MarcaForm(forms.ModelForm):
 class FabricanteForm(forms.ModelForm):
     class Meta:
         model = Fabricante
+        fields = ['nome']
+
+class GrupoForm(forms.ModelForm):
+    class Meta:
+        model = Grupo
         fields = ['nome']

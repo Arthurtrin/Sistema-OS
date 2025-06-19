@@ -85,10 +85,10 @@
                 </div>
 
                 <div class="col-md-2">
-                    <select name="marca" class="form-select">
-                        <option value="">Marca</option>
-                        {% for m in marcas %}
-                            <option value="{{ m.id }}" {% if m.id|stringformat:"s" == marca %}selected{% endif %}>{{ m.nome }}</option>
+                    <select name="grupo" class="form-select">
+                        <option value="">Grupo</option>
+                        {% for g in grupos %}
+                            <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
                         {% endfor %}
                     </select>
                 </div>
