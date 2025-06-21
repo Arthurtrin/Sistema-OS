@@ -3,192 +3,237 @@
 
 {% block content %}
 <style>
-    /* Estilo para labels profissionais */
-    .form-label-professional {
-        font-weight: 500;
-        font-size: 1rem;
-        color: #333;
-        margin-bottom: 0.35rem;
-        display: inline-block;
-    }
-
-    /* Botão personalizado, mais escuro e menor */
-    .btn-dark-custom {
-        background-color: #2c2f33;
-        border-color: #23272a;
-        color: #fff;
-        font-size: 0.875rem;
-        padding: 0.375rem 0.75rem;
-    }
-
-    .btn-dark-custom:hover {
-        background-color: #23272a;
-        border-color: #1c1e21;
-        color: #fff;
-    }
+    .form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+  }
+  .form-label {
+    font-weight: 500;
+    font-size: 0.825rem;
+  }
+  .form-control, .form-select {
+    font-size: 0.825rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+  .btn-lg {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  .card-collapse {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  .card-collapse .card-header {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+  }
+  .card-collapse .card-body {
+    padding: 1rem;
+  }
 </style>
 
 <div class="container my-4">
-    <h2 class="mb-4">Cadastrar Produto</h2>
-    <form method="post" novalidate>
-        {% csrf_token %}
+  <h2 class="mb-3">Cadastrar Produto</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Código</label>
-                {{ form.codigo }}
-                {% if form.codigo.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.codigo.errors|striptags }}
-                </div>
-                {% endif %}
+    <div class="accordion" id="formAccordion">
+        <div class="card-collapse">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
+            Identificação do Produto
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome do Produto</label>
-                {{ form.nome }}
-                {% if form.nome.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.nome.errors|striptags }}
+            <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Código</label>
+                            {{ form.codigo }}
+                            {% if form.codigo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.codigo.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome do Produto</label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nome.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    
+                        <div class="col-md-4">
+                            <label for="{{ form.grupo.id_for_label }}" class="form-label-professional">Grupo</label>
+                            {{ form.grupo }}
+                            {% if form.grupo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.grupo.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row g-2" style="margin-top: 5px;">
+                        <div class="col-md-3">
+                            <label for="{{ form.qtd_entrada.id_for_label }}" class="form-label-professional">Quantidade de Entrada</label>
+                            {{ form.qtd_entrada }}
+                            {% if form.qtd_entrada.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.qtd_entrada.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="{{ form.estoque_minimo.id_for_label }}" class="form-label-professional">Estoque Mínimo</label>
+                            {{ form.estoque_minimo }}
+                            {% if form.estoque_minimo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.estoque_minimo.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.estoque_maximo.id_for_label }}" class="form-label-professional">Estoque Máximo</label>
+                            {{ form.estoque_maximo }}
+                            {% if form.estoque_maximo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.estoque_maximo.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.situacao.id_for_label }}" class="form-label-professional">Situação</label>
+                            {{ form.situacao }}
+                            {% if form.situacao.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.situacao.errors|striptags }}
+                            </div>
+                            {% endif %}    
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.grupo.id_for_label }}" class="form-label-professional">Grupo</label>
-                {{ form.grupo }}
-                {% if form.grupo.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.grupo.errors|striptags }}
-                </div>
-                {% endif %}
             </div>
         </div>
 
-        <!-- Restante dos campos já existentes omitidos para foco no endereço -->
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.qtd_entrada.id_for_label }}" class="form-label-professional">Quantidade de Entrada</label>
-                {{ form.qtd_entrada }}
-                {% if form.qtd_entrada.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.qtd_entrada.errors|striptags }}
-                </div>
-                {% endif %}
+        <div class="card-collapse">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#fabricante">
+            Fabricante
             </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.estoque_minimo.id_for_label }}" class="form-label-professional">Estoque Mínimo</label>
-                {{ form.estoque_minimo }}
-                {% if form.estoque_minimo.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.estoque_minimo.errors|striptags }}
+            <div id="fabricante" class="collapse" data-bs-parent="#formAccordion">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label for="{{ form.fabricante.id_for_label }}" class="form-label-professional">Fabricante</label>
+                            {{ form.fabricante }}
+                            {% if form.fabricante.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.fabricante.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.marca.id_for_label }}" class="form-label-professional">Marca</label>
+                            {{ form.marca }}
+                            {% if form.marca.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.marca.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.ref_fabricante.id_for_label }}" class="form-label-professional">Referencia do Fabricante</label>
+                            {{ form.ref_fabricante }}
+                            {% if form.ref_fabricante.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.ref_fabricante.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-2" style="margin-top: 5px;">
+                        <div class="col-md-3">
+                            <label for="{{ form.cod_embalagem.id_for_label }}" class="form-label-professional">Código de Embalagem</label>
+                            {{ form.cod_embalagem }}
+                            {% if form.cod_embalagem.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.cod_embalagem.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.cod_barra.id_for_label }}" class="form-label-professional">Código de Barras</label>
+                            {{ form.cod_barra }}
+                            {% if form.cod_barra.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.cod_barra.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.apresentacao.id_for_label }}" class="form-label-professional">Apresentação</label>
+                            {{ form.apresentacao }}
+                            {% if form.apresentacao.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.apresentacao.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.data_ultima_compra.id_for_label }}" class="form-label-professional">Data da Última Compra</label>
+                            {{ form.data_ultima_compra }}
+                            {% if form.data_ultima_compra.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.data_ultima_compra.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.estoque_maximo.id_for_label }}" class="form-label-professional">Estoque Máximo</label>
-                {{ form.estoque_maximo }}
-                {% if form.estoque_maximo.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.estoque_maximo.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.situacao.id_for_label }}" class="form-label-professional">Situação</label>
-                {{ form.situacao }}
-                {% if form.situacao.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.situacao.errors|striptags }}
-                </div>
-                {% endif %}    
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.fabricante.id_for_label }}" class="form-label-professional">Fabricante</label>
-                {{ form.fabricante }}
-                {% if form.fabricante.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.fabricante.errors|striptags }}
-                </div>
-                {% endif %}
+        <div class="card-collapse">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#obs">
+            Observação
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.marca.id_for_label }}" class="form-label-professional">Marca</label>
-                {{ form.marca }}
-                {% if form.marca.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.marca.errors|striptags }}
+            <div id="obs" class="collapse" data-bs-parent="#formAccordion">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
+                        {{ form.descricao }}
+                        {% if form.descricao.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.descricao.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="{{ form.ref_fabricante.id_for_label }}" class="form-label-professional">Referencia do Fabricante</label>
-                {{ form.ref_fabricante }}
-                {% if form.ref_fabricante.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.ref_fabricante.errors|striptags }}
-                </div>
-                {% endif %}
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.cod_embalagem.id_for_label }}" class="form-label-professional">Código de Embalagem</label>
-                {{ form.cod_embalagem }}
-                {% if form.cod_embalagem.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.cod_embalagem.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.cod_barra.id_for_label }}" class="form-label-professional">Código de Barras</label>
-                {{ form.cod_barra }}
-                {% if form.cod_barra.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.cod_barra.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.apresentacao.id_for_label }}" class="form-label-professional">Apresentação</label>
-                {{ form.apresentacao }}
-                {% if form.apresentacao.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.apresentacao.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="{{ form.data_ultima_compra.id_for_label }}" class="form-label-professional">Data da Última Compra</label>
-                {{ form.data_ultima_compra }}
-                {% if form.data_ultima_compra.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.data_ultima_compra.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row">
-           <div class="col-md-12 mb-3">
-                <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
-                {{ form.descricao }}
-                {% if form.descricao.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.descricao.errors|striptags }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Botão submit -->
-        <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
-            <i class="fas fa-save me-2"></i>Salvar Produto
-        </button>
-    </form>
+    </div>
+    
+    <div class="text-end mt-3">
+      <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+        <i class="fas fa-save me-2"></i>Salvar Cliente
+      </button>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

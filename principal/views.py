@@ -57,17 +57,6 @@ def usuarios(request, usuario):
 def ordem_servico(request):
     return render(request, 'principal/ordem_servico.html')
 
-@login_required
-def criar_os(request):
-    grupos = Grupo.objects.all()  # ou como você busca seus dados
-    labels = ['Digitador', 'Unidade', 'Segmento']
-    obra_campos = ['Início', 'Término', 'Nº ART', 'Nome']
-    return render(request, 'ordem_servico/criar_os.html', {
-        'grupos': grupos,
-        'grupo': '',  # ou o ID do grupo selecionado
-        'labels': labels,
-        'obra_campos': obra_campos,
-    })
 
 @login_required
 def configuracoes(request):
