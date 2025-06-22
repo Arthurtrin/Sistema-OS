@@ -364,4 +364,75 @@
         </button>
     </form>
 </div>
+
+<script>
+    // Máscara para CPF/CNPJ
+    const cnpjCpfInput = document.getElementById("{{ form.cnpj_cpf.id_for_label }}");
+    if (cnpjCpfInput) {
+        cnpjCpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            } else {
+                value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                             .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                             .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                             .replace(/(\d{4})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Máscara para cep_real
+    const cepRealInput = document.getElementById("{{ form.cep_real.id_for_label }}");
+    if (cepRealInput) {
+        cepRealInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+// Máscara para cep_cobranca
+    const cepCobrancaInput = document.getElementById("{{ form.cep_cobranca.id_for_label }}");
+    if (cepCobrancaInput) {
+        cepCobrancaInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    // Função de máscara para telefone/celular
+    function maskPhone(input) {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            e.target.value = value;
+        });
+    }
+
+    const telefone1 = document.getElementById("{{ form.telefone1.id_for_label }}");
+    const telefone2 = document.getElementById("{{ form.telefone2.id_for_label }}");
+    const celular1 = document.getElementById("{{ form.celular1.id_for_label }}");
+    const celular2 = document.getElementById("{{ form.celular2.id_for_label }}");
+
+    [telefone1, telefone2, celular1, celular2].forEach(function(input) {
+        if (input) maskPhone(input);
+    });
+
+</script>
+
 {% endblock %}

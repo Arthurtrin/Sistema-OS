@@ -33,7 +33,7 @@ def listar_clientes(request):
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
 
-    clientes = Cliente.objects.all()
+    clientes = Cliente.objects.all().order_by('-id')
 
     if pesquisa:
         clientes = clientes.filter(

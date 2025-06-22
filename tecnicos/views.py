@@ -20,7 +20,7 @@ def cadastrar_tecnicos(request):
 
 @login_required
 def listar_tecnicos(request):
-    tecnicos = Tecnico.objects.all()
+    tecnicos = Tecnico.objects.all().order_by('-id')
     pesquisa = request.GET.get('pesquisa', '')
 
     if pesquisa:

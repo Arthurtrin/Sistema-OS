@@ -1,16 +1,57 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from django.core.paginator import Paginator
 from usuarios.models import Perfil, Chave_Gerenciador
 from clientes.models import Cliente, Atividade, Segmento
 from produtos.models import Grupo
+from ordem_servico.models import OrdemServico
 
 @login_required
 def home(request):
+    pesquisa = request.GET.get('pesquisa', '')
+    data_abertura = request.GET.get('data_abertura', '')
+
+    ordens = OrdemServico.objects.all().order_by('-id')
     cliente = Cliente.objects.count()
-    return render(request, 'principal/home.html', {"clientes": cliente})
+    qtd_ordem = OrdemServico.objects.count()
+    qtd_canceladas = OrdemServico.objects.filter(status='cancelada').count()
+    qtd_finalizadas = OrdemServico.objects.filter(status='finalizada').count()
+    qtd_andamento = OrdemServico.objects.filter(status='em_andamento').count()
+    if pesquisa:
+        ordens = ordens.filter(
+            Q(codigo__icontains=pesquisa) |
+            Q(titulo__icontains=pesquisa) |
+            Q(status__icontains=pesquisa) |
+            Q(n_cliente__icontains=pesquisa) |
+            Q(digitador__icontains=pesquisa) |
+            Q(unidade__icontains=pesquisa) |
+            Q(segmento__icontains=pesquisa) |
+            Q(solicitante__icontains=pesquisa) |
+            Q(municipio__icontains=pesquisa) | 
+            Q(obra_nome__icontains=pesquisa)
+        )
+    
+    if data_abertura:
+        ordens = ordens.filter(data_abertura__date=data_abertura)
+
+    paginator = Paginator(ordens, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'principal/home.html', {
+        'page_obj': page_obj,
+        'pesquisa': pesquisa,
+        'data_abertura': data_abertura,
+        'clientes': cliente, 
+        'ordens': ordens,
+        'qtd_ordem':qtd_ordem,
+        'qtd_canceladas': qtd_canceladas,
+        'qtd_finalizadas': qtd_finalizadas,
+        'qtd_andamento': qtd_andamento
+        })
 
 @login_required
 def usuarios(request, usuario):

@@ -74,16 +74,13 @@
                     value="{{ pesquisa|default:'' }}">
                 <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
                 <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
-                <button type="submit" class="btn"
-                    style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
-                    onmouseover="this.style.backgroundColor='#343a40'"
-                    onmouseout="this.style.backgroundColor='#212529'">
+                <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
                     Pesquisar
                 </button>
             </form>
 
-            <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-success">
-                <i class="fas fa-plus me-2"></i>Criar
+            <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-dark-custom btn-sm w-auto">
+                <i class="fas fa-plus me-2"></i>Novo Cliente
             </a>
         </div>
 

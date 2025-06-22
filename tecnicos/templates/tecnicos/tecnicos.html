@@ -72,16 +72,13 @@
             <form method="get" class="d-flex align-items-center gap-2">
                 <input type="text" name="pesquisa" placeholder="Pesquisar Técnico" class="form-control w-auto"
                     value="{{ pesquisa|default:'' }}">
-                <button type="submit" class="btn"
-                    style="background-color: #212529; color: #fff; border-radius: 5px; padding: 8px 16px; transition: background-color 0.3s;"
-                    onmouseover="this.style.backgroundColor='#343a40'"
-                    onmouseout="this.style.backgroundColor='#212529'">
+                <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
                     Pesquisar
                 </button>
             </form>
 
-            <a href="{% url 'tecnicos:cadastrar_tecnicos' %}" class="btn btn-success">
-                <i class="fas fa-plus me-2"></i>Criar
+            <a href="{% url 'tecnicos:cadastrar_tecnicos' %}" class="btn btn-dark-custom btn-sm w-auto">
+                <i class="fas fa-plus me-2"></i>Novo Técnico
             </a>
         </div>
 

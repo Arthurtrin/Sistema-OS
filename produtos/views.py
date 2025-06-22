@@ -27,7 +27,7 @@ def listar_produtos(request):
     fabricante = request.GET.get('fabricante', '')
     data_ultima_compra = request.GET.get('data_ultima_compra', '')
 
-    produtos = Produto.objects.all()
+    produtos = Produto.objects.all().order_by('-id')
 
     if pesquisa:
         produtos = produtos.filter(

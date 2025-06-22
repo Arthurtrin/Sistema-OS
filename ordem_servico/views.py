@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from ordem_servico.forms import OrdemServicoForm 
+from .models import OrdemServico
 
 @login_required
 def criar_os(request):
