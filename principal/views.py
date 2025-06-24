@@ -98,7 +98,6 @@ def usuarios(request, usuario):
 def ordem_servico(request):
     return render(request, 'principal/ordem_servico.html')
 
-
 @login_required
 def configuracoes(request):
     return render(request, 'principal/configuracoes.html')

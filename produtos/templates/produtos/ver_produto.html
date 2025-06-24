@@ -1,0 +1,56 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dados do Produto{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dados do Produto: {{ produto.nome }}</h5>
+            <a href="{% url 'produtos:listar_produtos' %}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+        <div class="card-body">
+            <!-- Informações básicas -->
+            <div class="row g-3 mb-4">
+                <h5>Informações Básicas:</h5>
+                <div class="col-md-6">
+                    <p><strong>Código:</strong> {{ produto.codigo }}</p>
+                    <p><strong>Nome:</strong> {{ produto.nome|default:"---" }}</p>
+                    <p><strong>Grupo:</strong> {{ produto.grupo|default:"---" }}</p>
+                    <p><strong>Quantidade de Entrada:</strong> {{ produto.qtd_entrada }}</p>
+                    <p><strong>Estoque Mínimo:</strong> {{ produto.estoque_minimo|default:"---" }}</p>
+                    <p><strong>Estoque Máximo:</strong> {{ produto.estoque_maximo|default:"---" }}</p>
+                    <p><strong>Data da Última Compra:</strong> {{ produto.data_ultima_compra }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Situação:</strong> {{ produto.get_situacao_display }}</p>
+                    <p><strong>Fabricante:</strong> {{ produto.fabricante|default:"---" }}</p>
+                    <p><strong>Marca:</strong> {{ produto.marca|default:"---" }}</p>
+                    <p><strong>Referência do Fabricante:</strong> {{ produto.ref_fabricante|default:"---" }}</p>
+                    <p><strong>Código de Embalagem:</strong> {{ produto.cod_embalagem|default:"---" }}</p>
+                    <p><strong>Código de Barra:</strong> {{ produto.cod_barra|default:"---" }}</p>
+                    <p><strong>Apresentacao:</strong> {{ produto.apresentacao }}</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p><strong>Descrição:</strong></p>
+                    <p>{{ produto.descricao|default:"---" }}</p>
+                </div>
+            </div>
+            
+
+        </div>
+        <div class="card-footer text-end">
+            <a href="" class="btn btn-primary me-2">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Excluir
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

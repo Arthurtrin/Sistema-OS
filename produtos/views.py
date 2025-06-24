@@ -99,6 +99,11 @@ def fabricante_marca_grupo(request):
     })
 
 @login_required
+def ver_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    return render(request, 'produtos/ver_produto.html', {'produto': produto})
+
+@login_required
 def cadastrar_marca(request):
     if request.method == 'POST':
         form = MarcaForm(request.POST)

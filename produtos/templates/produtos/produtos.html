@@ -201,7 +201,7 @@
                 <p>Escolha uma das ações para <strong>{{ produto.nome }}</strong>.</p>
             </div>
             <div class="modal-footer d-flex justify-content-around">
-                <a href="" class="btn btn-success">
+                <a href="{% url 'produtos:ver_produto' produto.id %}" class="btn btn-success">
                     <i class="fas fa-eye"></i> Ver Produto
                 </a>
                 <a href="" class="btn btn-primary">
