@@ -7,6 +7,7 @@ from .forms import ProdutoForm, MarcaForm, FabricanteForm, GrupoForm
 from .models import Produto, Marca, Fabricante, Grupo
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
 
 @login_required
 def cadastrar_produto(request):
@@ -72,8 +73,98 @@ def listar_produtos(request):
         'data_ultima_compra': data_ultima_compra,
         'grupos': grupos,
         'fabricantes': fabricantes,
-        'Produto': Produto,  # usado para acessar Produto.SITUACAO_CHOICES no template
+        'Produto': Produto  # usado para acessar Produto.SITUACAO_CHOICES no template
     })
+
+@login_required
+def excluir_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    produto.delete()
+    return redirect('produtos:listar_produtos')
+
+@login_required
+def editar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            produto = form.save()  # salva o cliente e guarda o objeto
+            # registra a atividade do usuário
+            #AtividadeUsuarioCliente.objects.create(
+            #    usuario=request.user,
+            #    cliente=cliente,
+            #    descricao="Editou um cliente"
+            #)
+            return redirect('produtos:listar_produtos')
+    else:
+        form = ProdutoForm(instance=produto)
+    return render(request, 'produtos/editar_produto.html', {'form': form, 'produto': produto})
+
+@login_required
+def entrada_produto(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigoEntrada')
+        quantidade = request.POST.get('quantidadeEntrada')
+
+        # Verifica se a quantidade é um número válido
+        try:
+            quantidade = int(quantidade)
+            if quantidade <= 0:
+                raise ValueError
+        except (ValueError, TypeError):
+            mensagem = 'A quantidade deve ser um número inteiro positivo.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+        # Tenta buscar o produto
+        try:
+            produto = Produto.objects.get(codigo=codigo)
+        except Produto.DoesNotExist:
+            mensagem = 'Produto não encontrado.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+        # Atualiza a quantidade do produto
+        produto.quantidade += quantidade
+        produto.save()
+
+        messages.success(request, 'Entrada registrada com sucesso!')
+        return redirect('home')
+
+    return redirect('home')
+
+def saida_produto(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigoSaida')
+        quantidade = request.POST.get('quantidadeSaida')
+
+        # Verifica se a quantidade é um número inteiro positivo
+        try:
+            quantidade = int(quantidade)
+            if quantidade <= 0:
+                raise ValueError
+        except (ValueError, TypeError):
+            mensagem = 'A quantidade deve ser um número inteiro positivo.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+        # Tenta buscar o produto
+        try:
+            produto = Produto.objects.get(codigo=codigo)
+        except Produto.DoesNotExist:
+            mensagem = 'Produto não encontrado.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+        # Verifica se há estoque suficiente
+        if produto.quantidade < quantidade:
+            mensagem = 'Quantidade insuficiente em estoque.'
+            return render(request, 'principal/erro.html', {'mensagem': mensagem})
+
+        # Atualiza a quantidade do produto
+        produto.quantidade -= quantidade
+        produto.save()
+
+        messages.success(request, 'Saída registrada com sucesso!')
+        return redirect('home')
+
+    return redirect('home')
 
 @login_required
 def fabricante_marca_grupo(request):

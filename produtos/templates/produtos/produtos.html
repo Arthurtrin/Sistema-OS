@@ -125,6 +125,7 @@
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Situação</th>
+                        <th scope="col">Quantidade</th>
                         <th scope="col">Marca</th>
                         <th scope="col">Código de Barra</th>
                         <th scope="col">Data da Última Compra</th>
@@ -138,6 +139,7 @@
                         <td>{{ produto.codigo }}</td>
                         <td>{{ produto.nome }}</td>
                         <td>{{ produto.situacao }}</td>
+                        <td>{{ produto.quantidade }}</td>
                         <td>{{ produto.marca }}</td>
                         <td>{{ produto.cod_barra }}</td>
                         <td>{{ produto.data_ultima_compra }}</td>
@@ -204,10 +206,10 @@
                 <a href="{% url 'produtos:ver_produto' produto.id %}" class="btn btn-success">
                     <i class="fas fa-eye"></i> Ver Produto
                 </a>
-                <a href="" class="btn btn-primary">
+                <a href="{% url 'produtos:editar_produto' produto.id %}" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Editar
                 </a>
-                <a href="" class="btn btn-danger">
+                <a href="{% url 'produtos:excluir_produto' produto.id %}" class="btn btn-danger">
                     <i class="fas fa-trash-alt"></i> Excluir
                 </a>
             </div>

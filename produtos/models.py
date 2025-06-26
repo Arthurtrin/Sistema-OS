@@ -16,6 +16,7 @@ class Fabricante(models.Model):
         return self.nome
 
 class Produto(models.Model):
+    #sera feito em definiçoes
     SITUACAO_CHOICES = [
         ('ativo', 'Ativo'),
         ('fora_de_linha', 'Fora de linha'),
@@ -30,6 +31,7 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100)
     grupo = models.ForeignKey(Grupo, on_delete=models.SET_NULL, null=True)
 
+    quantidade = models.IntegerField(default=0)
     qtd_entrada = models.IntegerField()
     estoque_minimo = models.IntegerField()
     estoque_maximo = models.IntegerField()

@@ -32,7 +32,6 @@ def listar_clientes(request):
     pesquisa = request.GET.get('pesquisa', '')
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
-
     clientes = Cliente.objects.all().order_by('-id')
 
     if pesquisa:
@@ -53,7 +52,7 @@ def listar_clientes(request):
 
     if data_inicio:
         clientes = clientes.filter(data_inclusao__date__gte=data_inicio)
-
+        
     if data_fim:
         clientes = clientes.filter(data_inclusao__date__lte=data_fim)
 
@@ -61,11 +60,19 @@ def listar_clientes(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    qtd_clientes = Cliente.objects.count()
+    qtd_segmentos = Segmento.objects.count()
+    qtd_atividades = Atividade.objects.count()
+    qtd_estados = Cliente.objects.values('estado_real').distinct().count()
     return render(request, 'clientes/clientes.html', {
         'page_obj': page_obj,
         'pesquisa': pesquisa,
         'data_inicio': data_inicio,
         'data_fim': data_fim,
+        "qtd_clientes": qtd_clientes,
+        "qtd_segmentos": qtd_segmentos,
+        "qtd_atividades": qtd_atividades,
+        "qtd_estados": qtd_estados
     })
 
 @login_required

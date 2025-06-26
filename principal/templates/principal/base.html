@@ -176,6 +176,30 @@
   <div class="sidebar" id="sidebar">
     <ul class="nav flex-column px-3">
       <li class="nav-item mb-2">
+        <a class="nav-link d-flex justify-content-between align-items-center" href="#OsSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+          <span><i class="fas fa-file-alt me-2"></i>Ordem de Serviço</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="collapse list-unstyled ps-4" id="OsSubmenu">
+          <li>
+            <a class="nav-link" href="{% url 'ordem_servico:criar_os' %}">
+              <i class="fa-solid fa-plus me-2"></i>Criar
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="{% url 'home' %}">
+              <i class="fas fa-file-alt me-2"></i>Ver Ordens de Serviço
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="{% url 'ordem_servico:definicao' %}">
+              <i class="fas fa-cog me-2"></i>Definições
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item mb-2">
         <a class="nav-link d-flex justify-content-between align-items-center" href="#clientesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
           <span><i class="fas fa-handshake me-2"></i>Clientes</span>
           <i class="fas fa-chevron-down"></i>
@@ -183,7 +207,7 @@
         <ul class="collapse list-unstyled ps-4" id="clientesSubmenu">
           <li>
             <a class="nav-link" href="{% url 'clientes:cadastrar_clientes' %}">
-              <i class="fa-solid fa-plus me-2"></i>cadastrar
+              <i class="fa-solid fa-plus me-2"></i>Criar
             </a>
           </li>
           <li>
@@ -193,26 +217,7 @@
           </li>
           <li>
             <a class="nav-link" href="{% url 'clientes:segmentos_atividades' %}">
-              <i class="fas fa-layer-group me-2"></i>Definir Segmentos e Atividades
-            </a>
-          </li>
-        </ul>
-      </li>
-
-      <li class="nav-item mb-2">
-        <a class="nav-link d-flex justify-content-between align-items-center" href="#tecnicosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <span><i class="fas fa-tools me-2"></i>Técnicos</span>
-          <i class="fas fa-chevron-down"></i>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="tecnicosSubmenu">
-          <li>
-            <a class="nav-link" href="{% url 'tecnicos:cadastrar_tecnicos' %}">
-              <i class="fa-solid fa-plus me-2"></i>cadastrar
-            </a>
-          </li>
-          <li>
-            <a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}">
-              <i class="fas fa-users me-2"></i>Ver Técnicos
+              <i class="fas fa-cog me-2"></i>Definições
             </a>
           </li>
         </ul>
@@ -226,7 +231,7 @@
         <ul class="collapse list-unstyled ps-4" id="produtosSubmenu">
           <li>
             <a class="nav-link" href="{% url 'produtos:cadastrar_produto' %}">
-              <i class="fa-solid fa-plus me-2"></i>cadastrar
+              <i class="fa-solid fa-plus me-2"></i>Criar
             </a>
           </li>
           <li>
@@ -235,21 +240,39 @@
             </a>
           </li>
           <li>
-            <a class="nav-link" href="">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalEntrada">
               <i class="fas fa-arrow-circle-right me-2"></i>Entrada
             </a>
           </li>
           <li>
-            <a class="nav-link" href="">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalSaida">
               <i class="fas fa-arrow-circle-left me-2"></i>Saída
             </a>
           </li>
           <li>
             <a class="nav-link" href="{% url 'produtos:fabricante_marca_grupo' %}">
-              <i class="fas fa-layer-group me-2"></i> Definir Marcas Fabricantes e Grupos
+              <i class="fas fa-cog me-2"></i>Definições
             </a>
           </li>
-          
+        </ul>
+      </li>
+
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex justify-content-between align-items-center" href="#tecnicosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+          <span><i class="fas fa-tools me-2"></i>Técnicos</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="collapse list-unstyled ps-4" id="tecnicosSubmenu">
+          <li>
+            <a class="nav-link" href="{% url 'tecnicos:cadastrar_tecnicos' %}">
+              <i class="fa-solid fa-plus me-2"></i>Criar
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}">
+              <i class="fas fa-users me-2"></i>Ver Técnicos
+            </a>
+          </li>
         </ul>
       </li>
 
@@ -261,7 +284,7 @@
         <ul class="collapse list-unstyled ps-4" id="transportadoraSubmenu">
           <li>
             <a class="nav-link" href="">
-              <i class="fa-solid fa-plus me-2"></i>Cadastrar
+              <i class="fa-solid fa-plus me-2"></i>Criar
             </a>
           </li>
           <li>
@@ -283,6 +306,65 @@
       </li>
     </ul>
   </div>
+
+<!-- Modal Entrada -->
+<div class="modal fade" id="modalEntrada" tabindex="-1" aria-labelledby="modalEntradaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEntradaLabel">Entrada de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:entrada_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoEntrada" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoEntrada" name="codigoEntrada" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeEntrada" class="form-label">Quantidade de Entrada</label>
+            <input type="number" class="form-control" id="quantidadeEntrada" name="quantidadeEntrada" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Saída -->
+<div class="modal fade" id="modalSaida" tabindex="-1" aria-labelledby="modalSaidaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSaidaLabel">Saída de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:saida_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoSaida" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoSaida" name="codigoSaida" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeSaida" class="form-label">Quantidade de Saída</label>
+            <input type="number" class="form-control" id="quantidadeSaida" name="quantidadeSaida" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
   <!-- Conteúdo Principal -->
   <div class="content" id="mainContent">

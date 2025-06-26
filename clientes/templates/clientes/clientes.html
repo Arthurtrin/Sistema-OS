@@ -63,27 +63,89 @@
         padding: 12px;
         border-bottom: 2px solid #dee2e6;
     }
+
+    .hover-shadow {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-shadow:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    }
+
 </style>
 
 <div class="container my-4">
-    <h2 class="mb-4">Lista de Clientes</h2>
+    <h2 class="mb-4">Clientes</h2>
+
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+    <div class="col">
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-users fa-2x mb-3 text-info"></i>
+            <h5 class="card-title">{{ qtd_clientes }} Clientes Cadastrados</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-layer-group  fa-2x mb-3 text-success"></i>
+            <h5 class="card-title">{{ qtd_segmentos }} Segmentos</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-cogs fa-2x mb-3 text-warning"></i>
+            <h5 class="card-title">{{ qtd_atividades }} Atividades</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="#" class="text-decoration-none">
+        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+          <div class="card-body">
+            <i class="fas fa-map-marked-alt fa-2x mb-3 "></i>
+            <h5 class="card-title">{{ qtd_estados }} Estados</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    </div>
+  
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Clientes Recentes</h4>
+    <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-dark-custom btn-sm w-auto">
+      <i class="fas fa-plus me-1"></i> Cadastrar Novo Cliente
+    </a>
+  </div>
+
     <div class="table-responsive">
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <form method="get" class="d-flex align-items-center gap-2">
                 <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
                     value="{{ pesquisa|default:'' }}">
                 <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
+                à
                 <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
                 <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
                     Pesquisar
                 </button>
             </form>
 
-            <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-dark-custom btn-sm w-auto">
-                <i class="fas fa-plus me-2"></i>Novo Cliente
-            </a>
+            
         </div>
-
 
         <div class="table-pagination-container">
             <table class="table table-hover custom-table">

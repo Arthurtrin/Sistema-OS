@@ -32,6 +32,7 @@ ESTADOS = [
     ('TO', 'Tocantins'),
 ]
 
+#sera feito em definições
 STATUS_CHOICES = [
     ('aberta', 'Aberta'),
     ('em_andamento', 'Em andamento'),
@@ -47,6 +48,7 @@ N_CLIENTE_CHOICES = [
     ('cliente_4', 'Cliente 4'),
 ]
 
+#digitador sera o usuario em questão
 DIGITADOR_CHOICES = [
     ('joao', 'João'),
     ('maria', 'Maria'),
@@ -54,6 +56,7 @@ DIGITADOR_CHOICES = [
     ('ana', 'Ana'),
 ]
 
+#sera feito em definições
 UNIDADE_CHOICES = [
     ('unidade_a', 'Unidade A'),
     ('unidade_b', 'Unidade B'),
@@ -61,6 +64,7 @@ UNIDADE_CHOICES = [
     ('unidade_d', 'Unidade D'),
 ]
 
+#sera feito em definições
 SEGMENTO_CHOICES = [
     ('eletrico', 'Elétrico'),
     ('civil', 'Civil'),

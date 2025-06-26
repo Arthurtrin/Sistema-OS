@@ -13,3 +13,6 @@ def criar_os(request):
     else:
         form = OrdemServicoForm()
     return render(request, 'ordem_servico/criar_os.html', {'form': form})
+
+def definicao(request):
+    return render(request, "ordem_servico/segmentos_status_unidades.html")
