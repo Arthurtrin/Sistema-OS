@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Marcas, Fabricantes e Grupos{% endblock %}
+{% block title %}Segmentos, Unidades e Status{% endblock %}
 
 {% block content %}
 
@@ -38,156 +38,156 @@
 </style>
 
 <div class="container my-4">
-  <h2 class="mb-4">Definir Segmento, Unidades e Status</h2>
+  <h2 class="mb-4">Definir Segmento, Unidade e Status</h2>
   {% with aba=request.GET.aba %}
-  <ul class="nav nav-tabs" id="marcaFabricanteTab" role="tablist">
+  <ul class="nav nav-tabs" id="segmentoUnidadeStatusTab" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link {% if aba == 'marcas' or not aba %}active{% endif %}"
-              id="marcas-tab"
+      <button class="nav-link {% if aba == 'segmentos' or not aba %}active{% endif %}"
+              id="segmentos-tab"
               data-bs-toggle="tab"
-              data-bs-target="#marcas"
+              data-bs-target="#segmentos"
               type="button"
               role="tab"
-              aria-controls="marcas"
-              aria-selected="{% if aba == 'marcas' or not aba %}true{% else %}false{% endif %}">
+              aria-controls="segmentos"
+              aria-selected="{% if aba == 'segmentos' or not aba %}true{% else %}false{% endif %}">
         Segmentos
       </button>
     </li>
 
     <li class="nav-item" role="presentation">
-      <button class="nav-link {% if aba == 'fabricantes' %}active{% endif %}"
-              id="fabricantes-tab"
+      <button class="nav-link {% if aba == 'unidades' %}active{% endif %}"
+              id="unidades-tab"
               data-bs-toggle="tab"
-              data-bs-target="#fabricantes"
+              data-bs-target="#unidades"
               type="button"
               role="tab"
-              aria-controls="fabricantes"
-              aria-selected="{% if aba == 'fabricantes' %}true{% else %}false{% endif %}">
+              aria-controls="unidades"
+              aria-selected="{% if aba == 'unidades' %}true{% else %}false{% endif %}">
         Unidades
       </button>
     </li>
 
     <li class="nav-item" role="presentation">
-      <button class="nav-link {% if aba == 'grupos' %}active{% endif %}"
-              id="grupos-tab"
+      <button class="nav-link {% if aba == 'status' %}active{% endif %}"
+              id="status-tab"
               data-bs-toggle="tab"
-              data-bs-target="#grupos"
+              data-bs-target="#status"
               type="button"
               role="tab"
-              aria-controls="grupos"
-              aria-selected="{% if aba == 'grupos' %}true{% else %}false{% endif %}">
+              aria-controls="status"
+              aria-selected="{% if aba == 'status' %}true{% else %}false{% endif %}">
         Status
       </button>
     </li>
   </ul>
 
   <div class="tab-content border border-top-0 p-4 rounded-bottom shadow-sm">
-    <!-- Marcas Tab -->
-    <div class="tab-pane fade {% if aba == 'marcas' or not aba %}show active{% endif %}" 
-         id="marcas" 
+    <!-- Segmentos Tab -->
+    <div class="tab-pane fade {% if aba == 'segmentos' or not aba %}show active{% endif %}" 
+         id="segmentos" 
          role="tabpanel" 
-         aria-labelledby="marcas-tab">
-      <h4>Marcas</h4>
-      <ul class="list-group mb-4" id="lista-marcas">
-        {% for marca in marcas %}
+         aria-labelledby="segmentos-tab">
+      <h4>Segmentos</h4>
+      <ul class="list-group mb-4" id="lista-segmentos">
+        {% for segmento in segmentos %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ marca.nome }}
+            {{ segmento.nome }}
             <div>
               <button type="button"
                       class="btn btn-sm btn-primary me-2"
                       data-bs-toggle="modal"
                       data-bs-target="#editarModal"
-                      data-id="{{ marca.id }}"
-                      data-nome="{{ marca.nome }}"
-                      data-tipo="marca">
+                      data-id="{{ segmento.id }}"
+                      data-nome="{{ segmento.nome }}"
+                      data-tipo="segmento">
                 Editar
               </button>
-              <a href="{% url 'produtos:excluir_marca' marca.id %}" class="btn btn-sm btn-danger">Excluir</a>
+              <a href="{% url 'ordem_servico:excluir_segmento' segmento.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
-          <li class="list-group-item">Nenhuma marca cadastrada.</li>
+          <li class="list-group-item">Nenhum segmento cadastrado.</li>
         {% endfor %}
       </ul>
 
-      <form method="post" action="{% url 'produtos:cadastrar_marca' %}">
+      <form method="post" action="{% url 'ordem_servico:cadastrar_segmento' %}">
         {% csrf_token %}
         <div class="input-group">
-          <input type="text" name="nome" class="form-control" placeholder="Nova marca" required>
+          <input type="text" name="nome" class="form-control" placeholder="Novo segmento" required>
           <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
     </div>
 
-    <!-- Fabricantes Tab -->
-    <div class="tab-pane fade {% if aba == 'fabricantes' %}show active{% endif %}" 
-         id="fabricantes" 
+    <!-- Unidades Tab -->
+    <div class="tab-pane fade {% if aba == 'unidades' %}show active{% endif %}" 
+         id="unidades" 
          role="tabpanel" 
-         aria-labelledby="fabricantes-tab">
-      <h4>Fabricantes</h4>
-      <ul class="list-group mb-4" id="lista-fabricantes">
-        {% for fabricante in fabricantes %}
+         aria-labelledby="unidades-tab">
+      <h4>Unidades</h4>
+      <ul class="list-group mb-4" id="lista-unidades">
+        {% for unidade in unidades %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ fabricante.nome }}
+            {{ unidade.nome }}
             <div>
               <button type="button"
                       class="btn btn-sm btn-primary me-2"
                       data-bs-toggle="modal"
                       data-bs-target="#editarModal"
-                      data-id="{{ fabricante.id }}"
-                      data-nome="{{ fabricante.nome }}"
-                      data-tipo="fabricante">
+                      data-id="{{ unidade.id }}"
+                      data-nome="{{ unidade.nome }}"
+                      data-tipo="unidade">
                 Editar
               </button>
-              <a href="{% url 'produtos:excluir_fabricante' fabricante.id %}" class="btn btn-sm btn-danger">Excluir</a>
+              <a href="{% url 'ordem_servico:excluir_unidade' unidade.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
-          <li class="list-group-item">Nenhum fabricante cadastrado.</li>
+          <li class="list-group-item">Nenhuma unidade cadastrada.</li>
         {% endfor %}
       </ul>
 
-      <form method="post" action="{% url 'produtos:cadastrar_fabricante' %}">
+      <form method="post" action="{% url 'ordem_servico:cadastrar_unidade' %}">
         {% csrf_token %}
         <div class="input-group">
-          <input type="text" name="nome" class="form-control" placeholder="Novo fabricante" required>
+          <input type="text" name="nome" class="form-control" placeholder="Nova unidade" required>
           <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
     </div>
 
-    <!-- Grupos Tab -->
-    <div class="tab-pane fade {% if aba == 'grupos' %}show active{% endif %}" 
-         id="grupos" 
+    <!-- Status Tab -->
+    <div class="tab-pane fade {% if aba == 'status' %}show active{% endif %}" 
+         id="status" 
          role="tabpanel" 
-         aria-labelledby="grupos-tab">
-      <h4>Grupos</h4>
-      <ul class="list-group mb-4" id="lista-grupos">
-        {% for grupo in grupos %}
+         aria-labelledby="status-tab">
+      <h4>Status</h4>
+      <ul class="list-group mb-4" id="lista-status">
+        {% for status in status_list %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ grupo.nome }}
+            {{ status.nome }}
             <div>
               <button type="button"
                       class="btn btn-sm btn-primary me-2"
                       data-bs-toggle="modal"
                       data-bs-target="#editarModal"
-                      data-id="{{ grupo.id }}"
-                      data-nome="{{ grupo.nome }}"
-                      data-tipo="grupo">
+                      data-id="{{ status.id }}"
+                      data-nome="{{ status.nome }}"
+                      data-tipo="status">
                 Editar
               </button>
-              <a href="{% url 'produtos:excluir_grupo' grupo.id %}" class="btn btn-sm btn-danger">Excluir</a>
+              <a href="{% url 'ordem_servico:excluir_status' status.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </div>
           </li>
         {% empty %}
-          <li class="list-group-item">Nenhum grupo cadastrado.</li>
+          <li class="list-group-item">Nenhum status cadastrado.</li>
         {% endfor %}
       </ul>
 
-      <form method="post" action="{% url 'produtos:cadastrar_grupo' %}">
+      <form method="post" action="{% url 'ordem_servico:cadastrar_status' %}">
         {% csrf_token %}
         <div class="input-group">
-          <input type="text" name="nome" class="form-control" placeholder="Novo grupo" required>
+          <input type="text" name="nome" class="form-control" placeholder="Novo status" required>
           <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
         </div>
       </form>
@@ -239,12 +239,12 @@
     inputId.value = id;
     inputNome.value = nome;
 
-    if (tipo === 'marca') {
-      form.action = "{% url 'produtos:editar_marca' 0 %}".replace('0', id);
-    } else if (tipo === 'fabricante') {
-      form.action = "{% url 'produtos:editar_fabricante' 0 %}".replace('0', id);
-    } else if (tipo === 'grupo') {
-      form.action = "{% url 'produtos:editar_grupo' 0 %}".replace('0', id);
+    if (tipo === 'segmento') {
+      form.action = "{% url 'ordem_servico:editar_segmento' 0 %}".replace('0', id);
+    } else if (tipo === 'unidade') {
+      form.action = "{% url 'ordem_servico:editar_unidade' 0 %}".replace('0', id);
+    } else if (tipo === 'status') {
+      form.action = "{% url 'ordem_servico:editar_status' 0 %}".replace('0', id);
     }
   });
 </script>

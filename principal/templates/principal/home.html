@@ -94,12 +94,11 @@
                         <td>{{ ordem.id}}</td>
                         <td>{{ ordem.codigo}}</td>
                         <td>{{ ordem.titulo}}</td>
-                        <td>{{ ordem.get_status_display }}</td>
-                        <td>{{ ordem.get_n_cliente_display }}</td>
-                        <td>{{ ordem.get_segmento_display }}</td>
+                        <td>{{ ordem.status }}</td>
+                        <td>{{ ordem.n_cliente }}</td>
+                        <td>{{ ordem.segmento }}</td>
                         <td>{{ ordem.data_abertura }}</td>
                     </tr>
-
                     <!-- Modal -->
                     <div class="modal fade" id="modalOrdem{{ ordem.id }}" tabindex="-1" aria-labelledby="modalLabel{{ ordem.id }}" aria-hidden="true">
                         <div class="modal-dialog">

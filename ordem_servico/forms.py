@@ -1,5 +1,5 @@
 from django import forms
-from .models import OrdemServico
+from .models import OrdemServico, Segmento, Status, Unidade
 
 class OrdemServicoForm(forms.ModelForm):
     class Meta:
@@ -26,3 +26,18 @@ class OrdemServicoForm(forms.ModelForm):
                 continue
 
             field.widget.attrs.update({'class': css_class})
+
+class SegmentoForm(forms.ModelForm):
+    class Meta:
+        model = Segmento
+        fields = ['nome']
+
+class StatusForm(forms.ModelForm):
+    class Meta:
+        model = Status
+        fields = ['nome']
+
+class UnidadeForm(forms.ModelForm):
+    class Meta:
+        model = Unidade
+        fields = ['nome']

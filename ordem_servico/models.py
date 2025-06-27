@@ -1,4 +1,6 @@
 from django.db import models
+from clientes.models import Cliente
+from django.contrib.auth.models import User
 import uuid
 
 # Choices para estados brasileiros
@@ -32,56 +34,37 @@ ESTADOS = [
     ('TO', 'Tocantins'),
 ]
 
-#sera feito em definições
-STATUS_CHOICES = [
-    ('aberta', 'Aberta'),
-    ('em_andamento', 'Em andamento'),
-    ('aguardando', 'Aguardando peças'),
-    ('finalizada', 'Finalizada'),
-    ('cancelada', 'Cancelada'),
-]
 
-N_CLIENTE_CHOICES = [
-    ('cliente_1', 'Cliente 1'),
-    ('cliente_2', 'Cliente 2'),
-    ('cliente_3', 'Cliente 3'),
-    ('cliente_4', 'Cliente 4'),
-]
+class Segmento(models.Model):
+    nome = models.CharField(max_length=100)
 
-#digitador sera o usuario em questão
-DIGITADOR_CHOICES = [
-    ('joao', 'João'),
-    ('maria', 'Maria'),
-    ('carlos', 'Carlos'),
-    ('ana', 'Ana'),
-]
+    def __str__(self):
+        return self.nome
 
-#sera feito em definições
-UNIDADE_CHOICES = [
-    ('unidade_a', 'Unidade A'),
-    ('unidade_b', 'Unidade B'),
-    ('unidade_c', 'Unidade C'),
-    ('unidade_d', 'Unidade D'),
-]
+class Unidade(models.Model):
+    nome = models.CharField(max_length=100)
 
-#sera feito em definições
-SEGMENTO_CHOICES = [
-    ('eletrico', 'Elétrico'),
-    ('civil', 'Civil'),
-    ('hidraulico', 'Hidráulico'),
-    ('automacao', 'Automação'),
-]
+    def __str__(self):
+        return self.nome
+
+class Status(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
 
 # Create your models here.
 class OrdemServico(models.Model):
     codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
     titulo = models.CharField(max_length=100)
     data_abertura = models.DateTimeField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    n_cliente = models.CharField(max_length=50, choices=N_CLIENTE_CHOICES)
-    digitador = models.CharField(max_length=50, choices=DIGITADOR_CHOICES)
-    unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES)
-    segmento = models.CharField(max_length=50, choices=SEGMENTO_CHOICES)
+    
+    n_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    digitador = models.ForeignKey(User, on_delete=models.CASCADE)
+    unidade = models.ForeignKey(Unidade, on_delete=models.CASCADE)
+    segmento = models.ForeignKey(Segmento, on_delete=models.CASCADE)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE)
     solicitante = models.CharField(max_length=100)
     n_proposta = models.IntegerField()
     n_desenho = models.IntegerField()

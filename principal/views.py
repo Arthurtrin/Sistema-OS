@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden
 from usuarios.models import Perfil, Chave_Gerenciador
 from clientes.models import Cliente, Atividade, Segmento
 from produtos.models import Grupo
-from ordem_servico.models import OrdemServico
+from ordem_servico.models import OrdemServico, Status
 
 @login_required
 def home(request):
@@ -17,9 +17,13 @@ def home(request):
     ordens = OrdemServico.objects.all().order_by('-id')
     cliente = Cliente.objects.count()
     qtd_ordem = OrdemServico.objects.count()
-    qtd_canceladas = OrdemServico.objects.filter(status='cancelada').count()
-    qtd_finalizadas = OrdemServico.objects.filter(status='finalizada').count()
-    qtd_andamento = OrdemServico.objects.filter(status='em_andamento').count()
+    cancelada = Status.objects.filter(nome='cancelada').first()
+    finalizada = Status.objects.filter(nome='finalizada').first()
+    em_andamento = Status.objects.filter(nome='em_andamento').first()
+
+    qtd_canceladas = OrdemServico.objects.filter(status=cancelada).count() if cancelada else 0
+    qtd_finalizadas = OrdemServico.objects.filter(status=finalizada).count() if finalizada else 0
+    qtd_andamento = OrdemServico.objects.filter(status=em_andamento).count() if em_andamento else 0
     if pesquisa:
         ordens = ordens.filter(
             Q(id__icontains=pesquisa) |
