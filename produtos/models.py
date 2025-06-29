@@ -52,6 +52,6 @@ class Produto(models.Model):
         return self.nome
 
     def save(self, *args, **kwargs):
-        if self._state.adding or self.quantidade in [None, 0]:
+        if self._state.adding and self.quantidade in [None, 0]:
             self.quantidade = self.qtd_entrada or 0
         super().save(*args, **kwargs)

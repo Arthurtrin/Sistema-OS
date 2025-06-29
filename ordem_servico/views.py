@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import OrdemServico, Status, Unidade, Segmento, ProdutoOrdemServico
 from .forms import SegmentoForm, StatusForm, UnidadeForm, OrdemServicoForm, ProdutoOrdemServicoForm
+from produtos.models import Produto
 from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
 from django.contrib import messages
-from produtos.models import Produto  # ajuste conforme seu app de produtos
 
 @login_required
 def criar_os(request):
@@ -64,19 +64,23 @@ def criar_os(request):
                 if acao == 'mantem' and form.has_changed():
                     produto_os = form.save(commit=False)
                     produto_os.ordem_servico = ordem_servico
+                    produto_os.baixa = (baixa == 'sim')
+                    print(produto_os.baixa)
                     produto_os.save()
 
-                    print(f'Produto salvo: {produto_os.produto}, Quantidade: {produto_os.quantidade}, Baixa: {baixa}')
+                    print(f'Produto salvo: {produto_os.produto}, Quantidade: {produto_os.quantidade}, Baixa: {produto_os.baixa}')
 
                     if baixa == 'sim':
-                        produto_db = Produto.objects.get(id=produto_os.produto.id)
-                        produto_db.quantidade -= produto_os.quantidade
-                        produto_db.save()
-                        print(f'Estoque atualizado: {produto_db.nome}, nova quantidade: {produto_db.quantidade}')
+                        produto = Produto.objects.get(id=produto_os.produto.id)
+                        print(produto)
+                        verif = int(produto.quantidade) - int(produto_os.quantidade)
+                        print(produto.quantidade, " ", produto_os.quantidade, " ", verif)
+                        produto.quantidade = verif
+                        produto.save()
+                        print(f'Estoque atualizado: {produto.nome}, nova quantidade: {produto.quantidade}')
 
-            messages.success(request, 'Ordem de serviço criada com sucesso.')
+            messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
-
         else:
             print("Erros no formulário de produto:", produto_formset.errors)
 
@@ -88,6 +92,120 @@ def criar_os(request):
         'form': os_form,
         'produto_formset': produto_formset
     })
+
+
+@login_required
+def editar_os(request, os_id):
+    ordem_servico = get_object_or_404(OrdemServico, id=os_id)
+
+    ProdutoFormSet = modelformset_factory(
+        ProdutoOrdemServico,
+        form=ProdutoOrdemServicoForm,
+        extra=0,
+        can_delete=True
+    )
+
+    if request.method == 'POST':
+        os_form = OrdemServicoForm(request.POST, request.FILES, instance=ordem_servico)
+        produto_formset = ProdutoFormSet(
+            request.POST,
+            queryset=ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico),
+            prefix='form'
+        )
+
+        if os_form.is_valid() and produto_formset.is_valid():
+            erro_estoque = False
+            estoque_temporario = {}
+
+            # Passo 1 – Repor estoque apenas se houve baixa anterior
+            produtos_antigos = ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico)
+
+            # dentro do for:
+            for i, antigo in enumerate(produtos_antigos):
+                # Pega direto do banco
+                baixa_anterior = antigo.baixa  # supondo BooleanField
+                
+                produto = antigo.produto
+                baixa_atual = request.POST.get(f'form-{i}-baixa', 'nao')
+                print(baixa_anterior, " ", baixa_atual)
+                
+                if baixa_anterior and baixa_atual == 'nao' and produto:
+                    produto.quantidade += antigo.quantidade
+                    produto.save()
+                    print(f"[REPOSIÇÃO] {produto.nome} -> estoque restaurado: {produto.quantidade}")
+                
+                estoque_temporario[produto.id] = produto.quantidade
+
+            # Passo 2 – Valida novo estoque antes de subtrair
+            for i, form in enumerate(produto_formset.forms):
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+                baixa = request.POST.get(f'form-{i}-baixa', 'nao')
+
+                if acao == 'mantem' and baixa == 'sim':
+                    produto = form.cleaned_data.get('produto')
+                    quantidade = form.cleaned_data.get('quantidade')
+
+                    if produto and quantidade is not None:
+                        estoque_disponivel = estoque_temporario.get(produto.id, produto.quantidade)
+                        if estoque_disponivel < quantidade:
+                            erro_estoque = True
+                            messages.error(
+                                request,
+                                f'Estoque insuficiente para o produto \"{produto.nome}\". '
+                                f'Disponível: {estoque_disponivel}, Solicitado: {quantidade}'
+                            )
+
+            if erro_estoque:
+                return render(request, 'ordem_servico/editar_os.html', {
+                    'form': os_form,
+                    'produto_formset': produto_formset,
+                    'ordem_servico': ordem_servico
+                })
+
+            # Passo 3 – Salva OS e produtos
+            os_form.save()
+            produtos_antigos.delete()  # Remove todos os antigos
+
+            for i, form in enumerate(produto_formset.forms):
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+                baixa = request.POST.get(f'form-{i}-baixa', 'nao')
+
+                if acao == 'delete':
+                    continue  # Não salva
+
+                if acao == 'mantem':
+                    produto_os = form.save(commit=False)
+                    produto_os.ordem_servico = ordem_servico
+                    produto_os.save()
+
+                    if baixa == 'sim':
+                        produto_db = Produto.objects.get(id=produto_os.produto.id)
+                        produto_db.quantidade -= produto_os.quantidade
+                        produto_db.save()
+                        print(f"[BAIXA] {produto_db.nome} -> nova quantidade: {produto_db.quantidade}")
+
+            messages.success(request, 'Ordem de serviço atualizada com sucesso.')
+            return redirect('home')
+
+    else:
+        os_form = OrdemServicoForm(instance=ordem_servico)
+        produto_formset = ProdutoFormSet(
+            queryset=ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico),
+            prefix='form'
+        )
+
+    return render(request, 'ordem_servico/editar_os.html', {
+        'form': os_form,
+        'produto_formset': produto_formset,
+        'ordem_servico': ordem_servico
+    }) 
+
+
+def excluir_os(request, os_id):
+    os = get_object_or_404(OrdemServico, id=os_id)
+    os.delete()  # Isso também exclui os ProdutoOrdemServico se tiver on_delete=CASCADE
+    messages.success(request, 'Ordem de serviço excluída com sucesso.')
+    return redirect('home')  # Ou a página que desejar
 
 def ver_os(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)

@@ -58,7 +58,7 @@ class Status(models.Model):
 class OrdemServico(models.Model):
     codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
     titulo = models.CharField(max_length=100)
-    data_abertura = models.DateTimeField()
+    data_abertura = models.DateField()
     
     n_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     digitador = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -70,8 +70,8 @@ class OrdemServico(models.Model):
     n_desenho = models.IntegerField()
 
     n_art = models.IntegerField()
-    obra_inicio = models.DateTimeField()
-    obra_termino = models.DateTimeField()
+    obra_inicio = models.DateField()
+    obra_termino = models.DateField()
     obra_nome = models.CharField(max_length=100)
     municipio = models.CharField(max_length=100)
     uf = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
@@ -94,6 +94,7 @@ class ProdutoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
+    baixa = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.produto.nome} (x{self.quantidade})'

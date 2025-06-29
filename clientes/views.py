@@ -23,7 +23,7 @@ def cadastrar_clientes(request):
                 descricao="Cadastrou um novo cliente"
             )
             messages.success(request, 'Novo cliente criado com sucesso.')
-            return redirect('clientes:cadastrar_clientes')
+            return redirect('clientes:listar_clientes')
     else:
         form = ClienteForm()
 
@@ -90,6 +90,7 @@ def editar_cliente(request, cliente_id):
                 cliente=cliente,
                 descricao="Editou um cliente"
             )
+            messages.success(request, 'Cliente editado com sucesso.')
             return redirect('clientes:listar_clientes')
     else:
         form = ClienteForm(instance=cliente)
@@ -99,6 +100,7 @@ def editar_cliente(request, cliente_id):
 def excluir_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     cliente.delete()
+    messages.success(request, 'Cliente excluído com sucesso.')
     return redirect('clientes:listar_clientes')
 
 @login_required

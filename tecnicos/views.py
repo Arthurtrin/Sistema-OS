@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib import messages
 from .forms import TecnicoForm
 from .models import Tecnico
 
@@ -13,7 +14,8 @@ def cadastrar_tecnicos(request):
             form.save()
             #return redirect('tecnicos:listar_tecnicos')  # ajuste para sua url de listagem
             #enquanto não crio meu outro html
-            return render(request, 'principal/home.html')
+            messages.success(request, 'Novo Tecnico cadastrado com sucesso.')
+            return redirect('tecnicos:listar_tecnicos')
     else:
         form = TecnicoForm()
     return render(request, 'tecnicos/cadastrar_tecnicos.html', {'form': form})
@@ -42,8 +44,9 @@ def listar_tecnicos(request):
 
 @login_required
 def excluir_tecnico(request, tecnico_id):
-    tecnicos = get_object_or_404(Tecnico, id=tecnico_id)
+    tecnico = get_object_or_404(Tecnico, id=tecnico_id)
     tecnico.delete()
+    messages.success(request, 'Tecnico excluído com sucesso.')
     return redirect('tecnicos:listar_tecnicos')
 
 @login_required
@@ -53,6 +56,7 @@ def editar_tecnico(request, tecnico_id):
         form = TecnicoForm(request.POST, instance=tecnico)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Tecnico editado com sucesso.')
             return redirect('tecnicos:listar_tecnicos')
     else:
         form = TecnicoForm(instance=tecnico)

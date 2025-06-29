@@ -7,6 +7,8 @@ urlpatterns = [
     path('criar_os/', views.criar_os, name='criar_os'),
     path('os/ver/<int:os_id>/', views.ver_os, name='ver_os'),
     path('definicao/', views.definicao, name='definicao'),
+    path('excluir/<int:os_id>/', views.excluir_os, name='excluir_os'),
+    path('editar/<int:os_id>/', views.editar_os, name='editar_os'),
     
      # Segmentos
     path('cadastrar_segmento/', views.cadastrar_segmento, name='cadastrar_segmento'),

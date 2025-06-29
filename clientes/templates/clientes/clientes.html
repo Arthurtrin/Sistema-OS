@@ -2,6 +2,36 @@
 {% block title %}Gerenciar Clientes{% endblock %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header {% if message.tags == 'error' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+            <h5 class="modal-title" id="messageModalLabel">
+              {% if message.tags == 'error' %}Erro{% else %}Sucesso{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+      });
+    </script>
+  {% endfor %}
+{% endif %}
+
 <style>
     .table-pagination-container {
         min-height: 350px;

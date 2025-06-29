@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Cadastrar Cliente{% endblock %}
+{% block title %}Editar Ordem de Serviço{% endblock %}
 
 {% block content %}
 
@@ -78,7 +78,7 @@
 </style>
 
 <div class="container py-3">
-  <h2 class="mb-3">Gerar Nova Ordem de Serviço</h2>
+  <h2 class="mb-3">Editar Ordem de Serviço</h2>
   <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
 
@@ -279,7 +279,7 @@
 
     <div class="text-end mt-3">
       <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
-        <i class="fas fa-save me-2"></i>Salvar Os
+        <i class="fas fa-save me-2"></i>Salvar Alterações
       </button>
     </div>
   </form>

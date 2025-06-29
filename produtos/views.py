@@ -16,7 +16,7 @@ def cadastrar_produto(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Novo produto criado com sucesso.')
-            return redirect('produtos:cadastrar_produto')
+            return redirect('produtos:listar_produtos')
     else:
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
@@ -81,6 +81,7 @@ def listar_produtos(request):
 def excluir_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
     produto.delete()
+    messages.success(request, 'Produto excluído com sucesso.')
     return redirect('produtos:listar_produtos')
 
 @login_required
@@ -96,6 +97,7 @@ def editar_produto(request, produto_id):
             #    cliente=cliente,
             #    descricao="Editou um cliente"
             #)
+            messages.success(request, 'Produto editado com sucesso.')
             return redirect('produtos:listar_produtos')
     else:
         form = ProdutoForm(instance=produto)
