@@ -31,7 +31,7 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100)
     grupo = models.ForeignKey(Grupo, on_delete=models.SET_NULL, null=True)
 
-    quantidade = models.IntegerField(default=0)
+    quantidade = models.IntegerField(default=0, blank=True)
     qtd_entrada = models.IntegerField()
     estoque_minimo = models.IntegerField()
     estoque_maximo = models.IntegerField()
@@ -50,3 +50,8 @@ class Produto(models.Model):
 
     def __str__(self):
         return self.nome
+
+    def save(self, *args, **kwargs):
+        if self._state.adding or self.quantidade in [None, 0]:
+            self.quantidade = self.qtd_entrada or 0
+        super().save(*args, **kwargs)

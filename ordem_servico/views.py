@@ -1,22 +1,60 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ordem_servico.forms import OrdemServicoForm 
-from .models import OrdemServico, Status, Unidade, Segmento
-from .forms import SegmentoForm, StatusForm, UnidadeForm
+from .models import OrdemServico, Status, Unidade, Segmento, ProdutoOrdemServico
+from .forms import SegmentoForm, StatusForm, UnidadeForm, OrdemServicoForm, ProdutoOrdemServicoForm
 from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.forms import modelformset_factory
 
 @login_required
 def criar_os(request):
+    ProdutoFormSet = modelformset_factory(
+        ProdutoOrdemServico,
+        form=ProdutoOrdemServicoForm,
+        extra=1,
+        can_delete=True
+    )
+
     if request.method == 'POST':
-        form = OrdemServicoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        os_form = OrdemServicoForm(request.POST, request.FILES)
+        produto_formset = ProdutoFormSet(request.POST, prefix='form')
+
+        if os_form.is_valid() and produto_formset.is_valid():
+            ordem_servico = os_form.save()
+
+            for i, form in enumerate(produto_formset.forms):
+                acao = request.POST.get(f'form-{i}-acao')  # pega o campo acao do POST
+                
+                if acao == 'delete':
+                    # Não salva nada no banco para esses produtos
+                    print(f'Produto marcado para deletar, não salvo: {form.cleaned_data.get("produto")}')
+                    continue  # pula para o próximo formulário
+
+                if acao == 'mantem' and form.has_changed():
+                    produto = form.save(commit=False)
+                    produto.ordem_servico = ordem_servico
+                    produto.save()
+                    print(f'Produto salvo: {produto.produto}, Quantidade: {produto.quantidade}')
+
             return redirect('ordem_servico:criar_os')
+        else:
+            print("Erros no formulário de produto:", produto_formset.errors)
+
     else:
-        form = OrdemServicoForm()
-    return render(request, 'ordem_servico/criar_os.html', {'form': form})
+        os_form = OrdemServicoForm()
+        produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='form')
+
+    return render(request, 'ordem_servico/criar_os.html', {
+        'form': os_form,
+        'produto_formset': produto_formset
+    })
+
+
+
+def ver_os(request, os_id):
+    ordem = get_object_or_404(OrdemServico, id=os_id)
+    return render(request, 'ordem_servico/ver_os.html', {'ordem': ordem})
 
 @login_required
 def definicao(request):

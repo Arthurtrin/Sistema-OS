@@ -5,7 +5,8 @@ app_name = 'ordem_servico'
 
 urlpatterns = [
     path('criar_os/', views.criar_os, name='criar_os'),
-    path('ordem-de-servico/definicao', views.definicao, name='definicao'),
+    path('os/ver/<int:os_id>/', views.ver_os, name='ver_os'),
+    path('definicao/', views.definicao, name='definicao'),
     
      # Segmentos
     path('cadastrar_segmento/', views.cadastrar_segmento, name='cadastrar_segmento'),

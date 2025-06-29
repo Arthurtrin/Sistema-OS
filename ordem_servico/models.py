@@ -1,5 +1,6 @@
 from django.db import models
 from clientes.models import Cliente
+from produtos.models import Produto
 from django.contrib.auth.models import User
 import uuid
 
@@ -53,7 +54,6 @@ class Status(models.Model):
     def __str__(self):
         return self.nome
 
-
 # Create your models here.
 class OrdemServico(models.Model):
     codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
@@ -89,3 +89,11 @@ class OrdemServico(models.Model):
             # Gera código automático com 8 caracteres únicos
             self.codigo = str(uuid.uuid4())[:8].upper()
         super().save(*args, **kwargs)
+
+class ProdutoOrdemServico(models.Model):
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.produto.nome} (x{self.quantidade})'

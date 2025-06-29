@@ -1,0 +1,141 @@
+
+<style>
+  .nf-container {
+    max-width: 960px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+
+  .nf-section {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .nf-title {
+    background-color: #eee;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 10px;
+  }
+
+  .nf-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .nf-field {
+    margin: 4px 0;
+    width: 48%;
+  }
+
+  .print-btn {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .print-btn button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  @media print {
+    .print-btn {
+      display: none;
+    }
+  }
+</style>
+
+<div class="nf-container">
+
+  <div class="nf-section">
+    <div class="nf-title">DADOS DA ORDEM DE SERVIÇO</div>
+    <div class="nf-line">
+      <div class="nf-field"><strong>Código:</strong> {{ ordem.codigo }}</div>
+      <div class="nf-field"><strong>Título:</strong> {{ ordem.titulo }}</div>
+      <div class="nf-field"><strong>Data de Abertura:</strong> {{ ordem.data_abertura }}</div>
+      <div class="nf-field"><strong>Status:</strong> {{ ordem.status }}</div>
+      <div class="nf-field"><strong>Digitador:</strong> {{ ordem.digitador }}</div>
+      <div class="nf-field"><strong>Unidade:</strong> {{ ordem.unidade }}</div>
+      <div class="nf-field"><strong>Segmento:</strong> {{ ordem.segmento }}</div>
+    </div>
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">DADOS DO CLIENTE</div>
+    <div class="nf-line">
+      <div class="nf-field"><strong>Cliente:</strong> {{ ordem.n_cliente.nome_cliente }}</div>
+      <div class="nf-field"><strong>Solicitante:</strong> {{ ordem.solicitante }}</div>
+      <div class="nf-field"><strong>Nº da Proposta:</strong> {{ ordem.n_proposta }}</div>
+      <div class="nf-field"><strong>Nº do Desenho:</strong> {{ ordem.n_desenho }}</div>
+      <div class="nf-field"><strong>Nº da ART:</strong> {{ ordem.n_art }}</div>
+    </div>
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">DADOS DA OBRA</div>
+    <div class="nf-line">
+      <div class="nf-field"><strong>Nome da Obra:</strong> {{ ordem.obra_nome }}</div>
+      <div class="nf-field"><strong>Município:</strong> {{ ordem.municipio }}</div>
+      <div class="nf-field"><strong>UF:</strong> {{ ordem.uf }}</div>
+      <div class="nf-field"><strong>Início da Obra:</strong> {{ ordem.obra_inicio }}</div>
+      <div class="nf-field"><strong>Término da Obra:</strong> {{ ordem.obra_termino }}</div>
+      <div class="nf-field"><strong>UC/OS:</strong> {{ ordem.uc_os }}</div>
+      <div class="nf-field"><strong>OC:</strong> {{ ordem.oc }}</div>
+    </div>
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">DESCRIÇÃO E ANEXO</div>
+    <div>
+      <strong>Descrição:</strong><br>
+      <p>{{ ordem.descricao|default:"---" }}</p>
+
+      {% if ordem.arquivo %}
+        <p><strong>Arquivo:</strong> <a href="{{ ordem.arquivo.url }}" target="_blank">Visualizar Anexo</a></p>
+      {% else %}
+        <p><strong>Arquivo:</strong> Nenhum anexo disponível.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="nf-section">
+    <div class="nf-title">PRODUTOS VINCULADOS</div>
+    {% if ordem.itens.all %}
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #000; padding: 5px;">Produto</th>
+            <th style="border: 1px solid #000; padding: 5px;">Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in ordem.itens.all %}
+            <tr>
+              <td style="border: 1px solid #000; padding: 5px;">{{ item.produto.nome }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">{{ item.quantidade }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Nenhum produto vinculado a esta ordem de serviço.</p>
+    {% endif %}
+  </div>
+
+  <div class="print-btn">
+    <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+  </div>
+
+</div>
+

@@ -15,7 +15,7 @@ def cadastrar_produto(request):
         form = ProdutoForm(request.POST)
         if form.is_valid():
             form.save()
-            return render(request, 'produtos/cadastrar_produto.html', {'form': form})
+            return redirect('produtos:listar_produtos')
     else:
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
@@ -127,9 +127,9 @@ def entrada_produto(request):
         produto.save()
 
         messages.success(request, 'Entrada registrada com sucesso!')
-        return redirect('home')
+        return redirect('produtos:listar_produtos')
 
-    return redirect('home')
+    return redirect('produtos:listar_produtos')
 
 def saida_produto(request):
     if request.method == 'POST':
@@ -162,9 +162,9 @@ def saida_produto(request):
         produto.save()
 
         messages.success(request, 'Saída registrada com sucesso!')
-        return redirect('home')
+        return redirect('produtos:listar_produtos')
 
-    return redirect('home')
+    return redirect('produtos:listar_produtos')
 
 @login_required
 def fabricante_marca_grupo(request):

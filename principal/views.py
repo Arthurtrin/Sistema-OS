@@ -8,6 +8,7 @@ from usuarios.models import Perfil, Chave_Gerenciador
 from clientes.models import Cliente, Atividade, Segmento
 from produtos.models import Grupo
 from ordem_servico.models import OrdemServico, Status
+from django.db.models.functions import Lower
 
 @login_required
 def home(request):
@@ -17,9 +18,14 @@ def home(request):
     ordens = OrdemServico.objects.all().order_by('-id')
     cliente = Cliente.objects.count()
     qtd_ordem = OrdemServico.objects.count()
-    cancelada = Status.objects.filter(nome='cancelada').first()
-    finalizada = Status.objects.filter(nome='finalizada').first()
-    em_andamento = Status.objects.filter(nome='em_andamento').first()
+
+    cancelada = Status.objects.annotate(nome_lower=Lower('nome')).filter(
+    nome_lower__in=['cancelada', 'cancelado']
+    ).first()
+    finalizada = Status.objects.annotate(nome_lower=Lower('nome')).filter(
+    nome_lower__in=['finalizada', 'finalizado']
+    ).first()
+    em_andamento = Status.objects.annotate(nome_lower=Lower('nome')).filter(nome_lower='em andamento').first()
 
     qtd_canceladas = OrdemServico.objects.filter(status=cancelada).count() if cancelada else 0
     qtd_finalizadas = OrdemServico.objects.filter(status=finalizada).count() if finalizada else 0

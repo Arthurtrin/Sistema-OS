@@ -1,68 +1,102 @@
-{% extends 'principal/base.html' %}
-{% block title %}Dados do Técnico{% endblock %}
 
-{% block content %}
-<div class="container my-4">
-    <div class="card shadow rounded-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Dados do Técnico: {{ tecnico.nome }}</h5>
-            <a href="{% url 'tecnicos:listar_tecnicos' %}" class="btn btn-light btn-sm">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </a>
-        </div>
-        <div class="card-body">
+<style>
+  .nf-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
 
-            <!-- Informações básicas -->
-            <div class="row g-3 mb-4">
-                <h5>Informações Básicas:</h5>
-                <div class="col-md-6">
-                    <p><strong>Código:</strong> {{ tecnico.codigo }}</p>
-                    <p><strong>Nome:</strong> {{ tecnico.nome|default:"---" }}</p>
-                    <p><strong>CNPJ/CPF:</strong> {{ tecnico.cnpj_cpf }}</p>
-                    <p><strong>RG:</strong> {{ tecnico.rg }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>E-mail:</strong> {{ tecnico.email }}</p>
-                    <p><strong>Telefone:</strong> {{ tecnico.telefone|default:"---" }}</p>
-                    <p><strong>Celular:</strong> {{ tecnico.celular|default:"---" }}</p>
-                    <p><strong>Porcentagem de Comissão:</strong> {{ tecnico.prc_comissao|default:"---" }}</p>
-                </div>
-            </div>
+  .nf-section {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 8px;
+  }
 
-            <div class="row g-3 mb-4">
-                <h5>Endereço:</h5>
-                <div class="col-md-6">
-                    <p><strong>Logradouro:</strong> {{ tecnico.logradouro }}</p>
-                    <p><strong>Número:</strong> {{ tecnico.numero }}</p>
-                    <p><strong>Bairro:</strong> {{ tecnico.bairro }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Cidade:</strong> {{ tecnico.cidade }}</p>
-                    <p><strong>Estado:</strong> {{ tecnico.estado }}</p>
-                    <p><strong>CEP:</strong> {{ tecnico.cep }}</p>
-                    <p><strong>Complemento:</strong> {{ tecnico.complemento|default:"---" }}</p>
-                </div>
-            </div>
+  .nf-title {
+    background-color: #eee;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 10px;
+  }
 
-            <div class="row g-3 mb-4">
-                <h5>Adicionais:</h5>
-                <div class="col-md-12">
-                    <p><strong>Observação:</strong></p>
-                    <p>{{ tecnico.observacao|default:"---" }}</p>
-                </div>
-            </div>
+  .nf-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
 
-            
+  .nf-field {
+    margin: 4px 0;
+    width: 48%;
+  }
 
-        </div>
-        <div class="card-footer text-end">
-            <a href="{% url 'tecnicos:editar_tecnico' tecnico.id %}" class="btn btn-primary me-2">
-                <i class="fas fa-edit"></i> Editar
-            </a>
-            <a href="{% url 'tecnicos:excluir_tecnico' tecnico.id %}" class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i> Excluir
-            </a>
-        </div>
+  .print-btn {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .print-btn button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  @media print {
+    .print-btn {
+      display: none;
+    }
+  }
+</style>
+
+<div class="nf-container">
+
+  <div class="nf-section">
+    <div class="nf-title">DADOS DO TÉCNICO</div>
+    <div class="nf-line">
+      <div class="nf-field"><strong>Código:</strong> {{ tecnico.codigo }}</div>
+      <div class="nf-field"><strong>Nome:</strong> {{ tecnico.nome|default:"---" }}</div>
+      <div class="nf-field"><strong>CNPJ/CPF:</strong> {{ tecnico.cnpj_cpf }}</div>
+      <div class="nf-field"><strong>RG:</strong> {{ tecnico.rg }}</div>
+      <div class="nf-field"><strong>E-mail:</strong> {{ tecnico.email }}</div>
+      <div class="nf-field"><strong>Telefone:</strong> {{ tecnico.telefone|default:"---" }}</div>
+      <div class="nf-field"><strong>Celular:</strong> {{ tecnico.celular|default:"---" }}</div>
+      <div class="nf-field"><strong>Porcentagem de Comissão:</strong> {{ tecnico.prc_comissao|default:"---" }}</div>
     </div>
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">ENDEREÇO</div>
+    <div class="nf-line">
+      <div class="nf-field"><strong>Logradouro:</strong> {{ tecnico.logradouro }}</div>
+      <div class="nf-field"><strong>Número:</strong> {{ tecnico.numero }}</div>
+      <div class="nf-field"><strong>Bairro:</strong> {{ tecnico.bairro }}</div>
+      <div class="nf-field"><strong>Cidade:</strong> {{ tecnico.cidade }}</div>
+      <div class="nf-field"><strong>Estado:</strong> {{ tecnico.estado }}</div>
+      <div class="nf-field"><strong>CEP:</strong> {{ tecnico.cep }}</div>
+      <div class="nf-field"><strong>Complemento:</strong> {{ tecnico.complemento|default:"---" }}</div>
+    </div>
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">ADICIONAIS</div>
+    <div>
+      <strong>Observação:</strong><br>
+      <div>{{ tecnico.observacao|default:"---" }}</div>
+    </div>
+  </div>
+
+  <div class="print-btn">
+    <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+  </div>
+
 </div>
-{% endblock %}
+

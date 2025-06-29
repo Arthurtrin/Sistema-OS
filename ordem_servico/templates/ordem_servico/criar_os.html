@@ -4,7 +4,8 @@
 {% block content %}
 
 <style>
-    .form-section-title {
+  
+   .form-section-title {
     font-size: 1rem;
     font-weight: 600;
     margin-top: 1rem;
@@ -51,6 +52,7 @@
     {% csrf_token %}
 
     <div class="accordion" id="formAccordion">
+      <!-- seus outros blocos aqui (Identificação, Obra, etc) -->
       <div class="card-collapse">
         <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
           Identificação
@@ -114,6 +116,8 @@
         </div>
         <div id="contato_doc" class="collapse" data-bs-parent="#formAccordion">
           <div class="card-body">
+
+            <!-- Campos da Obra -->
             <div class="row g-2">
               <div class="col-md-6">
                 <label for="{{ form.obra_nome.id_for_label }}" class="form-label-professional">Nome</label>
@@ -124,7 +128,7 @@
                 {{ form.obra_inicio }}
               </div>
               <div class="col-md-2">
-                <label for="{{ form.obra_termino.id_for_label }}" class="form-label-professional">Termino</label>
+                <label for="{{ form.obra_termino.id_for_label }}" class="form-label-professional">Término</label>
                 {{ form.obra_termino }}
               </div>
               <div class="col-md-2">
@@ -133,7 +137,7 @@
               </div>
             </div>
 
-            <div class="row g-2" style="margin-top: 5px;">
+            <div class="row g-2 mt-2">
               <div class="col-md-4">
                 <label for="{{ form.municipio.id_for_label }}" class="form-label-professional">Município</label>
                 {{ form.municipio }}
@@ -154,7 +158,58 @@
           </div>
         </div>
       </div>
+      <!-- PRODUTOS -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#produtos">
+          Produtos
+        </div>
+        <div id="produtos" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="mb-3">
+              {{ produto_formset.management_form }}
+              <div id="produtos-container">
+                {% for produto_form in produto_formset %}
+                  <div class="row g-2 produto-form border rounded p-2 mb-3 position-relative">
+                    <div class="col-md-6">
+                      {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
+                    </div>
+                    <div class="col-md-3">
+                      {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
+                    </div>
+                    <!-- Campo DELETE oculto -->
+                    <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
+                    <!-- Botão de excluir -->
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2 btn-remove-produto" title="Remover produto"></button>
+                  </div>
+                {% endfor %}
+              </div>
 
+              <!-- TEMPLATE OCULTO para clonagem -->
+              <div id="produto-template" class="row g-2 produto-form border rounded p-2 mb-3 position-relative" style="display:none;">
+                <div class="col-md-6">
+                  <label for="id_form-__prefix__-produto">Produto</label>
+                  <select name="form-__prefix__-produto" id="id_form-__prefix__-produto" class="form-select"></select>
+                </div>
+                <div class="col-md-3">
+                  <label for="id_form-__prefix__-quantidade">Quantidade</label>
+                  <input type="number" name="form-__prefix__-quantidade" id="id_form-__prefix__-quantidade" class="form-control" />
+                </div>
+
+                <!-- Campo personalizado de ação -->
+                <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+
+                <!-- Botão de excluir -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 btn-remove-produto" title="Remover produto"></button>
+              </div>
+
+              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">+ Adicionar Produto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anexo e Observação -->
+      <!-- ... seus outros blocos -->
       <div class="card-collapse">
         <div class="card-header" data-bs-toggle="collapse" data-bs-target="#seg_ativ_obs">
           Anexo e Observação
@@ -167,7 +222,7 @@
                 {{ form.arquivo }}
               </div> 
             </div>
-            <div class="row g-2" style="margin-top: 5px;">
+            <div class="row g-2 mt-2">
               <div class="col-md-12">
                 <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
                 {{ form.descricao }}
@@ -183,7 +238,80 @@
         <i class="fas fa-save me-2"></i>Salvar Cliente
       </button>
     </div>
-
   </form>
 </div>
+
+<!-- JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const container = document.getElementById('produtos-container');
+  const addBtn = document.getElementById('add-produto');
+  const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+  const template = document.getElementById('produto-template');
+  const form = document.querySelector('form');
+
+function atualizarEventosRemocao() {
+  const botoes = container.querySelectorAll('.btn-remove-produto');
+  botoes.forEach(btn => {
+    btn.onclick = function () {
+      const formRow = btn.closest('.produto-form');
+      const acaoField = formRow.querySelector('input.campo-acao');
+      if (acaoField) {
+        acaoField.value = 'delete';
+      }
+      formRow.style.display = 'none';
+    };
+  });
+}
+  addBtn.addEventListener('click', function () {
+    const formCount = parseInt(totalForms.value);
+
+    // Clona o template oculto
+    const newForm = template.cloneNode(true);
+    newForm.style.display = 'flex';
+    newForm.id = "";
+
+    // Substitui __prefix__ por formCount
+    newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formCount);
+
+    // Corrige atributos for, name e id
+    newForm.querySelectorAll('input, select, label').forEach(el => {
+      if (el.hasAttribute('for')) {
+        el.setAttribute('for', el.getAttribute('for').replace('__prefix__', formCount));
+      }
+      if (el.name) {
+        el.name = el.name.replace('__prefix__', formCount);
+      }
+      if (el.id) {
+        el.id = el.id.replace('__prefix__', formCount);
+      }
+    });
+
+    // Copiar opções do primeiro select real para o novo
+    const primeiroSelect = container.querySelector('select');
+    const novoSelect = newForm.querySelector('select');
+    if (primeiroSelect && novoSelect) {
+      novoSelect.innerHTML = primeiroSelect.innerHTML;
+    }
+
+    container.appendChild(newForm);
+    totalForms.value = formCount + 1;
+    atualizarEventosRemocao();
+  });
+
+  form.addEventListener('submit', function () {
+    // Garante que todos os campos DELETE marcados sejam habilitados
+    const deletes = container.querySelectorAll('input[type="checkbox"][name$="-DELETE"]');
+    deletes.forEach(input => {
+      if (input.checked) {
+        input.disabled = false;
+      }
+    });
+  });
+
+  atualizarEventosRemocao();
+});
+</script>
+
+
 {% endblock %}
