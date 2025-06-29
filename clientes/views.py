@@ -7,6 +7,7 @@ from atividades.models import AtividadeUsuarioCliente
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 @login_required
@@ -21,7 +22,8 @@ def cadastrar_clientes(request):
                 cliente=cliente,
                 descricao="Cadastrou um novo cliente"
             )
-            return redirect('clientes:listar_clientes')
+            messages.success(request, 'Novo cliente criado com sucesso.')
+            return redirect('clientes:cadastrar_clientes')
     else:
         form = ClienteForm()
 

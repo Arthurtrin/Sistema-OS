@@ -6,6 +6,8 @@ from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
+from django.contrib import messages
+from produtos.models import Produto  # ajuste conforme seu app de produtos
 
 @login_required
 def criar_os(request):
@@ -21,23 +23,60 @@ def criar_os(request):
         produto_formset = ProdutoFormSet(request.POST, prefix='form')
 
         if os_form.is_valid() and produto_formset.is_valid():
+            # ETAPA 1 – Verifica se tem estoque suficiente antes de salvar
+            erro_estoque = False
+            for i, form in enumerate(produto_formset.forms):
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+                baixa = request.POST.get(f'form-{i}-baixa', 'nao')
+
+                if acao == 'mantem' and baixa == 'sim':
+                    produto = form.cleaned_data.get('produto')
+                    quantidade = form.cleaned_data.get('quantidade')
+
+                    if produto and quantidade is not None:
+                        try:
+                            produto_db = Produto.objects.get(id=produto.id)
+                            if produto_db.quantidade < quantidade:
+                                erro_estoque = True
+                                messages.error(request, f'Estoque insuficiente para o produto "{produto_db.nome}". Quantidade disponível: {produto_db.quantidade}, Solicitada: {quantidade}')
+                        except Produto.DoesNotExist:
+                            erro_estoque = True
+                            messages.error(request, f'Produto não encontrado no banco de dados.')
+            
+            if erro_estoque:
+                # NÃO salva nada se houver erro de estoque
+                return render(request, 'ordem_servico/criar_os.html', {
+                    'form': os_form,
+                    'produto_formset': produto_formset
+                })
+
+            # ETAPA 2 – Salvar a ordem e os produtos com baixa validada
             ordem_servico = os_form.save()
 
             for i, form in enumerate(produto_formset.forms):
-                acao = request.POST.get(f'form-{i}-acao')  # pega o campo acao do POST
-                
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+                baixa = request.POST.get(f'form-{i}-baixa', 'nao')
+
                 if acao == 'delete':
-                    # Não salva nada no banco para esses produtos
-                    print(f'Produto marcado para deletar, não salvo: {form.cleaned_data.get("produto")}')
-                    continue  # pula para o próximo formulário
+                    print(f'[IGNORADO] Produto marcado como delete: {form.cleaned_data.get("produto")}')
+                    continue
 
                 if acao == 'mantem' and form.has_changed():
-                    produto = form.save(commit=False)
-                    produto.ordem_servico = ordem_servico
-                    produto.save()
-                    print(f'Produto salvo: {produto.produto}, Quantidade: {produto.quantidade}')
+                    produto_os = form.save(commit=False)
+                    produto_os.ordem_servico = ordem_servico
+                    produto_os.save()
 
+                    print(f'Produto salvo: {produto_os.produto}, Quantidade: {produto_os.quantidade}, Baixa: {baixa}')
+
+                    if baixa == 'sim':
+                        produto_db = Produto.objects.get(id=produto_os.produto.id)
+                        produto_db.quantidade -= produto_os.quantidade
+                        produto_db.save()
+                        print(f'Estoque atualizado: {produto_db.nome}, nova quantidade: {produto_db.quantidade}')
+
+            messages.success(request, 'Ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
+
         else:
             print("Erros no formulário de produto:", produto_formset.errors)
 
@@ -49,8 +88,6 @@ def criar_os(request):
         'form': os_form,
         'produto_formset': produto_formset
     })
-
-
 
 def ver_os(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)

@@ -35,11 +35,11 @@ def home(request):
             Q(id__icontains=pesquisa) |
             Q(codigo__icontains=pesquisa) |
             Q(titulo__icontains=pesquisa) |
-            Q(status__icontains=pesquisa) |
-            Q(n_cliente__icontains=pesquisa) |
-            Q(digitador__icontains=pesquisa) |
-            Q(unidade__icontains=pesquisa) |
-            Q(segmento__icontains=pesquisa) |
+            Q(status__nome__icontains=pesquisa) |
+            Q(n_cliente__nome_cliente__icontains=pesquisa) |
+            Q(digitador__username__icontains=pesquisa) |
+            Q(unidade__nome__icontains=pesquisa) |
+            Q(segmento__nome__icontains=pesquisa) |
             Q(solicitante__icontains=pesquisa) |
             Q(municipio__icontains=pesquisa) | 
             Q(obra_nome__icontains=pesquisa)
@@ -48,7 +48,7 @@ def home(request):
     if data_abertura:
         ordens = ordens.filter(data_abertura__date=data_abertura)
 
-    paginator = Paginator(ordens, 5)
+    paginator = Paginator(ordens, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

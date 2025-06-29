@@ -1,11 +1,12 @@
 from django import forms
 from .models import OrdemServico, Segmento, Status, Unidade, ProdutoOrdemServico
 
-
 class ProdutoOrdemServicoForm(forms.ModelForm):
+    dar_baixa = forms.BooleanField(required=False, initial=False, label='Dar baixa no estoque')
+    
     class Meta:
         model = ProdutoOrdemServico
-        fields = ['produto', 'quantidade']  # Não inclua 'DELETE' aqui
+        fields = ['produto', 'quantidade', 'dar_baixa']  # Inclua o dar_baixa aqui
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -15,9 +16,12 @@ class ProdutoOrdemServicoForm(forms.ModelForm):
             if self.errors.get(field_name):
                 css_class += ' is-invalid'
 
-            field.widget.attrs.update({'class': css_class})
+            # Para checkbox, normalmente a classe é 'form-check-input', então ajuste:
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check-input'})
+            else:
+                field.widget.attrs.update({'class': css_class})
 
-        # ✅ Adiciona estilo no campo DELETE se existir (quando vindo do formset)
         if 'DELETE' in self.fields:
             self.fields['DELETE'].widget.attrs.update({'style': 'display:none;'})
 

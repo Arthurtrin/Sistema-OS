@@ -3,6 +3,37 @@
 
 {% block content %}
 
+{% if messages %}
+  {% for message in messages %}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header {% if message.tags == 'error' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+            <h5 class="modal-title" id="messageModalLabel">
+              {% if message.tags == 'error' %}Erro{% else %}Sucesso{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+      });
+    </script>
+  {% endfor %}
+{% endif %}
+
+
 <style>
   
    .form-section-title {
@@ -176,6 +207,14 @@
                     <div class="col-md-3">
                       {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
                     </div>
+                    <div class="col-md-3 d-flex align-items-center">
+                      <label class="form-check-label me-2">Dar baixa no estoque</label>
+                      <input type="hidden" name="form-{{ forloop.counter0 }}-baixa" value="nao" class="campo-baixa" />
+                      <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-baixa" data-index="{{ forloop.counter0 }}">
+                        Não
+                      </button>
+                    </div>
+                    
                     <!-- Campo DELETE oculto -->
                     <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
                     <!-- Botão de excluir -->
@@ -194,6 +233,13 @@
                   <label for="id_form-__prefix__-quantidade">Quantidade</label>
                   <input type="number" name="form-__prefix__-quantidade" id="id_form-__prefix__-quantidade" class="form-control" />
                 </div>
+                <div class="col-md-3 d-flex align-items-center">
+                  <label class="form-check-label me-2">Dar baixa no estoque</label>
+                  <input type="hidden" name="form-__prefix__-baixa" value="nao" class="campo-baixa" />
+                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-baixa" data-index="__prefix__">
+                    Não
+                  </button>
+                </div>
 
                 <!-- Campo personalizado de ação -->
                 <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
@@ -208,8 +254,6 @@
         </div>
       </div>
 
-      <!-- Anexo e Observação -->
-      <!-- ... seus outros blocos -->
       <div class="card-collapse">
         <div class="card-header" data-bs-toggle="collapse" data-bs-target="#seg_ativ_obs">
           Anexo e Observação
@@ -250,19 +294,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const template = document.getElementById('produto-template');
   const form = document.querySelector('form');
 
-function atualizarEventosRemocao() {
-  const botoes = container.querySelectorAll('.btn-remove-produto');
-  botoes.forEach(btn => {
-    btn.onclick = function () {
-      const formRow = btn.closest('.produto-form');
-      const acaoField = formRow.querySelector('input.campo-acao');
-      if (acaoField) {
-        acaoField.value = 'delete';
-      }
-      formRow.style.display = 'none';
-    };
-  });
-}
+  function atualizarEventosRemocao() {
+    const botoes = container.querySelectorAll('.btn-remove-produto');
+    botoes.forEach(btn => {
+      btn.onclick = function () {
+        const formRow = btn.closest('.produto-form');
+        const acaoField = formRow.querySelector('input.campo-acao');
+        if (acaoField) {
+          acaoField.value = 'delete';
+        }
+        formRow.style.display = 'none';
+      };
+    });
+  }
+
+  function atualizarEventosToggleBaixa() {
+    const botoesBaixa = container.querySelectorAll('.btn-toggle-baixa');
+    botoesBaixa.forEach(btn => {
+      btn.onclick = () => {
+        const index = btn.getAttribute('data-index');
+        const campoHidden = container.querySelector(`input[name="form-${index}-baixa"]`);
+        if (!campoHidden) return;
+
+        if (campoHidden.value === 'nao') {
+          campoHidden.value = 'sim';
+          btn.textContent = 'Sim';
+          btn.classList.remove('btn-outline-secondary');
+          btn.classList.add('btn-outline-primary');
+        } else {
+          campoHidden.value = 'nao';
+          btn.textContent = 'Não';
+          btn.classList.remove('btn-outline-primary');
+          btn.classList.add('btn-outline-secondary');
+        }
+      };
+    });
+  }
+
   addBtn.addEventListener('click', function () {
     const formCount = parseInt(totalForms.value);
 
@@ -275,7 +343,7 @@ function atualizarEventosRemocao() {
     newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formCount);
 
     // Corrige atributos for, name e id
-    newForm.querySelectorAll('input, select, label').forEach(el => {
+    newForm.querySelectorAll('input, select, label, button').forEach(el => {
       if (el.hasAttribute('for')) {
         el.setAttribute('for', el.getAttribute('for').replace('__prefix__', formCount));
       }
@@ -284,6 +352,14 @@ function atualizarEventosRemocao() {
       }
       if (el.id) {
         el.id = el.id.replace('__prefix__', formCount);
+      }
+      // Corrige data-index do botão toggle baixa
+      if (el.classList.contains('btn-toggle-baixa')) {
+        el.setAttribute('data-index', formCount);
+        // Inicializa texto e classes do botão
+        el.textContent = 'Não';
+        el.classList.remove('btn-outline-primary');
+        el.classList.add('btn-outline-secondary');
       }
     });
 
@@ -297,6 +373,7 @@ function atualizarEventosRemocao() {
     container.appendChild(newForm);
     totalForms.value = formCount + 1;
     atualizarEventosRemocao();
+    atualizarEventosToggleBaixa();
   });
 
   form.addEventListener('submit', function () {
@@ -310,8 +387,10 @@ function atualizarEventosRemocao() {
   });
 
   atualizarEventosRemocao();
+  atualizarEventosToggleBaixa();
 });
 </script>
+
 
 
 {% endblock %}
