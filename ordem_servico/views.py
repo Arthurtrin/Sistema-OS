@@ -79,11 +79,11 @@ def criar_os(request):
                         produto.save()
                         print(f'Estoque atualizado: {produto.nome}, nova quantidade: {produto.quantidade}')
 
+                    
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
         else:
             print("Erros no formulário de produto:", produto_formset.errors)
-
     else:
         os_form = OrdemServicoForm()
         produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='form')
@@ -92,7 +92,6 @@ def criar_os(request):
         'form': os_form,
         'produto_formset': produto_formset
     })
-
 
 @login_required
 def editar_os(request, os_id):
@@ -117,24 +116,27 @@ def editar_os(request, os_id):
             erro_estoque = False
             estoque_temporario = {}
 
-            # Passo 1 – Repor estoque apenas se houve baixa anterior
+            # Copia dos produtos antigos ANTES de qualquer alteração
             produtos_antigos = ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico)
+            produtos_antigos_cop = list(produtos_antigos)
+            for p in produtos_antigos:
+                print(p.produto.nome, p.baixa)
+            # Passo 1 – Repor estoque se houve baixa anterior e agora não há mais
 
-            # dentro do for:
-            for i, antigo in enumerate(produtos_antigos):
-                # Pega direto do banco
-                baixa_anterior = antigo.baixa  # supondo BooleanField
-                
+            for i, antigo in enumerate(produtos_antigos_cop):
+                baixa_anterior = antigo.baixa
                 produto = antigo.produto
-                baixa_atual = request.POST.get(f'form-{i}-baixa', 'nao')
+                baixa_atual_str = request.POST.get(f'form-{i}-baixa', 'nao')
+                baixa_atual = baixa_atual_str == 'sim'
                 print(baixa_anterior, " ", baixa_atual)
-                
-                if baixa_anterior and baixa_atual == 'nao' and produto:
+                if baixa_anterior and not baixa_atual and produto:
                     produto.quantidade += antigo.quantidade
                     produto.save()
+                    
                     print(f"[REPOSIÇÃO] {produto.nome} -> estoque restaurado: {produto.quantidade}")
-                
-                estoque_temporario[produto.id] = produto.quantidade
+
+                if produto:
+                    estoque_temporario[produto.id] = produto.quantidade
 
             # Passo 2 – Valida novo estoque antes de subtrair
             for i, form in enumerate(produto_formset.forms):
@@ -164,25 +166,58 @@ def editar_os(request, os_id):
 
             # Passo 3 – Salva OS e produtos
             os_form.save()
-            produtos_antigos.delete()  # Remove todos os antigos
+            produtos_antigos.delete()
 
             for i, form in enumerate(produto_formset.forms):
                 acao = request.POST.get(f'form-{i}-acao', 'mantem')
                 baixa = request.POST.get(f'form-{i}-baixa', 'nao')
+                baixa_atual = baixa == 'sim'  # converte para bool
 
                 if acao == 'delete':
-                    continue  # Não salva
+                    continue
 
                 if acao == 'mantem':
                     produto_os = form.save(commit=False)
                     produto_os.ordem_servico = ordem_servico
+                    produto_os.baixa = baixa_atual  # aqui setamos explicitamente
                     produto_os.save()
 
-                    if baixa == 'sim':
-                        produto_db = Produto.objects.get(id=produto_os.produto.id)
-                        produto_db.quantidade -= produto_os.quantidade
-                        produto_db.save()
-                        print(f"[BAIXA] {produto_db.nome} -> nova quantidade: {produto_db.quantidade}")
+                    produto = produto_os.produto
+                    quantidade_nova = produto_os.quantidade
+
+                    antigo = next((p for p in produtos_antigos_cop if p.produto.id == produto.id), None)
+
+                    if antigo:
+                        baixa_anterior = antigo.baixa
+                        quantidade_antiga = antigo.quantidade
+
+                        if baixa_anterior and baixa_atual:
+                            # Repor a antiga e subtrair a nova
+                            produto.quantidade += quantidade_antiga
+                            produto.save()
+                            print(f"[REPOSIÇÃO] {produto.nome} -> estoque restaurado: {produto.quantidade}")
+
+                            if produto.quantidade >= quantidade_nova:
+                                produto.quantidade -= quantidade_nova
+                                produto.save()
+                                print(f"[REBAIXA] {produto.nome} -> nova quantidade: {produto.quantidade}")
+                            else:
+                                messages.error(
+                                    request,
+                                    f'Estoque insuficiente para o produto \"{produto.nome}\" após reposição. '
+                                    f'Estoque atual: {produto.quantidade}, Necessário: {quantidade_nova}'
+                                )
+                                return render(request, 'ordem_servico/editar_os.html', {
+                                    'form': os_form,
+                                    'produto_formset': produto_formset,
+                                    'ordem_servico': ordem_servico
+                                })
+                        elif baixa_atual:
+                            # Apenas baixa nova
+                            produto.quantidade -= quantidade_nova
+                            produto.save()
+                            print(f"[BAIXA] {produto.nome} -> nova quantidade: {produto.quantidade}")
+
 
             messages.success(request, 'Ordem de serviço atualizada com sucesso.')
             return redirect('home')
@@ -198,7 +233,8 @@ def editar_os(request, os_id):
         'form': os_form,
         'produto_formset': produto_formset,
         'ordem_servico': ordem_servico
-    }) 
+    })
+
 
 
 def excluir_os(request, os_id):
