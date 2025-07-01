@@ -49,7 +49,7 @@ class Cliente(models.Model):
     codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
     nome_cliente = models.CharField(max_length=100)
     nome_fantasia = models.CharField(max_length=100, blank=True)
-    data_inclusao = models.DateTimeField()
+    data_inclusao = models.DateField()
     cnpj_cpf = models.CharField(max_length=18, unique=True)
     inscricao_estadual = models.CharField(max_length=50)  
     inscricao_municipal = models.CharField(max_length=50)

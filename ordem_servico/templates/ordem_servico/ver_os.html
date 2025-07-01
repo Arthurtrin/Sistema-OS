@@ -75,7 +75,7 @@
   <div class="nf-section">
     <div class="nf-title">DADOS DO CLIENTE</div>
     <div class="nf-line">
-      <div class="nf-field"><strong>Cliente:</strong> {{ ordem.n_cliente.nome_cliente }}</div>
+      <div class="nf-field"><strong>Cliente:</strong> {{ ordem.n_cliente.nome_cliente|default:"---" }}</div>
       <div class="nf-field"><strong>Solicitante:</strong> {{ ordem.solicitante }}</div>
       <div class="nf-field"><strong>Nº da Proposta:</strong> {{ ordem.n_proposta }}</div>
       <div class="nf-field"><strong>Nº do Desenho:</strong> {{ ordem.n_desenho }}</div>

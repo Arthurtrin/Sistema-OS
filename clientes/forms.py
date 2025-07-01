@@ -6,7 +6,10 @@ class ClienteForm(forms.ModelForm):
         model = Cliente
         fields = '__all__'
         widgets = {
-            'data_inclusao': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'data_inclusao': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'},
+                format='%Y-%m-%d'  # <- formato ISO para <input type="date">
+            ),
             'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
@@ -22,11 +25,12 @@ class ClienteForm(forms.ModelForm):
             elif field_name != 'data_inclusao':
                 field.widget.attrs.update({'class': css_class})
 
-        # Remove o empty_label padrão
+        # ⬇️ Aqui está a linha que garante que a data apareça corretamente ao editar
+        self.fields['data_inclusao'].input_formats = ['%Y-%m-%d']
+
         self.fields['segmento'].empty_label = None
         self.fields['atividade'].empty_label = None
 
-        # Adiciona o atributo required para forçar validação se quiser
         self.fields['segmento'].required = False
         self.fields['atividade'].required = False
 

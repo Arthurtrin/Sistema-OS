@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
 from django.contrib import messages
+from django.db.models import ProtectedError
 
 @login_required
 def criar_os(request):
@@ -295,7 +296,11 @@ def editar_segmento(request, segmento_id):
 @login_required
 def excluir_segmento(request, segmento_id):
     segmento = get_object_or_404(Segmento, id=segmento_id)
-    segmento.delete()
+    try:
+        segmento.delete()
+    except ProtectedError:
+        mensagem = 'Este segmento está sendo usado por uma Ordem de Serviço e não pode ser excluído.'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
     return redirect('ordem_servico:definicao')
 
 # Unidades
@@ -324,7 +329,11 @@ def editar_unidade(request, unidade_id):
 @login_required
 def excluir_unidade(request, unidade_id):
     unidade = get_object_or_404(Unidade, id=unidade_id)
-    unidade.delete()
+    try:
+        unidade.delete()
+    except ProtectedError:
+        mensagem = 'Este unidade está sendo usado por uma Ordem de Serviço e não pode ser excluído.'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
     return HttpResponseRedirect(reverse('ordem_servico:definicao') + '?aba=unidades')
 
 # Status
@@ -353,5 +362,9 @@ def editar_status(request, status_id):
 @login_required
 def excluir_status(request, status_id):
     status = get_object_or_404(Status, id=status_id)
-    status.delete()
+    try:
+        status.delete()
+    except ProtectedError:
+        mensagem = 'Este status está sendo usado por uma Ordem de Serviço e não pode ser excluído.'
+        return render(request, 'principal/erro.html', {'mensagem': mensagem})
     return HttpResponseRedirect(reverse('ordem_servico:definicao') + '?aba=status')

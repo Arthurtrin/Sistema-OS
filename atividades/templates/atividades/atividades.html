@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Atividades de Usuários{% endblock %}
+{% block title %}Auditoria{% endblock %}
 
 {% block content %}
 <style>
@@ -108,16 +108,16 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel{{ atividade.id }}">Técnico: {{ tecnico.nome }}</h5>
+                                    <h5 class="modal-title" id="modalLabel{{ atividade.id }}">Atividade: '{{ atividade.descricao }}'</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Escolha uma das ações para {{ tecnico.nome }}.</p>
+                                    <p>Escolha uma das ações para '{{ atividade.descricao }}''.</p>
                                 </div>
                                 <div class="modal-footer" style="padding-top: 0px;"></div>
                                 <div class="modal-body d-flex justify-content-around">
                                     <a href="" class="btn btn-success">
-                                        <i class="fas fa-eye"></i> Ver Técnico
+                                        <i class="fas fa-eye"></i> Ver Detalhes
                                     </a>
                                     <a href="" class="btn btn-primary">
                                         <i class="fas fa-edit"></i> Editar
