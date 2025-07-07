@@ -2,13 +2,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .forms import ClienteForm, SegmentoForm, AtividadeForm
-from .models import Cliente, Segmento, Atividade
+from .models import Cliente, Segmento, Atividade, ESTADOS
 from atividades.models import AtividadeUsuarioCliente
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+import pandas as pd
+from django.http import HttpResponse
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.datavalidation import DataValidation
 
 @login_required
 def cadastrar_clientes(request):
@@ -187,14 +191,6 @@ def cadastrar_atividade(request):
         form = AtividadeForm()
     return render(request, 'clientes/cadastrar_atividade.html', {'form': form})
 
-
-
-from django.http import HttpResponse
-import pandas as pd
-from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.datavalidation import DataValidation
-from .models import Cliente, Atividade, Segmento, ESTADOS
-
 def ajustar_largura_colunas(worksheet, dataframe):
     for i, col in enumerate(dataframe.columns, 1):
         max_length = max(
@@ -234,11 +230,16 @@ def download_modelo_clientes(request):
             if nome_campo == 'nome_cliente':
                 exemplo[nome_campo] = 'Empresa Exemplo'
             elif nome_campo == 'data_inclusao':
-                exemplo[nome_campo] = '2025-07-06'
+                exemplo[nome_campo] = '00/00/0000'
             elif nome_campo == 'cnpj_cpf':
-                exemplo[nome_campo] = '12.345.678/0001-90'
+                exemplo[nome_campo] = '00.000.000/0000-00 ou 000.000.000-00'
             elif nome_campo == 'email1':
-                exemplo[nome_campo] = 'contato@empresa.com'
+                exemplo[nome_campo] = 'exemplo@gmail.com'
+            elif nome_campo == 'telefone1' or  nome_campo == 'telefone2' or nome_campo == 'celular1' or  nome_campo == 'celular2':
+                exemplo[nome_campo] = '(00) 00000-0000'
+            elif nome_campo == 'cep_real' or  nome_campo == 'cep_cobranca':
+                exemplo[nome_campo] = '00000-000'
+
             else:
                 exemplo[nome_campo] = ''
 
@@ -272,20 +273,15 @@ def download_modelo_clientes(request):
 
     return response
 
-
-
-from django.contrib import messages
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-import pandas as pd
-from .models import Cliente, Atividade, Segmento, ESTADOS
-
 def importar_clientes(request):
     if request.method == 'POST' and request.FILES.get('arquivo'):
         arquivo = request.FILES['arquivo']
         try:
             df = pd.read_excel(arquivo)
+
+            # Função para limpar valores NaN
+            def limpar_valor(valor):
+                return '' if pd.isna(valor) else valor
 
             # Campos esperados no arquivo (todos menos id e codigo)
             campos_excluidos = ['id', 'codigo']
@@ -298,25 +294,31 @@ def importar_clientes(request):
                 messages.error(request, f'Colunas faltando na planilha: {", ".join(faltando)}')
                 return redirect('clientes:listar_clientes')
 
-            # Mapeamento dos estados válidos para facilitar validação
+            # Campos obrigatórios baseados no model
+            campos_obrigatorios = [
+                f.name for f in Cliente._meta.get_fields()
+                if getattr(f, 'blank', False) is False and not f.auto_created and f.name not in campos_excluidos
+            ]
+
+            # Mapeamento dos estados válidos
             estados_validos = {sigla for sigla, _ in ESTADOS}
 
-            # Percorre as linhas para criar os clientes
             for idx, row in df.iterrows():
-                # Validação básica de campos obrigatórios
-                if pd.isna(row['nome_cliente']) or pd.isna(row['data_inclusao']) or pd.isna(row['cnpj_cpf']) or pd.isna(row['email1']):
-                    messages.warning(request, f"Linha {idx+2}: campos obrigatórios faltando. Ignorada.")
-                    continue
+                # Validação de campos obrigatórios
+                for campo in campos_obrigatorios:
+                    if campo not in row or pd.isna(row[campo]):
+                        messages.error(request, f"Linha {idx+2}: campo obrigatório '{campo}' faltando. Ignorada.")
+                        return redirect('clientes:listar_clientes')
 
                 # Verifica estados
                 estado_real = str(row.get('estado_real', '')).strip().upper()
                 estado_cobranca = str(row.get('estado_cobranca', '')).strip().upper()
                 if estado_real not in estados_validos:
-                    messages.warning(request, f"Linha {idx+2}: estado_real inválido '{estado_real}'. Ignorada.")
-                    continue
+                    messages.error(request, f"Linha {idx+2}: estado_real inválido '{estado_real}'. Ignorada.")
+                    return redirect('clientes:listar_clientes')
                 if estado_cobranca and estado_cobranca not in estados_validos:
-                    messages.warning(request, f"Linha {idx+2}: estado_cobranca inválido '{estado_cobranca}'. Ignorada.")
-                    continue
+                    messages.error(request, f"Linha {idx+2}: estado_cobranca inválido '{estado_cobranca}'. Ignorada.")
+                    return redirect('clientes:listar_clientes')
 
                 # Pega ou cria Atividade
                 atividade_nome = str(row.get('atividade', '')).strip()
@@ -330,40 +332,41 @@ def importar_clientes(request):
                 if segmento_nome:
                     segmento_obj, _ = Segmento.objects.get_or_create(nome=segmento_nome)
 
-                # Cria ou atualiza cliente baseado no cnpj_cpf (único)
+                # Cria ou atualiza cliente
                 cliente, created = Cliente.objects.update_or_create(
                     cnpj_cpf=str(row['cnpj_cpf']).strip(),
                     defaults={
-                        'nome_cliente': row['nome_cliente'],
-                        'nome_fantasia': row.get('nome_fantasia', ''),
-                        'data_inclusao': row['data_inclusao'],
-                        'inscricao_estadual': row.get('inscricao_estadual', ''),
-                        'inscricao_municipal': row.get('inscricao_municipal', ''),
-                        'email1': row['email1'],
-                        'email2': row.get('email2', ''),
-                        'telefone1': row.get('telefone1', ''),
-                        'telefone2': row.get('telefone2', ''),
-                        'celular1': row.get('celular1', ''),
-                        'celular2': row.get('celular2', ''),
+                        'nome_cliente': limpar_valor(row['nome_cliente']),
+                        'nome_fantasia': limpar_valor(row.get('nome_fantasia')),
+                        'data_inclusao': limpar_valor(row['data_inclusao']),
+                        'inscricao_estadual': limpar_valor(row.get('inscricao_estadual')),
+                        'inscricao_municipal': limpar_valor(row.get('inscricao_municipal')),
+                        'email1': limpar_valor(row['email1']),
+                        'email2': limpar_valor(row.get('email2')),
+                        'telefone1': limpar_valor(row.get('telefone1')),
+                        'telefone2': limpar_valor(row.get('telefone2')),
+                        'celular1': limpar_valor(row.get('celular1')),
+                        'celular2': limpar_valor(row.get('celular2')),
                         'atividade': atividade_obj,
                         'segmento': segmento_obj,
-                        'observacao': row.get('observacao', ''),
-                        'logradouro_real': row.get('logradouro_real', ''),
-                        'numero_real': str(row.get('numero_real', '')),
-                        'complemento_real': row.get('complemento_real', ''),
-                        'bairro_real': row.get('bairro_real', ''),
-                        'cidade_real': row.get('cidade_real', ''),
+                        'observacao': limpar_valor(row.get('observacao')),
+                        'logradouro_real': limpar_valor(row.get('logradouro_real')),
+                        'numero_real': str(limpar_valor(row.get('numero_real')) or ''),
+                        'complemento_real': limpar_valor(row.get('complemento_real')),
+                        'bairro_real': limpar_valor(row.get('bairro_real')),
+                        'cidade_real': limpar_valor(row.get('cidade_real')),
                         'estado_real': estado_real,
-                        'cep_real': str(row.get('cep_real', '')),
-                        'logradouro_cobranca': row.get('logradouro_cobranca', ''),
-                        'numero_cobranca': str(row.get('numero_cobranca', '')),
-                        'complemento_cobranca': row.get('complemento_cobranca', ''),
-                        'bairro_cobranca': row.get('bairro_cobranca', ''),
-                        'cidade_cobranca': row.get('cidade_cobranca', ''),
+                        'cep_real': str(limpar_valor(row.get('cep_real')) or ''),
+                        'logradouro_cobranca': limpar_valor(row.get('logradouro_cobranca')),
+                        'numero_cobranca': str(limpar_valor(row.get('numero_cobranca')) or ''),
+                        'complemento_cobranca': limpar_valor(row.get('complemento_cobranca')),
+                        'bairro_cobranca': limpar_valor(row.get('bairro_cobranca')),
+                        'cidade_cobranca': limpar_valor(row.get('cidade_cobranca')),
                         'estado_cobranca': estado_cobranca if estado_cobranca else None,
-                        'cep_cobranca': str(row.get('cep_cobranca', '')),
+                        'cep_cobranca': str(limpar_valor(row.get('cep_cobranca')) or ''),
                     }
                 )
+
             messages.success(request, 'Planilha importada com sucesso!')
 
         except Exception as e:
