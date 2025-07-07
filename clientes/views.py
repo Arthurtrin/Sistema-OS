@@ -186,3 +186,191 @@ def cadastrar_atividade(request):
     else:
         form = AtividadeForm()
     return render(request, 'clientes/cadastrar_atividade.html', {'form': form})
+
+
+
+from django.http import HttpResponse
+import pandas as pd
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.datavalidation import DataValidation
+from .models import Cliente, Atividade, Segmento, ESTADOS
+
+def ajustar_largura_colunas(worksheet, dataframe):
+    for i, col in enumerate(dataframe.columns, 1):
+        max_length = max(
+            dataframe[col].astype(str).map(len).max(),
+            len(str(col))
+        )
+        adjusted_width = max_length + 2
+        column_letter = get_column_letter(i)
+        worksheet.column_dimensions[column_letter].width = adjusted_width
+
+def download_modelo_clientes(request):
+    campos_excluidos = ['id', 'codigo']
+    campos_modelo = []
+    exemplo = {}
+
+    # ForeignKey: opções do banco
+    atividades = list(Atividade.objects.values_list('nome', flat=True))
+    segmentos = list(Segmento.objects.values_list('nome', flat=True))
+
+    # Choices fixos
+    estados = [sigla for sigla, nome in ESTADOS]
+
+    # Campos que terão dropdowns
+    campos_dropdown = {
+        'atividade': atividades,
+        'segmento': segmentos,
+        'estado_real': estados,
+        'estado_cobranca': estados,
+    }
+
+    # Monta os campos e o exemplo
+    for field in Cliente._meta.get_fields():
+        if field.concrete and not field.many_to_many and field.name not in campos_excluidos:
+            nome_campo = field.name
+            campos_modelo.append(nome_campo)
+
+            if nome_campo == 'nome_cliente':
+                exemplo[nome_campo] = 'Empresa Exemplo'
+            elif nome_campo == 'data_inclusao':
+                exemplo[nome_campo] = '2025-07-06'
+            elif nome_campo == 'cnpj_cpf':
+                exemplo[nome_campo] = '12.345.678/0001-90'
+            elif nome_campo == 'email1':
+                exemplo[nome_campo] = 'contato@empresa.com'
+            else:
+                exemplo[nome_campo] = ''
+
+    df_modelo = pd.DataFrame([exemplo], columns=campos_modelo)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=modelo_clientes.xlsx'
+
+    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+        df_modelo.to_excel(writer, sheet_name='Modelo', index=False)
+        workbook = writer.book
+        sheet = workbook['Modelo']
+
+        ajustar_largura_colunas(sheet, df_modelo)
+
+        # Adiciona validação para campos com dropdown
+        for nome_campo, opcoes in campos_dropdown.items():
+            if nome_campo in campos_modelo and opcoes:
+                col_index = campos_modelo.index(nome_campo) + 1
+                col_letra = get_column_letter(col_index)
+                val_list = ",".join([str(op).replace(",", " ") for op in opcoes])  # remove vírgula do conteúdo
+
+                dv = DataValidation(type="list", formula1=f'"{val_list}"', allow_blank=True)
+                dv.error = 'Escolha uma opção válida.'
+                dv.errorTitle = 'Entrada inválida'
+                dv.prompt = f'Selecione um {nome_campo}'
+                dv.promptTitle = f'{nome_campo.capitalize()}'
+
+                sheet.add_data_validation(dv)
+                dv.add(f"{col_letra}2:{col_letra}100")  # aplica nas linhas 2 a 100 (pode ajustar)
+
+    return response
+
+
+
+from django.contrib import messages
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+import pandas as pd
+from .models import Cliente, Atividade, Segmento, ESTADOS
+
+def importar_clientes(request):
+    if request.method == 'POST' and request.FILES.get('arquivo'):
+        arquivo = request.FILES['arquivo']
+        try:
+            df = pd.read_excel(arquivo)
+
+            # Campos esperados no arquivo (todos menos id e codigo)
+            campos_excluidos = ['id', 'codigo']
+            campos_modelo = [f.name for f in Cliente._meta.get_fields()
+                             if f.concrete and not f.many_to_many and f.name not in campos_excluidos]
+
+            # Verifica se todas as colunas necessárias estão no arquivo
+            faltando = set(campos_modelo) - set(df.columns)
+            if faltando:
+                messages.error(request, f'Colunas faltando na planilha: {", ".join(faltando)}')
+                return redirect('clientes:listar_clientes')
+
+            # Mapeamento dos estados válidos para facilitar validação
+            estados_validos = {sigla for sigla, _ in ESTADOS}
+
+            # Percorre as linhas para criar os clientes
+            for idx, row in df.iterrows():
+                # Validação básica de campos obrigatórios
+                if pd.isna(row['nome_cliente']) or pd.isna(row['data_inclusao']) or pd.isna(row['cnpj_cpf']) or pd.isna(row['email1']):
+                    messages.warning(request, f"Linha {idx+2}: campos obrigatórios faltando. Ignorada.")
+                    continue
+
+                # Verifica estados
+                estado_real = str(row.get('estado_real', '')).strip().upper()
+                estado_cobranca = str(row.get('estado_cobranca', '')).strip().upper()
+                if estado_real not in estados_validos:
+                    messages.warning(request, f"Linha {idx+2}: estado_real inválido '{estado_real}'. Ignorada.")
+                    continue
+                if estado_cobranca and estado_cobranca not in estados_validos:
+                    messages.warning(request, f"Linha {idx+2}: estado_cobranca inválido '{estado_cobranca}'. Ignorada.")
+                    continue
+
+                # Pega ou cria Atividade
+                atividade_nome = str(row.get('atividade', '')).strip()
+                atividade_obj = None
+                if atividade_nome:
+                    atividade_obj, _ = Atividade.objects.get_or_create(nome=atividade_nome)
+
+                # Pega ou cria Segmento
+                segmento_nome = str(row.get('segmento', '')).strip()
+                segmento_obj = None
+                if segmento_nome:
+                    segmento_obj, _ = Segmento.objects.get_or_create(nome=segmento_nome)
+
+                # Cria ou atualiza cliente baseado no cnpj_cpf (único)
+                cliente, created = Cliente.objects.update_or_create(
+                    cnpj_cpf=str(row['cnpj_cpf']).strip(),
+                    defaults={
+                        'nome_cliente': row['nome_cliente'],
+                        'nome_fantasia': row.get('nome_fantasia', ''),
+                        'data_inclusao': row['data_inclusao'],
+                        'inscricao_estadual': row.get('inscricao_estadual', ''),
+                        'inscricao_municipal': row.get('inscricao_municipal', ''),
+                        'email1': row['email1'],
+                        'email2': row.get('email2', ''),
+                        'telefone1': row.get('telefone1', ''),
+                        'telefone2': row.get('telefone2', ''),
+                        'celular1': row.get('celular1', ''),
+                        'celular2': row.get('celular2', ''),
+                        'atividade': atividade_obj,
+                        'segmento': segmento_obj,
+                        'observacao': row.get('observacao', ''),
+                        'logradouro_real': row.get('logradouro_real', ''),
+                        'numero_real': str(row.get('numero_real', '')),
+                        'complemento_real': row.get('complemento_real', ''),
+                        'bairro_real': row.get('bairro_real', ''),
+                        'cidade_real': row.get('cidade_real', ''),
+                        'estado_real': estado_real,
+                        'cep_real': str(row.get('cep_real', '')),
+                        'logradouro_cobranca': row.get('logradouro_cobranca', ''),
+                        'numero_cobranca': str(row.get('numero_cobranca', '')),
+                        'complemento_cobranca': row.get('complemento_cobranca', ''),
+                        'bairro_cobranca': row.get('bairro_cobranca', ''),
+                        'cidade_cobranca': row.get('cidade_cobranca', ''),
+                        'estado_cobranca': estado_cobranca if estado_cobranca else None,
+                        'cep_cobranca': str(row.get('cep_cobranca', '')),
+                    }
+                )
+            messages.success(request, 'Planilha importada com sucesso!')
+
+        except Exception as e:
+            messages.error(request, f'Erro ao importar planilha: {e}')
+
+        return redirect('clientes:listar_clientes')
+
+    # GET
+    return render(request, 'clientes/listar_clientes.html')
+

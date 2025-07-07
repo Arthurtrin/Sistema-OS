@@ -102,6 +102,9 @@
         transform: scale(1.05);
         box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
     }
+.modal {
+  z-index: 1100 !important;
+}
 
 </style>
 
@@ -154,11 +157,46 @@
     </div>
     </div>
   
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Clientes Recentes</h4>
-    <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-dark-custom btn-sm w-auto">
-      <i class="fas fa-plus me-1"></i> Cadastrar Novo Cliente
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Clientes Recentes</h4>
+      <div class="d-flex gap-2 ms-auto">
+        <a href="{% url 'clientes:cadastrar_clientes' %}" class="btn btn-dark-custom btn-sm">
+          <i class="fas fa-plus me-1"></i> Cadastrar Novo Cliente
+        </a>
+        <!-- Botão para abrir modal -->
+        <button type="button" class="btn btn-dark-custom btn-sm" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
+          <i class="fas fa-file-excel me-1"></i> Importar de Planilha
+        </button>
+      </div>
+    </div>
+    <div class="modal fade" id="uploadPlanilhaModal" tabindex="-1" aria-labelledby="uploadPlanilhaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'clientes:importar_clientes' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="uploadPlanilhaModalLabel">Importar Clientes via Planilha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <a href="{% url 'clientes:download_modelo_clientes' %}" class="btn btn-outline-success mb-3" target="_blank">
+                <i class="fas fa-file-excel me-1"></i> Baixar modelo de planilha
+              </a>
+              <div class="mb-3">
+                <label for="arquivoPlanilha" class="form-label">Selecione o arquivo Excel (.xlsx)</label>
+                <input class="form-control" type="file" name="arquivo" id="arquivoPlanilha" accept=".xlsx" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 
     <div class="table-responsive">

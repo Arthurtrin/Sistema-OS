@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'transportadoras',
     'produtos',
     'atividades',
-    'ordem_servico'
+    'ordem_servico',
+    'configuracoes'
     
 ]
 

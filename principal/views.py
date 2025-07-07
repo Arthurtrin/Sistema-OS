@@ -111,4 +111,4 @@ def ordem_servico(request):
 
 @login_required
 def configuracoes(request):
-    return render(request, 'principal/configuracoes.html')
+    return render(request, 'configuracoes/configuracoes.html')
