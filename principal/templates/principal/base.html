@@ -302,7 +302,7 @@
         </a>
         <ul class="collapse list-unstyled ps-4" id="clientesSubmenu">
           <li><a class="nav-link" href="{% url 'clientes:cadastrar_clientes' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'clientes:listar_clientes' %}"><i class="fas fa-users me-2"></i>Ver Clientes</a></li>
+          <li><a class="nav-link" href="{% url 'clientes:listar_clientes' %}"><i class="fas fa-handshake me-2"></i>Ver Clientes</a></li>
           <li><a class="nav-link" href="{% url 'clientes:segmentos_atividades' %}"><i class="fas fa-cog me-2"></i>Definições</a></li>
         </ul>
       </li>
@@ -326,17 +326,7 @@
         </a>
         <ul class="collapse list-unstyled ps-4" id="tecnicosSubmenu">
           <li><a class="nav-link" href="{% url 'tecnicos:cadastrar_tecnicos' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}"><i class="fas fa-users me-2"></i>Ver Técnicos</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mb-2">
-        <a class="nav-link d-flex align-items-center" href="#transportadoraSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-truck"></i><span class="ms-2">Transportadoras</span>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="transportadoraSubmenu">
-          <li><a class="nav-link" href=""><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href=""><i class="fas fa-truck-moving me-2"></i>Ver Transportadoras</a></li>
+          <li><a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}"><i class="fas fa-tools me-2"></i>Ver Técnicos</a></li>
         </ul>
       </li>
 
@@ -359,6 +349,64 @@
       </li>
     </ul>
   </div>
+
+  <!-- Modal Entrada -->
+<div class="modal fade" id="modalEntrada" tabindex="-1" aria-labelledby="modalEntradaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEntradaLabel">Entrada de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:entrada_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoEntrada" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoEntrada" name="codigoEntrada" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeEntrada" class="form-label">Quantidade de Entrada</label>
+            <input type="number" class="form-control" id="quantidadeEntrada" name="quantidadeEntrada" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Saída -->
+<div class="modal fade" id="modalSaida" tabindex="-1" aria-labelledby="modalSaidaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSaidaLabel">Saída de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:saida_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoSaida" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoSaida" name="codigoSaida" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeSaida" class="form-label">Quantidade de Saída</label>
+            <input type="number" class="form-control" id="quantidadeSaida" name="quantidadeSaida" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
   <div class="content" id="mainContent">
     <div class="container pt-5">

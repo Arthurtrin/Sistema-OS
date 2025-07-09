@@ -58,10 +58,10 @@ def listar_clientes(request):
         )
 
     if data_inicio:
-        clientes = clientes.filter(data_inclusao__date__gte=data_inicio)
+        clientes = clientes.filter(data_inclusao__gte=data_inicio)
         
     if data_fim:
-        clientes = clientes.filter(data_inclusao__date__lte=data_fim)
+        clientes = clientes.filter(data_inclusao__lte=data_fim)
 
     paginator = Paginator(clientes, 5)
     page_number = request.GET.get('page')

@@ -46,7 +46,7 @@ def home(request):
         )
     
     if data_abertura:
-        ordens = ordens.filter(data_abertura__date=data_abertura)
+        ordens = ordens.filter(data_abertura=data_abertura)
 
     paginator = Paginator(ordens, 10)
     page_number = request.GET.get('page')
