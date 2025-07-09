@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.contrib import messages
 from .forms import TecnicoForm
 from .models import Tecnico
+from configuracoes.models import Empresa
 
 @login_required
 def cadastrar_tecnicos(request):
@@ -65,4 +66,5 @@ def editar_tecnico(request, tecnico_id):
 @login_required
 def ver_tecnico(request, tecnico_id):
     tecnico = get_object_or_404(Tecnico, id=tecnico_id)
-    return render(request, 'tecnicos/ver_tecnico.html', {'tecnico': tecnico})
+    empresa = Empresa.objects.first()
+    return render(request, 'tecnicos/ver_tecnico.html', {'tecnico': tecnico, 'empresa':empresa})

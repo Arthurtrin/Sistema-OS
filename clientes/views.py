@@ -13,6 +13,7 @@ import pandas as pd
 from django.http import HttpResponse
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
+from configuracoes.models import Empresa
 
 @login_required
 def cadastrar_clientes(request):
@@ -110,7 +111,8 @@ def excluir_cliente(request, cliente_id):
 @login_required
 def ver_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    return render(request, 'clientes/ver_cliente.html', {'cliente': cliente})
+    empresa = Empresa.objects.first()
+    return render(request, 'clientes/ver_cliente.html', {'cliente': cliente, "empresa":empresa})
 
 @login_required
 def segmentos_atividades(request):

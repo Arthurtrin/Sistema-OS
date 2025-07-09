@@ -1,4 +1,3 @@
-
 <style>
   .nf-container {
     max-width: 960px;
@@ -7,6 +6,37 @@
     border: 1px solid #000;
     background-color: #fff;
     font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+
+  .nf-header-empresa {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    gap: 20px; /* Espaço entre logo e dados */
+  }
+
+  .nf-header-empresa img {
+    max-height: 100px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .empresa-dados {
+    flex: 1; /* Faz os dados ocuparem o resto do espaço */
+    text-align: left;
+  }
+
+  .empresa-dados h2 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .empresa-dados p {
+    margin: 2px 0;
     font-size: 13px;
   }
 
@@ -59,6 +89,21 @@
 
 <div class="nf-container">
 
+  {% if empresa %}
+  <div class="nf-header-empresa">
+    {% if empresa.logo %}
+      <img src="{{ empresa.logo.url }}" alt="Logo da Empresa">
+    {% endif %}
+    <div class="empresa-dados">
+      <h2>{{ empresa.razao_social }}</h2>
+      <p><strong>CNPJ:</strong> {{ empresa.cnpj }}</p>
+      <p><strong>Email:</strong> {{ empresa.email }} | <strong>Telefone:</strong> {{ empresa.telefone }}</p>
+      <p><strong>Endereço:</strong> {{ empresa.logradouro }} {{empresa.numero}} {{ empresa.bairro }}, {{ empresa.complemento|default:", " }}</p>
+      <p><strong>Cidade/UF:</strong> {{ empresa.cidade }} - {{ empresa.estado }} | <strong>CEP:</strong> {{ empresa.cep }}</p>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="nf-section">
     <div class="nf-title">DADOS DA ORDEM DE SERVIÇO</div>
     <div class="nf-line">
@@ -109,6 +154,7 @@
       {% endif %}
     </div>
   </div>
+
   <div class="nf-section">
     <div class="nf-title">PRODUTOS VINCULADOS</div>
     {% if ordem.itens.all %}
@@ -136,6 +182,4 @@
   <div class="print-btn">
     <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
   </div>
-
 </div>
-

@@ -1,0 +1,200 @@
+{% extends 'principal/base.html' %}
+{% block title %}Dados da Empresa{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow rounded-4">
+    <div class="card-header bg-primary text-white rounded-top-4">
+      <h4 class="my-2">Dados da Empresa</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label for="{{ form.razao_social.id_for_label }}" class="form-label-professional">Razão Social</label>
+              {{ form.razao_social }}
+              {% if form.razao_social.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.razao_social.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label for="{{ form.cnpj.id_for_label }}" class="form-label-professional">CNPJ</label>
+              {{ form.cnpj }}
+              {% if form.cnpj.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.cnpj.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label for="{{ form.email.id_for_label }}" class="form-label-professional">E-mail</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.email.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label for="{{ form.telefone.id_for_label }}" class="form-label-professional">Telefone</label>
+              {{ form.telefone }}
+              {% if form.telefone.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.telefone.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-8">
+            <label for="{{ form.logradouro.id_for_label }}" class="form-label-professional">Logradouro</label>
+              {{ form.logradouro }}
+              {% if form.logradouro.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.logradouro.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-4">
+            <label for="{{ form.numero.id_for_label }}" class="form-label-professional">Número</label>
+              {{ form.numero }}
+              {% if form.numero.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.numero.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label for="{{ form.complemento.id_for_label }}" class="form-label-professional">Complemento</label>
+              {{ form.complemento }}
+              {% if form.complemento.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.complemento.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+             <label for="{{ form.bairro.id_for_label }}" class="form-label-professional">Bairro</label>
+              {{ form.bairro }}
+              {% if form.bairro.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.bairro.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label for="{{ form.cidade.id_for_label }}" class="form-label-professional">Cidade</label>
+              {{ form.cidade }}
+              {% if form.cidade.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.cidade.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-3">
+            <label for="{{ form.estado.id_for_label }}" class="form-label-professional">Estado</label>
+              {{ form.estado }}
+              {% if form.estado.errors %}
+                <div class="invalid-feedback d-block">
+                {{ form.estado.errors|striptags }}
+                </div>
+              {% endif %}
+          </div>
+
+          <div class="col-md-3">
+            <label for="{{ form.cep.id_for_label }}" class="form-label-professional">CEP</label>
+            {{ form.cep }}
+            {% if form.cep.errors %}
+              <div class="invalid-feedback d-block">
+              {{ form.cep.errors|striptags }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Campo para upload da logo -->
+          <div class="col-md-6">
+            <label class="form-label">{{ form.logo.label }}</label>
+            {{ form.logo }}
+            {% if form.logo.errors %}
+              <div class="invalid-feedback d-block">
+                {{ form.logo.errors|striptags }}
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-success px-4">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+   <script>
+    // Máscara para CPF/CNPJ
+    const cnpjCpfInput = document.getElementById("{{ form.cnpj.id_for_label }}");
+    if (cnpjCpfInput) {
+        cnpjCpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d)/, '$1.$2')
+                             .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            } else {
+                value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                             .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                             .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                             .replace(/(\d{4})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Máscara para CEP
+    const cepInput = document.getElementById("{{ form.cep.id_for_label }}");
+    if (cepInput) {
+        cepInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    // Máscara para telefone/celular
+    function maskPhone(input) {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            e.target.value = value;
+        });
+    }
+
+    const telefoneInput = document.getElementById("{{ form.telefone.id_for_label }}");
+    if (telefoneInput) {
+        maskPhone(telefoneInput);
+    }
+  </script>
+{% endblock %}

@@ -8,6 +8,7 @@ from .models import Produto, Marca, Fabricante, Grupo
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
+from configuracoes.models import Empresa
 
 @login_required
 def cadastrar_produto(request):
@@ -195,7 +196,8 @@ def fabricante_marca_grupo(request):
 @login_required
 def ver_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
-    return render(request, 'produtos/ver_produto.html', {'produto': produto})
+    empresa = Empresa.objects.first()
+    return render(request, 'produtos/ver_produto.html', {'produto': produto, 'empresa':empresa})
 
 @login_required
 def cadastrar_marca(request):

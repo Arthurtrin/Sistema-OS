@@ -4,6 +4,7 @@ from .models import OrdemServico, Status, Unidade, Segmento, ProdutoOrdemServico
 from .forms import SegmentoForm, StatusForm, UnidadeForm, OrdemServicoForm, ProdutoOrdemServicoForm
 from produtos.models import Produto
 from usuarios.models import Perfil, Chave_Gerenciador
+from configuracoes.models import Empresa
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
@@ -246,7 +247,8 @@ def excluir_os(request, os_id):
 
 def ver_os(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)
-    return render(request, 'ordem_servico/ver_os.html', {'ordem': ordem})
+    empresa = Empresa.objects.first()
+    return render(request, 'ordem_servico/ver_os.html', {'ordem': ordem, "empresa":empresa})
 
 @login_required
 def definicao(request):
