@@ -28,6 +28,10 @@ class TecnicoForm(forms.ModelForm):
             else:
                 field.widget.attrs.update({'class': css_class})
 
+        for field_name, field in self.fields.items():
+            if field.widget.__class__.__name__ == 'Select':
+                field.widget.attrs.update({'class': 'form-select'})
+
         # Remove o empty_label padrão do campo 'estado' para forçar seleção
         if 'estado' in self.fields:
             self.fields['estado'].empty_label = None

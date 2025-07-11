@@ -56,11 +56,11 @@ class Status(models.Model):
 
 # Create your models here.
 class OrdemServico(models.Model):
-    codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    
     titulo = models.CharField(max_length=100)
     data_abertura = models.DateField()
     
-    n_cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True)
+    n_cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
     digitador = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     unidade = models.ForeignKey(Unidade, on_delete=models.PROTECT)
     segmento = models.ForeignKey(Segmento, on_delete=models.PROTECT)
@@ -71,7 +71,7 @@ class OrdemServico(models.Model):
 
     n_art = models.IntegerField()
     obra_inicio = models.DateField()
-    obra_termino = models.DateField()
+    obra_termino = models.DateField(null=True, blank=True)
     obra_nome = models.CharField(max_length=100)
     municipio = models.CharField(max_length=100)
     uf = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
@@ -84,11 +84,6 @@ class OrdemServico(models.Model):
     def __str__(self):
         return f"{self.codigo}"
 
-    def save(self, *args, **kwargs):
-        if not self.codigo:
-            # Gera código automático com 8 caracteres únicos
-            self.codigo = str(uuid.uuid4())[:8].upper()
-        super().save(*args, **kwargs)
 
 class ProdutoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')

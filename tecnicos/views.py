@@ -28,7 +28,7 @@ def listar_tecnicos(request):
 
     if pesquisa:
         tecnicos = tecnicos.filter(
-            Q(codigo__icontains=pesquisa) |
+            Q(id__icontains=pesquisa) |
             Q(nome__icontains=pesquisa) |
             Q(email__icontains=pesquisa) |
             Q(cnpj_cpf__icontains=pesquisa) |

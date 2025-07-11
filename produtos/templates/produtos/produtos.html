@@ -94,6 +94,18 @@
         padding: 12px;
         border-bottom: 2px solid #dee2e6;
     }
+    .dropdown-menu{
+      background-color: #1a252f;
+    }
+    .dropdown-menu .dropdown-item{
+      background-color: #1a252f;
+      color: #fff;
+    }
+    .dropdown-menu .dropdown-item:hover{
+      background-color: #fffdfd7c;
+      color: white;
+    }
+
 </style>
 
 <div class="container my-4">
@@ -144,9 +156,24 @@
                     </button>
                 </div>
             </form>
-            <a href="{% url 'produtos:cadastrar_produto' %}" class="btn btn-dark-custom btn-sm w-auto">
-                <i class="fas fa-plus me-2"></i>Novo Produto
-            </a>
+            <div class="dropdown ms-auto">
+                <button class="btn btn-dark-custom dropdown-toggle d-flex align-items-center gap-2" type="button" id="clienteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-box"></i> Produto
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="clienteDropdown">
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'produtos:cadastrar_produto' %}">
+                    <i class="fas fa-plus text-white"></i> Cadastrar Produto
+                    </a>
+                </li>
+                <li>
+                    <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
+                    <i class="bi bi-table text-white"></i> Importar de Planilha
+                    </button>
+                </li>
+                </ul>
+            </div>
+
         </div>
 
         <div class="table-pagination-container">
@@ -167,7 +194,7 @@
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalProduto{{ produto.id }}"
                         style="cursor: pointer;">
-                        <td>{{ produto.codigo }}</td>
+                        <td>{{ produto.id }}</td>
                         <td>{{ produto.nome }}</td>
                         <td>{{ produto.get_situacao_display }}</td>
                         <td>{{ produto.quantidade }}</td>

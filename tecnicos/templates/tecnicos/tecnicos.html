@@ -95,6 +95,17 @@
         padding: 12px;
         border-bottom: 2px solid #dee2e6;
     }
+    .dropdown-menu{
+      background-color: #1a252f;
+    }
+    .dropdown-menu .dropdown-item{
+      background-color: #1a252f;
+      color: #fff;
+    }
+    .dropdown-menu .dropdown-item:hover{
+      background-color: #fffdfd7c;
+      color: white;
+    }
 </style>
 
 <div class="container my-4">
@@ -108,10 +119,23 @@
                     Pesquisar
                 </button>
             </form>
-
-            <a href="{% url 'tecnicos:cadastrar_tecnicos' %}" class="btn btn-dark-custom btn-sm w-auto">
-                <i class="fas fa-plus me-2"></i>Novo Técnico
-            </a>
+            <div class="dropdown ms-auto">
+                <button class="btn btn-dark-custom dropdown-toggle d-flex align-items-center gap-2" type="button" id="clienteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-tools"></i> Técnico
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="clienteDropdown">
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'tecnicos:cadastrar_tecnicos' %}">
+                    <i class="fas fa-plus text-white"></i> Cadastrar Técnico
+                    </a>
+                </li>
+                <li>
+                    <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
+                    <i class="bi bi-table text-white"></i> Importar de Planilha
+                    </button>
+                </li>
+                </ul>
+            </div>
         </div>
 
         <div class="table-pagination-container">
@@ -130,7 +154,7 @@
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalTecnico{{ tecnico.id }}"
                         style="cursor: pointer;">
-                        <td>{{ tecnico.codigo}}</td>
+                        <td>{{ tecnico.id}}</td>
                         <td>{{ tecnico.nome }}</td>
                         <td>{{ tecnico.cnpj_cpf }}</td>
                         <td>{{ tecnico.email }}</td>

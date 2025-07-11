@@ -57,16 +57,7 @@
         <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
           <div class="card-body">
             <div class="row g-2">
-              <div class="col-md-2">
-                <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Código</label>
-                {{ form.codigo }}
-                {% if form.codigo.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ form.codigo.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome do Técnico</label>
                 {{ form.nome }}
                 {% if form.nome.errors %}

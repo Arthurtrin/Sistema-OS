@@ -107,7 +107,7 @@
   <div class="nf-section">
     <div class="nf-title">DADOS DA ORDEM DE SERVIÇO</div>
     <div class="nf-line">
-      <div class="nf-field"><strong>Código:</strong> {{ ordem.codigo }}</div>
+      <div class="nf-field"><strong>Código:</strong> {{ ordem.id }}</div>
       <div class="nf-field"><strong>Título:</strong> {{ ordem.titulo }}</div>
       <div class="nf-field"><strong>Data de Abertura:</strong> {{ ordem.data_abertura }}</div>
       <div class="nf-field"><strong>Status:</strong> {{ ordem.status }}</div>
@@ -135,7 +135,7 @@
       <div class="nf-field"><strong>Município:</strong> {{ ordem.municipio }}</div>
       <div class="nf-field"><strong>UF:</strong> {{ ordem.uf }}</div>
       <div class="nf-field"><strong>Início da Obra:</strong> {{ ordem.obra_inicio }}</div>
-      <div class="nf-field"><strong>Término da Obra:</strong> {{ ordem.obra_termino }}</div>
+      <div class="nf-field"><strong>Término da Obra:</strong> {{ ordem.obra_termino|default:"---" }}</div>
       <div class="nf-field"><strong>UC/OS:</strong> {{ ordem.uc_os }}</div>
       <div class="nf-field"><strong>OC:</strong> {{ ordem.oc }}</div>
     </div>

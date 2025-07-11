@@ -8,8 +8,8 @@ class ProdutoOrdemServicoInline(admin.TabularInline):
 
 @admin.register(OrdemServico)
 class OrdemServicoAdmin(admin.ModelAdmin):
-    list_display = ['codigo', 'titulo', 'data_abertura', 'status']
-    search_fields = ['codigo', 'titulo', 'n_cliente__nome_cliente']
+    list_display = ['titulo', 'data_abertura', 'status']
+    search_fields = ['titulo', 'n_cliente__nome_cliente']
     list_filter = ['status', 'data_abertura', 'uf']
     inlines = [ProdutoOrdemServicoInline]
 

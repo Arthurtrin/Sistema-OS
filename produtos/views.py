@@ -34,7 +34,7 @@ def listar_produtos(request):
 
     if pesquisa:
         produtos = produtos.filter(
-            Q(codigo__icontains=pesquisa) |
+            Q(id__icontains=pesquisa) |
             Q(nome__icontains=pesquisa) |
             Q(grupo__nome__icontains=pesquisa) |
             Q(situacao__icontains=pesquisa) |

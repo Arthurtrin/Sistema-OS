@@ -27,7 +27,7 @@ class Produto(models.Model):
     ]
 
     # Identificação
-    codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    
     nome = models.CharField(max_length=100)
     grupo = models.ForeignKey(Grupo, on_delete=models.SET_NULL, null=True)
 
@@ -51,7 +51,4 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
-    def save(self, *args, **kwargs):
-        if self._state.adding and self.quantidade in [None, 0]:
-            self.quantidade = self.qtd_entrada or 0
-        super().save(*args, **kwargs)
+    

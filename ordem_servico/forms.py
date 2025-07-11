@@ -14,6 +14,7 @@ class ProdutoOrdemServicoForm(forms.ModelForm):
 
         # Esconde o campo baixa para ser manipulado via JS e campo hidden
         self.fields['baixa'].widget = forms.HiddenInput()
+        
 
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxInput):
@@ -27,6 +28,13 @@ class ProdutoOrdemServicoForm(forms.ModelForm):
         if 'DELETE' in self.fields:
             self.fields['DELETE'].widget.attrs.update({'style': 'display:none;'})
 
+        for field_name, field in self.fields.items():
+            if field.widget.__class__.__name__ == 'Select':
+                field.widget.attrs.update({'class': 'form-select'})
+
+        self.fields['produto'].empty_label = 'Selecione o Produto'
+        
+        
 class OrdemServicoForm(forms.ModelForm):
     data_abertura = forms.DateField(
         widget=forms.DateInput(attrs={
@@ -45,6 +53,7 @@ class OrdemServicoForm(forms.ModelForm):
     )
 
     obra_termino = forms.DateField(
+        required=False,
         widget=forms.DateInput(attrs={
             'type': 'date',
             'class': 'form-control'
@@ -74,6 +83,16 @@ class OrdemServicoForm(forms.ModelForm):
                 continue
 
             field.widget.attrs.update({'class': css_class})
+            
+        for field_name, field in self.fields.items():
+            if field.widget.__class__.__name__ == 'Select':
+                field.widget.attrs.update({'class': 'form-select'})
+
+        self.fields['status'].empty_label = 'Selecione o Status'
+        self.fields['digitador'].empty_label = 'Selecione o Digitador'
+        self.fields['n_cliente'].empty_label = 'Selecione o Cliente'
+        self.fields['unidade'].empty_label = 'Selecione a Unidade'
+        self.fields['segmento'].empty_label = 'Selecione o Segmento'
 
 
 

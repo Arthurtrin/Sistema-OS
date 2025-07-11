@@ -20,21 +20,25 @@ class ClienteForm(forms.ModelForm):
             css_class = 'form-control'
             if self.errors.get(field_name):
                 css_class += ' is-invalid'
-            if field_name == 'observacao':
-                field.widget.attrs.update({'class': css_class, 'rows': 4})
-            elif field_name != 'data_inclusao':
-                field.widget.attrs.update({'class': css_class})
+                
+            if field.widget.__class__.__name__ == 'Select':
+                class_attr = 'form-select'
+                if 'is-invalid' in css_class:
+                    class_attr += ' is-invalid'
+                field.widget.attrs.update({'class': class_attr})
+            else:
+                if field_name == 'observacao':
+                    field.widget.attrs.update({'class': css_class, 'rows': 4})
+                elif field_name != 'data_inclusao':
+                    field.widget.attrs.update({'class': css_class})
 
-        # ⬇️ Aqui está a linha que garante que a data apareça corretamente ao editar
         self.fields['data_inclusao'].input_formats = ['%Y-%m-%d']
-
-        self.fields['segmento'].empty_label = None
-        self.fields['atividade'].empty_label = None
-
+        self.fields['segmento'].empty_label = 'Selecione o Segmento'
+        self.fields['atividade'].empty_label = 'Selecione a Atividade'
         self.fields['segmento'].required = False
         self.fields['atividade'].required = False
 
-
+        
 class SegmentoForm(forms.ModelForm):
     class Meta:
         model = Segmento

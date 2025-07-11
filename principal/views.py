@@ -33,7 +33,6 @@ def home(request):
     if pesquisa:
         ordens = ordens.filter(
             Q(id__icontains=pesquisa) |
-            Q(codigo__icontains=pesquisa) |
             Q(titulo__icontains=pesquisa) |
             Q(status__nome__icontains=pesquisa) |
             Q(n_cliente__nome_cliente__icontains=pesquisa) |

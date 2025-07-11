@@ -46,7 +46,6 @@ class Segmento(models.Model):
 
 class Cliente(models.Model):
     # Identificação
-    codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
     nome_cliente = models.CharField(max_length=100)
     nome_fantasia = models.CharField(max_length=100, blank=True)
     data_inclusao = models.DateField()
@@ -89,11 +88,7 @@ class Cliente(models.Model):
     def __str__(self):
         return f"{self.nome_cliente}"
 
-    def save(self, *args, **kwargs):
-        if not self.codigo:
-            # Gera código automático com 8 caracteres únicos
-            self.codigo = str(uuid.uuid4())[:8].upper()
-        super().save(*args, **kwargs)
+    
 
 
 

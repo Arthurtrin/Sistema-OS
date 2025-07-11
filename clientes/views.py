@@ -43,7 +43,7 @@ def listar_clientes(request):
 
     if pesquisa:
         clientes = clientes.filter(
-            Q(codigo__icontains=pesquisa) |
+            Q(id__icontains=pesquisa) |
             Q(nome_cliente__icontains=pesquisa) |
             Q(nome_fantasia__icontains=pesquisa) |
             Q(email1__icontains=pesquisa) |
@@ -204,7 +204,7 @@ def ajustar_largura_colunas(worksheet, dataframe):
         worksheet.column_dimensions[column_letter].width = adjusted_width
 
 def download_modelo_clientes(request):
-    campos_excluidos = ['id', 'codigo']
+    campos_excluidos = ['id']
     campos_modelo = []
     exemplo = {}
 
@@ -286,7 +286,7 @@ def importar_clientes(request):
                 return '' if pd.isna(valor) else valor
 
             # Campos esperados no arquivo (todos menos id e codigo)
-            campos_excluidos = ['id', 'codigo']
+            campos_excluidos = ['id']
             campos_modelo = [f.name for f in Cliente._meta.get_fields()
                              if f.concrete and not f.many_to_many and f.name not in campos_excluidos]
 

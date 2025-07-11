@@ -34,7 +34,7 @@ ESTADOS = [
 
 class Tecnico(models.Model):
     nome = models.CharField(max_length=100)
-    codigo = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    
 
     cnpj_cpf = models.CharField(max_length=18, unique=True)
     rg = models.CharField(max_length=18, unique=True)
@@ -64,9 +64,5 @@ class Tecnico(models.Model):
     def __str__(self):
         return self.nome
     
-    def save(self, *args, **kwargs):
-        if not self.codigo:
-            # Gera código automático com 8 caracteres únicos
-            self.codigo = str(uuid.uuid4())[:8].upper()
-        super().save(*args, **kwargs)
+   
 
