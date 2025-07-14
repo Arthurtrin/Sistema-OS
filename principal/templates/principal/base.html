@@ -287,7 +287,7 @@
 
       <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#OsSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-file-alt"></i><span class="ms-2">Ordem de Serviço</span>
+          <i class="fas fa-file-alt"></i><span class="ms-0">Ordem de Serviço</span>
         </a>
         <ul class="collapse list-unstyled ps-4" id="OsSubmenu">
           <li><a class="nav-link" href="{% url 'ordem_servico:criar_os' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
@@ -298,7 +298,7 @@
 
       <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#clientesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-handshake"></i><span class="ms-2">Clientes</span>
+          <i class="fas fa-handshake"></i><span class="ms-0">Clientes</span>
         </a>
         <ul class="collapse list-unstyled ps-4" id="clientesSubmenu">
           <li><a class="nav-link" href="{% url 'clientes:cadastrar_clientes' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
@@ -309,20 +309,27 @@
 
       <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#produtosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-box"></i><span class="ms-2">Produtos</span>
+          <i class="fas fa-store"></i><span class="ms-0">Estoque</span>
         </a>
         <ul class="collapse list-unstyled ps-4" id="produtosSubmenu">
           <li><a class="nav-link" href="{% url 'produtos:cadastrar_produto' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'produtos:listar_produtos' %}"><i class="fas fa-box me-2"></i>Ver Produtos</a></li>
-          <li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalEntrada"><i class="fas fa-arrow-circle-right me-2"></i>Entrada</a></li>
-          <li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalSaida"><i class="fas fa-arrow-circle-left me-2"></i>Saída</a></li>
+          <li><a class="nav-link" href="{% url 'produtos:listar_produtos' %}"><i class="fas fa-shopping-basket me-2"></i>Ver Produtos</a></li>
+          <li><a class="nav-link d-flex align-items-center" href="#moviSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+            <i class="fas fa-exchange-alt me-2"></i>Movimentações</a>
+          </li>
+          <ul class="collapse list-unstyled ps-4" id="moviSubmenu">
+            <li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalEntrada"><i class="fas fa-arrow-circle-right me-2"></i>Entrada</a></li>
+            <li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalSaida"><i class="fas fa-arrow-circle-left me-2"></i>Saída</a></li>
+            <li><a class="nav-link" href="{% url 'produtos:relatorio_movimentacao' %}"><i class="fas fa-chart-bar me-2"></i>Relatorio</a></li>
+          </ul>
+          
           <li><a class="nav-link" href="{% url 'produtos:fabricante_marca_grupo' %}"><i class="fas fa-cog me-2"></i>Definições</a></li>
         </ul>
       </li>
 
       <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#tecnicosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-tools"></i><span class="ms-2">Técnicos</span>
+          <i class="fas fa-tools"></i><span class="ms-0">Técnicos</span>
         </a>
         <ul class="collapse list-unstyled ps-4" id="tecnicosSubmenu">
           <li><a class="nav-link" href="{% url 'tecnicos:cadastrar_tecnicos' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
@@ -331,20 +338,31 @@
       </li>
 
       <li class="nav-item mb-2">
-        <a class="nav-link" href="{% url 'usuarios' user.username %}">
-          <i class="fas fa-users"></i><span class="ms-2">Usuários</span>
+        <a class="nav-link d-flex align-items-center" href="#financeiroSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+          <i class="fas fa-dollar-sign"></i><span class="ms-0">Financeiro</span>
         </a>
+        <ul class="collapse list-unstyled ps-4" id="financeiroSubmenu">
+          <li><a class="nav-link" href=""><i class="fas fa-arrow-up me-2"></i>A Pagar</a></li>
+          <li><a class="nav-link" href=""><i class="fas fa-arrow-down me-2"></i>A Receber</a></li>
+          <li><a class="nav-link" href=""><i class="fas fa-file-invoice-dollar me-2"></i>Relatórios</a></li>
+        </ul>
       </li>
 
       <li class="nav-item mb-2">
         <a class="nav-link" href="{% url 'atividades:ver_atividades' %}">
-          <i class="fas fa-search"></i><span class="ms-2">Auditoria</span>
+          <i class="fas fa-search"></i><span class="ms-0">Auditoria</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="{% url 'usuarios' user.username %}">
+          <i class="fas fa-users"></i><span class="ms-0">Usuários</span>
         </a>
       </li>
 
       <li class="nav-item mb-2">
         <a class="nav-link" href="{% url 'configuracoes' %}">
-          <i class="fas fa-cog"></i><span class="ms-2">Configurações</span>
+          <i class="fas fa-cog"></i><span class="ms-0">Configurações</span>
         </a>
       </li>
     </ul>
@@ -368,6 +386,10 @@
           <div class="mb-3">
             <label for="quantidadeEntrada" class="form-label">Quantidade de Entrada</label>
             <input type="number" class="form-control" id="quantidadeEntrada" name="quantidadeEntrada" required>
+          </div>
+          <div class="mb-3">
+            <label for="Observacao" class="form-label">Observações</label>
+            <textarea class="form-control" id="Observacao" name="Observacao" rows="3"></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -397,6 +419,10 @@
           <div class="mb-3">
             <label for="quantidadeSaida" class="form-label">Quantidade de Saída</label>
             <input type="number" class="form-control" id="quantidadeSaida" name="quantidadeSaida" required>
+          </div>
+          <div class="mb-3">
+            <label for="Observacao" class="form-label">Observações</label>
+            <textarea class="form-control" id="Observacao" name="Observacao" rows="3"></textarea>
           </div>
         </div>
         <div class="modal-footer">

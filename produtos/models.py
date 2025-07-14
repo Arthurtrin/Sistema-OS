@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Grupo(models.Model):
     nome = models.CharField(max_length=60)
@@ -27,7 +28,6 @@ class Produto(models.Model):
     ]
 
     # Identificação
-    
     nome = models.CharField(max_length=100)
     grupo = models.ForeignKey(Grupo, on_delete=models.SET_NULL, null=True)
 
@@ -52,3 +52,18 @@ class Produto(models.Model):
         return self.nome
 
     
+class Movimentacao(models.Model):
+    TIPOS = [
+        ('entrada', 'Entrada de Produto'),
+        ('saida', 'Saída de Produto'),
+    ]
+
+    tipo = models.CharField(max_length=30, choices=TIPOS)
+    produto = models.ForeignKey(Produto, on_delete=models.SET_NULL, null=True)
+    quantidade = models.IntegerField()
+    data = models.DateField()
+    observacao = models.TextField(blank=True, null=True)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.tipo} - {self.produto}"

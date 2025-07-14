@@ -1,0 +1,280 @@
+{% extends 'principal/base.html' %}
+{% block title %}Gerenciar Produtos{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header {% if message.tags == 'error' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+            <h5 class="modal-title" id="messageModalLabel">
+              {% if message.tags == 'error' %}Erro{% else %}Sucesso{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+      });
+    </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+    .table-pagination-container {
+        min-height: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .custom-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background-color: transparent;
+    }
+
+    .custom-table thead {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .custom-table th {
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+    }
+
+    .custom-table tbody tr {
+        background-color: #ffffff;
+        transition: box-shadow 0.2s ease;
+        border-radius: 8px;
+    }
+
+    .custom-table tbody tr:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .custom-table td {
+        border: none;
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr td:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+
+    .custom-table tbody tr td:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .custom-thead {
+        background-color: #f8f9fa;
+        color: black;
+    }
+
+    .custom-thead th {
+        font-weight: 600;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .dropdown-menu{
+      background-color: #1a252f;
+    }
+    .dropdown-menu .dropdown-item{
+      background-color: #1a252f;
+      color: #fff;
+    }
+    .dropdown-menu .dropdown-item:hover{
+      background-color: #fffdfd7c;
+      color: white;
+    }
+
+  /* Garante que a soma dos cards não ultrapasse */
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+</style>
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Movimentações</h2>
+    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#estatisticas" aria-expanded="true" aria-controls="estatisticas">
+      Mostrar/Esconder Estatísticas
+    </button>
+  </div>
+    <div class="table-responsive">
+    <div id="estatisticas" class="collapse show">
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        <div class="col">
+            <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+            <div class="card-body">
+                <i class="fas fa-exchange-alt fa-2x mb-3 text-primary"></i>
+                <h5 class="card-title">{{ total_mov }} Movimentações</h5>
+            </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+            <div class="card-body">
+                <i class="fas fa-arrow-circle-right fa-2x mb-3 text-success"></i>
+                <h5 class="card-title">{{ total_entradas }} Entradas de Produtos</h5>
+            </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+            <div class="card-body">
+                <i class="fas fa-arrow-circle-left fa-2x mb-3 text-danger"></i>
+                <h5 class="card-title">{{ total_saidas }} Saídas de Produtos</h5>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+        <div class="col">
+            <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+            <div class="card-body">
+                <i class="fas fa-history fa-2x mb-3 text-dark"></i>
+                {% if ultima_mov %}
+                <h6 class="card-title">
+                    Última Movimentação:<br>
+                    <strong>{{ ultima_mov.produto }}</strong><br>
+                    {{ ultima_mov.get_tipo_display }} por <strong>{{ ultima_mov.usuario }}</strong> em {{ ultima_mov.data }}
+                </h6>
+                {% else %}
+                <h6 class="card-title">Nenhuma movimentação registrada.</h6>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
+            <div class="card-body">
+                <i class="fas fa-box-open fa-2x mb-3 text-warning"></i>
+                {% if produto_mais_movimentado %}
+                <h6 class="card-title">
+                    Produto mais movimentado:<br>
+                    <strong>{{ produto_mais_movimentado.produto__nome }}</strong><br>
+                    ({{ produto_mais_movimentado.total }} movimentações)
+                </h6>
+                {% else %}
+                <h6 class="card-title">Nenhum produto movimentado ainda.</h6>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+        </div>
+    </div> <!-- fecha collapse -->
+        <h5 class="mb-3">Filtros</h5>    
+        <div class="mb-3 d-flex justify-content-between align-items-center mb-3">
+            
+            <form method="get" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <input type="text" name="pesquisa" placeholder="Pesquisar" class="form-control"
+                        value="{{ pesquisa|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="tipo" class="form-select">
+                        <option value="">Tipo</option>
+                        {% for valor, label in tipos %}
+                            <option value="{{ valor }}" {% if valor == tipo_selecionado %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="date" name="data" class="form-control"
+                        value="{{ data|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+                        Pesquisar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        
+
+        <div class="table-pagination-container">
+            <table class="table table-hover custom-table">
+                <thead class="custom-thead">
+                    <tr>
+                        <th scope="col">Produto</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Observação</th>  
+                        <th scope="col">Data da Movimentação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for movi in movimentacoes %}
+                    <tr data-bs-toggle="modal"
+                        data-bs-target="#modalMovi{{ movi.id }}"
+                        style="cursor: pointer;">
+                        <td>{{ movi.produto }}</td>
+                        <td>{{ movi.get_tipo_display }}</td>
+                        <td>{{ movi.quantidade }}</td>
+                        <td>{{ movi.usuario }}</td>
+                        <td>{{ movi.observacao }}</td>
+                        <td>{{ movi.data }}</td>
+                    </tr>
+                    <!-- Modal da movimentação -->
+                    <div class="modal fade" id="modalMovi{{ movi.id }}" tabindex="-1" aria-labelledby="modalLabel{{ movi.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ movi.id }}">Produto: {{ movi.produto }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Informações da movimentação:</p>
+                                    <ul>
+                                        <li><strong>Tipo:</strong> {{ movi.get_tipo_display }}</li>
+                                        <li><strong>Quantidade:</strong> {{ movi.quantidade }}</li>
+                                        <li><strong>Data:</strong> {{ movi.data }}</li>
+                                        <li><strong>Usuário:</strong> {{ movi.usuario }}</li>
+                                        <li><strong>Observação:</strong> {{ movi.observacao }}</li>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">Nenhuma movimentação encontrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

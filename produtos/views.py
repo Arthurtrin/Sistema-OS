@@ -4,11 +4,12 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
 from .forms import ProdutoForm, MarcaForm, FabricanteForm, GrupoForm
-from .models import Produto, Marca, Fabricante, Grupo
+from .models import Produto, Marca, Fabricante, Grupo, Movimentacao
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from configuracoes.models import Empresa
+from django.utils import timezone
 
 @login_required
 def cadastrar_produto(request):
@@ -109,7 +110,7 @@ def entrada_produto(request):
     if request.method == 'POST':
         codigo = request.POST.get('codigoEntrada')
         quantidade = request.POST.get('quantidadeEntrada')
-
+        observacao = request.POST.get('Observacao')
         # Verifica se a quantidade é um número válido
         try:
             quantidade = int(quantidade)
@@ -121,7 +122,7 @@ def entrada_produto(request):
 
         # Tenta buscar o produto
         try:
-            produto = Produto.objects.get(codigo=codigo)
+            produto = Produto.objects.get(id=codigo)
         except Produto.DoesNotExist:
             mensagem = 'Produto não encontrado.'
             return render(request, 'principal/erro.html', {'mensagem': mensagem})
@@ -129,6 +130,15 @@ def entrada_produto(request):
         # Atualiza a quantidade do produto
         produto.quantidade += quantidade
         produto.save()
+
+        Movimentacao.objects.create(
+            tipo = 'entrada',
+            produto = produto,
+            quantidade = quantidade,
+            data = timezone.now().date(),
+            observacao = observacao,
+            usuario = request.user
+        )
 
         messages.success(request, 'Entrada registrada com sucesso!')
         return redirect('produtos:listar_produtos')
@@ -139,7 +149,7 @@ def saida_produto(request):
     if request.method == 'POST':
         codigo = request.POST.get('codigoSaida')
         quantidade = request.POST.get('quantidadeSaida')
-
+        observacao = request.POST.get('Observacao')
         # Verifica se a quantidade é um número inteiro positivo
         try:
             quantidade = int(quantidade)
@@ -151,7 +161,7 @@ def saida_produto(request):
 
         # Tenta buscar o produto
         try:
-            produto = Produto.objects.get(codigo=codigo)
+            produto = Produto.objects.get(id=codigo)
         except Produto.DoesNotExist:
             mensagem = 'Produto não encontrado.'
             return render(request, 'principal/erro.html', {'mensagem': mensagem})
@@ -165,10 +175,81 @@ def saida_produto(request):
         produto.quantidade -= quantidade
         produto.save()
 
+        Movimentacao.objects.create(
+            tipo = 'saida',
+            produto = produto,
+            quantidade = quantidade,
+            data = timezone.now().date(),
+            observacao = observacao,
+            usuario = request.user
+        )
+
         messages.success(request, 'Saída registrada com sucesso!')
         return redirect('produtos:listar_produtos')
 
     return redirect('produtos:listar_produtos')
+
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDate
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from .models import Movimentacao
+
+@login_required
+def relatorio_movimentacao(request):
+    TIPOS = [
+        ('entrada', 'Entrada de Produto'),
+        ('saida', 'Saída de Produto'),
+    ]
+
+    pesquisa = request.GET.get('pesquisa', '')
+    tipo = request.GET.get('tipo', '')
+    data = request.GET.get('data', '')
+
+    movimentacoes = Movimentacao.objects.all().order_by('-id')
+
+    if pesquisa:
+        movimentacoes = movimentacoes.filter(
+            Q(produto__nome__icontains=pesquisa) |
+            Q(usuario__username__icontains=pesquisa) |
+            Q(observacao__icontains=pesquisa)
+        )
+
+    if tipo:
+        movimentacoes = movimentacoes.filter(tipo=tipo)
+
+    if data:
+        movimentacoes = movimentacoes.filter(data=data)
+
+    # Estatísticas
+    total_entradas = movimentacoes.filter(tipo='entrada').aggregate(total=Sum('quantidade'))['total'] or 0
+    total_saidas = movimentacoes.filter(tipo='saida').aggregate(total=Sum('quantidade'))['total'] or 0
+    total_mov = movimentacoes.count()
+
+    ultima_mov = movimentacoes.first()
+    produto_mais_movimentado = movimentacoes.values('produto__nome')\
+        .annotate(total=Count('id')).order_by('-total').first()
+
+    usuario_top = movimentacoes.values('usuario__username')\
+        .annotate(total=Count('id')).order_by('-total').first()
+
+    context = {
+        'tipos': TIPOS,
+        'tipo_selecionado': tipo,
+        'pesquisa': pesquisa,
+        'data': data,
+        'movimentacoes': movimentacoes,
+
+        # Estatísticas
+        'total_mov': total_mov,
+        'total_entradas': total_entradas,
+        'total_saidas': total_saidas,
+        'ultima_mov': ultima_mov,
+        'produto_mais_movimentado': produto_mais_movimentado,
+        'usuario_top': usuario_top,
+    }
+
+    return render(request, 'produtos/movimentacoes.html', context)
 
 @login_required
 def fabricante_marca_grupo(request):
