@@ -281,69 +281,42 @@
       </div>
       
       <!-- PRODUTOS -->
-      <div class="card-collapse">
-        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#produtos">
-          Produtos
-        </div>
-        <div id="produtos" class="collapse" data-bs-parent="#formAccordion">
-          <div class="card-body">
-            <div class="mb-3">
-              {{ produto_formset.management_form }}
-              <div id="produtos-container">
-                {% for produto_form in produto_formset %}
-                  <div class="row g-2 produto-form border rounded p-2 mb-3 position-relative">
-                    <div class="col-md-6">
-                      {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
-                    </div>
-                    <div class="col-md-3">
-                      {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
-                    </div>
-                    <div class="col-md-3 d-flex align-items-center">
-                      <label class="form-check-label me-2">Dar baixa no estoque</label>
-                      <input type="hidden" name="form-{{ forloop.counter0 }}-baixa" value="nao" class="campo-baixa" />
-                      <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-baixa" data-index="{{ forloop.counter0 }}">
-                        Não
-                      </button>
-                    </div>
-                    
-                    <!-- Campo DELETE oculto -->
-                    <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
-                    <!-- Botão de excluir -->
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2 btn-remove-produto" title="Remover produto"></button>
-                  </div>
-                {% endfor %}
+            <div class="card-collapse">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#produtos">
+    Produtos
+  </div>
+  <div id="produtos" class="collapse" data-bs-parent="#formAccordion">
+    <div class="card-body">
+      <div class="mb-3">
+        {{ produto_formset.management_form }}
+        <div id="produtos-container">
+          {% for produto_form in produto_formset %}
+            <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
+              <div class="col-md-6">
+                {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
+              </div>
+              <div class="col-md-3">
+                {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
+              </div>
+              <div class="col-md-3 d-flex align-items-center justify-content-end">
+                <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </div>
 
-              <!-- TEMPLATE OCULTO para clonagem -->
-              <div id="produto-template" class="row g-2 produto-form border rounded p-2 mb-3 position-relative" style="display:none;">
-                <div class="col-md-6">
-                  <label for="id_form-__prefix__-produto">Produto</label>
-                  <select name="form-__prefix__-produto" id="id_form-__prefix__-produto" class="form-select"></select>
-                </div>
-                <div class="col-md-3">
-                  <label for="id_form-__prefix__-quantidade">Quantidade</label>
-                  <input type="number" name="form-__prefix__-quantidade" id="id_form-__prefix__-quantidade" class="form-control" />
-                </div>
-                <div class="col-md-3 d-flex align-items-center">
-                  <label class="form-check-label me-2">Dar baixa no estoque</label>
-                  <input type="hidden" name="form-__prefix__-baixa" value="nao" class="campo-baixa" />
-                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-baixa" data-index="__prefix__">
-                    Não
-                  </button>
-                </div>
-
-                <!-- Campo personalizado de ação -->
-                <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
-
-                <!-- Botão de excluir -->
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 btn-remove-produto" title="Remover produto"></button>
-              </div>
-
-              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">+ Adicionar Produto</button>
+              <!-- Campo oculto de controle -->
+              <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
             </div>
-          </div>
+          {% endfor %}
         </div>
+
+        <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
+          <i class="fas fa-plus"></i> Adicionar Produto
+        </button>
       </div>
+    </div>
+  </div>
+</div>
 
       <div class="card-collapse">
         <div class="card-header" data-bs-toggle="collapse" data-bs-target="#seg_ativ_obs">
@@ -388,108 +361,65 @@
 
 <!-- JS -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const container = document.getElementById('produtos-container');
-  const addBtn = document.getElementById('add-produto');
-  const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
-  const template = document.getElementById('produto-template');
-  const form = document.querySelector('form');
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('produtos-container');
+    const addBtn = document.getElementById('add-produto');
 
-  function atualizarEventosRemocao() {
-    const botoes = container.querySelectorAll('.btn-remove-produto');
-    botoes.forEach(btn => {
-      btn.onclick = function () {
-        const formRow = btn.closest('.produto-form');
-        const acaoField = formRow.querySelector('input.campo-acao');
-        if (acaoField) {
-          acaoField.value = 'delete';
+    // Conta o total inicial de formulários
+    let totalForms = document.querySelectorAll('.produto-form').length;
+    const totalFormsInput = document.querySelector('#id_form-TOTAL_FORMS');
+
+    // Template base
+    function cloneForm(index) {
+      const originalForm = document.querySelector('.produto-form');
+      const newForm = originalForm.cloneNode(true);
+
+      // Atualiza os atributos dos inputs e selects clonados
+      newForm.querySelectorAll('input, select, label').forEach(el => {
+        if (el.name) {
+          el.name = el.name.replace(/form-(\d+)-/, `form-${index}-`);
         }
-        formRow.style.display = 'none';
-      };
-    });
-  }
-
-  function atualizarEventosToggleBaixa() {
-    const botoesBaixa = container.querySelectorAll('.btn-toggle-baixa');
-    botoesBaixa.forEach(btn => {
-      btn.onclick = () => {
-        const index = btn.getAttribute('data-index');
-        const campoHidden = container.querySelector(`input[name="form-${index}-baixa"]`);
-        if (!campoHidden) return;
-
-        if (campoHidden.value === 'nao') {
-          campoHidden.value = 'sim';
-          btn.textContent = 'Sim';
-          btn.classList.remove('btn-outline-secondary');
-          btn.classList.add('btn-outline-primary');
-        } else {
-          campoHidden.value = 'nao';
-          btn.textContent = 'Não';
-          btn.classList.remove('btn-outline-primary');
-          btn.classList.add('btn-outline-secondary');
+        if (el.id) {
+          el.id = el.id.replace(/form-(\d+)-/, `form-${index}-`);
         }
-      };
-    });
-  }
+        if (el.tagName === 'INPUT') {
+          el.value = '';
+        }
+      });
 
-  addBtn.addEventListener('click', function () {
-    const formCount = parseInt(totalForms.value);
-
-    // Clona o template oculto
-    const newForm = template.cloneNode(true);
-    newForm.style.display = 'flex';
-    newForm.id = "";
-
-    // Substitui __prefix__ por formCount
-    newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formCount);
-
-    // Corrige atributos for, name e id
-    newForm.querySelectorAll('input, select, label, button').forEach(el => {
-      if (el.hasAttribute('for')) {
-        el.setAttribute('for', el.getAttribute('for').replace('__prefix__', formCount));
+      // Atualiza o campo oculto de controle
+      const acao = newForm.querySelector('.campo-acao');
+      if (acao) {
+        acao.value = 'adicionado';
       }
-      if (el.name) {
-        el.name = el.name.replace('__prefix__', formCount);
-      }
-      if (el.id) {
-        el.id = el.id.replace('__prefix__', formCount);
-      }
-      // Corrige data-index do botão toggle baixa
-      if (el.classList.contains('btn-toggle-baixa')) {
-        el.setAttribute('data-index', formCount);
-        // Inicializa texto e classes do botão
-        el.textContent = 'Não';
-        el.classList.remove('btn-outline-primary');
-        el.classList.add('btn-outline-secondary');
-      }
-    });
 
-    // Copiar opções do primeiro select real para o novo
-    const primeiroSelect = container.querySelector('select');
-    const novoSelect = newForm.querySelector('select');
-    if (primeiroSelect && novoSelect) {
-      novoSelect.innerHTML = primeiroSelect.innerHTML;
+      return newForm.outerHTML;
     }
 
-    container.appendChild(newForm);
-    totalForms.value = formCount + 1;
-    atualizarEventosRemocao();
-    atualizarEventosToggleBaixa();
-  });
+    addBtn.addEventListener('click', function () {
+      const newFormHTML = cloneForm(totalForms);
+      container.insertAdjacentHTML('beforeend', newFormHTML);
+      totalForms++;
+      totalFormsInput.value = totalForms;
+    });
 
-  form.addEventListener('submit', function () {
-    // Garante que todos os campos DELETE marcados sejam habilitados
-    const deletes = container.querySelectorAll('input[type="checkbox"][name$="-DELETE"]');
-    deletes.forEach(input => {
-      if (input.checked) {
-        input.disabled = false;
+    container.addEventListener('click', function (e) {
+      if (e.target.closest('.btn-remove-produto')) {
+        const formDiv = e.target.closest('.produto-form');
+
+        // Se for formulário existente, marca como deletado
+        const acaoInput = formDiv.querySelector('.campo-acao');
+        if (acaoInput.value === 'mantem') {
+          acaoInput.value = 'deletado';
+          formDiv.style.display = 'none';
+        } else {
+          formDiv.remove();
+          totalForms--;
+          totalFormsInput.value = totalForms;
+        }
       }
     });
   });
-
-  atualizarEventosRemocao();
-  atualizarEventosToggleBaixa();
-});
 </script>
 
 

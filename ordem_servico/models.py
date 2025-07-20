@@ -89,7 +89,7 @@ class ProdutoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
-    baixa = models.BooleanField(default=False)
+    
 
     def __str__(self):
         return f'{self.produto.nome} (x{self.quantidade})'

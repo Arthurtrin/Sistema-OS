@@ -4,17 +4,10 @@ from .models import OrdemServico, Segmento, Status, Unidade, ProdutoOrdemServico
 class ProdutoOrdemServicoForm(forms.ModelForm):
     class Meta:
         model = ProdutoOrdemServico
-        fields = ['produto', 'quantidade', 'baixa']
-        widgets = {
-            'baixa': forms.HiddenInput()
-        }
+        fields = ['produto', 'quantidade']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # Esconde o campo baixa para ser manipulado via JS e campo hidden
-        self.fields['baixa'].widget = forms.HiddenInput()
-        
 
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxInput):
@@ -33,7 +26,6 @@ class ProdutoOrdemServicoForm(forms.ModelForm):
                 field.widget.attrs.update({'class': 'form-select'})
 
         self.fields['produto'].empty_label = 'Selecione o Produto'
-        
         
 class OrdemServicoForm(forms.ModelForm):
     data_abertura = forms.DateField(
