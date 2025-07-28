@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'produtos',
     'atividades',
     'ordem_servico',
-    'configuracoes'
+    'configuracoes', 
+    'servicos',
     
 ]
 

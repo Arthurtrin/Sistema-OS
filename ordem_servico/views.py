@@ -15,8 +15,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.forms import modelformset_factory
-from .models import Produto, ProdutoOrdemServico
-from .forms import OrdemServicoForm, ProdutoOrdemServicoForm
+from .models import Produto, ProdutoOrdemServico, ServicoOrdemServico
+from .forms import OrdemServicoForm, ProdutoOrdemServicoForm, ServicoOrdemServicoForm
 
 @login_required
 def criar_os(request):
@@ -27,17 +27,24 @@ def criar_os(request):
         can_delete=True
     )
 
+    ServicoFormSet = modelformset_factory(
+        ServicoOrdemServico,  # Model intermediário que liga serviço à OS
+        form=ServicoOrdemServicoForm,
+        extra=1,
+        can_delete=True
+    )
+
     if request.method == 'POST':
         os_form = OrdemServicoForm(request.POST, request.FILES)
-        produto_formset = ProdutoFormSet(request.POST, prefix='form')
+        produto_formset = ProdutoFormSet(request.POST, prefix='produto')
+        servico_formset = ServicoFormSet(request.POST, prefix='servico')
 
-        if os_form.is_valid() and produto_formset.is_valid():
+        if os_form.is_valid() and produto_formset.is_valid() and servico_formset.is_valid():
             erro_estoque = False
 
-            # ETAPA 1 – Verifica estoque antes de salvar
+            # Verifica estoque dos produtos
             for i, form in enumerate(produto_formset.forms):
-                acao = request.POST.get(f'form-{i}-acao', 'mantem')
-
+                acao = request.POST.get(f'produto-{i}-acao', 'mantem')
                 if acao == 'mantem':
                     produto = form.cleaned_data.get('produto')
                     quantidade = form.cleaned_data.get('quantidade')
@@ -59,41 +66,53 @@ def criar_os(request):
             if erro_estoque:
                 return render(request, 'ordem_servico/criar_os.html', {
                     'form': os_form,
-                    'produto_formset': produto_formset
+                    'produto_formset': produto_formset,
+                    'servico_formset': servico_formset
                 })
 
-            # ETAPA 2 – Salva OS e baixa o estoque
-            ordem_servico = os_form.save()
+            # Salva Ordem de Serviço
+            ordem_servico = os_form.save(commit=False)
+            ordem_servico.digitador = request.user
+            ordem_servico.save()
 
+            # Salva os produtos na OS
             for i, form in enumerate(produto_formset.forms):
-                acao = request.POST.get(f'form-{i}-acao', 'mantem')
-
+                acao = request.POST.get(f'produto-{i}-acao', 'mantem')
                 if acao == 'delete':
                     continue
-
                 if acao == 'mantem' and form.has_changed():
                     produto_os = form.save(commit=False)
                     produto_os.ordem_servico = ordem_servico
                     produto_os.save()
 
-                    # Baixa automática no estoque
+                    # Baixa estoque
                     produto = Produto.objects.get(id=produto_os.produto.id)
                     produto.quantidade -= produto_os.quantidade
                     produto.save()
 
+            # Salva os serviços na OS
+            for i, form in enumerate(servico_formset.forms):
+                acao = request.POST.get(f'servico-{i}-acao', 'mantem')
+                if acao == 'delete':
+                    continue
+                if acao == 'mantem' and form.has_changed():
+                    servico_os = form.save(commit=False)
+                    servico_os.ordem_servico = ordem_servico
+                    servico_os.save()
+
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
-        else:
-            print("Erros no formulário de produto:", produto_formset.errors)
+
     else:
         os_form = OrdemServicoForm()
-        produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='form')
+        produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='produto')
+        servico_formset = ServicoFormSet(queryset=ServicoOrdemServico.objects.none(), prefix='servico')
 
     return render(request, 'ordem_servico/criar_os.html', {
         'form': os_form,
-        'produto_formset': produto_formset
+        'produto_formset': produto_formset,
+        'servico_formset': servico_formset
     })
-
 
 @login_required
 def editar_os(request, os_id):

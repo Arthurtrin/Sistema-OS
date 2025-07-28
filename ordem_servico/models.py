@@ -1,6 +1,8 @@
 from django.db import models
 from clientes.models import Cliente
 from produtos.models import Produto
+from servicos.models import Servico
+from tecnicos.models import Tecnico
 from django.contrib.auth.models import User
 import uuid
 
@@ -89,7 +91,20 @@ class ProdutoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
-    
 
     def __str__(self):
         return f'{self.produto.nome} (x{self.quantidade})'
+
+class ServicoOrdemServico(models.Model):
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='servicos')
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
+    profissional = models.ForeignKey(Tecnico, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    comissao = models.DecimalField(max_digits=10, decimal_places=2)
+    comissao_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.servico.nome} - {self.ordem_servico.titulo}'

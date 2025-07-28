@@ -1,0 +1,269 @@
+<div class="accordion" id="formAccordion">
+      <!-- seus outros blocos aqui (Identificação, Obra, etc) -->
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
+          Identificação
+        </div>
+        <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label for="{{ form.titulo.id_for_label }}" class="form-label-professional">Título</label>
+                {{ form.titulo }}
+                {% if form.titulo.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.titulo.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.data_abertura.id_for_label }}" class="form-label-professional">Data da Abertura</label>
+                {{ form.data_abertura }}
+                {% if form.data_abertura.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.data_abertura.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.status.id_for_label }}" class="form-label-professional">Status</label>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.status.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.digitador.id_for_label }}" class="form-label-professional">Digitador</label>
+                {{ form.digitador }}
+                {% if form.digitador.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.digitador.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.n_cliente.id_for_label }}" class="form-label-professional">Cliente</label>
+                {{ form.n_cliente }}
+                {% if form.n_cliente.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.n_cliente.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row g-2" style="margin-top: 5px;">
+              <div class="col-md-4">
+                <label for="{{ form.solicitante.id_for_label }}" class="form-label-professional">Solicitante</label>
+                {{ form.solicitante }}
+                {% if form.solicitante.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.solicitante.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.unidade.id_for_label }}" class="form-label-professional">Unidade</label>
+                {{ form.unidade }}
+                {% if form.unidade.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.unidade.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-2">
+                <label for="{{ form.segmento.id_for_label }}" class="form-label-professional">Segmento</label>
+                {{ form.segmento }}
+                {% if form.segmento.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.segmento.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-2">
+                <label for="{{ form.n_proposta.id_for_label }}" class="form-label-professional">Nº Proposta</label>
+                {{ form.n_proposta }}
+                {% if form.n_proposta.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.n_proposta.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              
+              <div class="col-md-2">
+                <label for="{{ form.n_desenho.id_for_label }}" class="form-label-professional">Nº Desenho</label>
+                {{ form.n_desenho }}
+                {% if form.n_desenho.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.n_desenho.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        
+        
+        </div>
+      </div>
+
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#contato_doc">
+          Obra
+        </div>
+        <div id="contato_doc" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+
+            <!-- Campos da Obra -->
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="{{ form.obra_nome.id_for_label }}" class="form-label-professional">Nome</label>
+                {{ form.obra_nome }}
+                {% if form.obra_nome.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.obra_nome.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.obra_inicio.id_for_label }}" class="form-label-professional">Início</label>
+                {{ form.obra_inicio }}
+                {% if form.obra_inicio.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.obra_inicio.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.obra_termino.id_for_label }}" class="form-label-professional">Término</label>
+                {{ form.obra_termino }}
+                {% if form.obra_termino.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.obra_termino.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.n_art.id_for_label }}" class="form-label-professional">Nº ART</label>
+                {{ form.n_art }}
+                {% if form.n_art.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.n_art.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="row g-2 mt-2">
+              <div class="col-md-4">
+                <label for="{{ form.municipio.id_for_label }}" class="form-label-professional">Município</label>
+                {{ form.municipio }}
+                {% if form.municipio.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.municipio.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <label for="{{ form.uf.id_for_label }}" class="form-label-professional">UF</label>
+                {{ form.uf }}
+                {% if form.uf.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.uf.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-3">
+                <label for="{{ form.uc_os.id_for_label }}" class="form-label-professional">UC/OS</label>
+                {{ form.uc_os }}
+                {% if form.uc_os.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.uc_os.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-3">
+                <label for="{{ form.oc.id_for_label }}" class="form-label-professional">OC</label>
+                {{ form.oc }}
+                {% if form.oc.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.oc.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-collapse">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#produtos">
+    Produtos
+  </div>
+  <div id="produtos" class="collapse" data-bs-parent="#formAccordion">
+    <div class="card-body">
+      <div class="mb-3">
+        {{ produto_formset.management_form }}
+        <div id="produtos-container">
+          {% for produto_form in produto_formset %}
+            <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
+              <div class="col-md-6">
+                {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
+              </div>
+              <div class="col-md-3">
+                {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
+              </div>
+              <div class="col-md-3 d-flex align-items-center justify-content-end">
+                <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+
+              <!-- Campo oculto de controle -->
+              <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
+            </div>
+          {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
+          <i class="fas fa-plus"></i> Adicionar Produto
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="card-collapse">
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#seg_ativ_obs">
+          Anexo e Observação
+        </div>
+        <div id="seg_ativ_obs" class="collapse" data-bs-parent="#formAccordion">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-12">
+                <label for="{{ form.arquivo.id_for_label }}" class="form-label-professional">Arquivo</label>
+                {{ form.arquivo }}
+                {% if form.arquivo.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.arquivo.errors|striptags }}
+                </div>
+                {% endif %}
+              </div> 
+            </div>
+            <div class="row g-2 mt-2">
+              <div class="col-md-12">
+                <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
+                {{ form.descricao }}
+                {% if form.descricao.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ form.descricao.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,141 @@
+{% extends 'principal/base.html' %}
+{% block title %}Cadastrar Produto{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header {% if message.tags == 'error' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+            <h5 class="modal-title" id="messageModalLabel">
+              {% if message.tags == 'error' %}Erro{% else %}Sucesso{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+      });
+    </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+    .form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+  }
+  .form-label {
+    font-weight: 500;
+    font-size: 0.825rem;
+  }
+  .form-control, .form-select {
+    font-size: 0.825rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+  .btn-lg {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  .card-collapse {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  .card-collapse .card-header {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+  }
+  .card-collapse .card-body {
+    padding: 1rem;
+  }
+</style>
+
+<div class="container my-4">
+  <h2 class="mb-3">Cadastrar Serviço</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="accordion" id="formAccordion">
+        <div class="card-collapse">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
+            Serviço
+            </div>
+            <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-2">
+                            <label for="{{ form.codigo.id_for_label }}" class="form-label-professional">Codigo</label>
+                            {{ form.codigo }}
+                            {% if form.codigo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.codigo.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome</label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nome.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.unidade.id_for_label }}" class="form-label-professional">Unidade</label>
+                            {{ form.unidade }}
+                            {% if form.qtd_entrada.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.unidade.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.preco.id_for_label }}" class="form-label-professional">Preço</label>
+                            {{ form.preco }}
+                            {% if form.preco.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.preco.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-end mt-3">
+      <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+        <i class="fas fa-save me-2"></i>Salvar Serviço
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
