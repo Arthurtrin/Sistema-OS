@@ -11,12 +11,11 @@ from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db.models import ProtectedError
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.forms import modelformset_factory
 from .models import Produto, ProdutoOrdemServico, ServicoOrdemServico
 from .forms import OrdemServicoForm, ProdutoOrdemServicoForm, ServicoOrdemServicoForm
+from servicos.models import Servico
+from tecnicos.models import Tecnico
+
 
 @login_required
 def criar_os(request):
@@ -33,6 +32,9 @@ def criar_os(request):
         extra=1,
         can_delete=True
     )
+
+    servicos = Servico.objects.all()
+    tecnicos = Tecnico.objects.all()
 
     if request.method == 'POST':
         os_form = OrdemServicoForm(request.POST, request.FILES)
@@ -67,7 +69,10 @@ def criar_os(request):
                 return render(request, 'ordem_servico/criar_os.html', {
                     'form': os_form,
                     'produto_formset': produto_formset,
-                    'servico_formset': servico_formset
+                    'servico_formset': servico_formset,
+                    'servicos': servicos,
+                    'tecnicos': tecnicos
+
                 })
 
             # Salva Ordem de Serviço
@@ -90,12 +95,19 @@ def criar_os(request):
                     produto.quantidade -= produto_os.quantidade
                     produto.save()
 
+            # precisa editar abaixo
             # Salva os serviços na OS
             for i, form in enumerate(servico_formset.forms):
+                print("formulario é valido:", form.is_valid())
                 acao = request.POST.get(f'servico-{i}-acao', 'mantem')
+                
+                print("ação:", acao)
                 if acao == 'delete':
+                    print("delete")
                     continue
-                if acao == 'mantem' and form.has_changed():
+                if acao == 'mantem' and form.is_valid():
+                    print("mantem")
+                    # Verifica se o campo obrigatório "servico" foi preenchido
                     servico_os = form.save(commit=False)
                     servico_os.ordem_servico = ordem_servico
                     servico_os.save()
@@ -111,8 +123,11 @@ def criar_os(request):
     return render(request, 'ordem_servico/criar_os.html', {
         'form': os_form,
         'produto_formset': produto_formset,
-        'servico_formset': servico_formset
+        'servico_formset': servico_formset,
+        'servicos': servicos,
+        'tecnicos': tecnicos
     })
+
 
 @login_required
 def editar_os(request, os_id):

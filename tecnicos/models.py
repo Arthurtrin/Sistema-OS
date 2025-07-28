@@ -43,7 +43,7 @@ class Tecnico(models.Model):
     telefone = models.CharField(max_length=20, blank=True)
     celular = models.CharField(max_length=20, blank=True)
 
-    prc_comissao = models.DecimalField(
+    comissao = models.DecimalField(
         max_digits=5, 
         decimal_places=2, 
         default=0.00,

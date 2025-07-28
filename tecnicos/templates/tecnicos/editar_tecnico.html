@@ -78,11 +78,11 @@
                 {% endif %}
               </div>
               <div class="col-md-2">
-                <label for="{{ form.prc_comissao.id_for_label }}" class="form-label-professional">% Comissão</label>
-                {{ form.prc_comissao }}
-                {% if form.prc_comissao.errors %}
+                <label for="{{ form.comissao.id_for_label }}" class="form-label-professional">% Comissão</label>
+                {{ form.comissao }}
+                {% if form.comissao.errors %}
                 <div class="invalid-feedback d-block">
-                    {{ form.prc_comissao.errors|striptags }}
+                    {{ form.comissao.errors|striptags }}
                 </div>
                 {% endif %}
               </div>

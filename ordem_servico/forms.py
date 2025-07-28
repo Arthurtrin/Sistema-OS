@@ -12,6 +12,7 @@ class ServicoOrdemServicoForm(forms.ModelForm):
             'preco_total',
             'comissao',
             'comissao_total',
+            'quantidade'
         ]
 
     def __init__(self, *args, **kwargs):

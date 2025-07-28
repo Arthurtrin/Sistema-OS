@@ -58,7 +58,6 @@ class Status(models.Model):
 
 # Create your models here.
 class OrdemServico(models.Model):
-    
     titulo = models.CharField(max_length=100)
     data_abertura = models.DateField()
     
@@ -84,7 +83,7 @@ class OrdemServico(models.Model):
     arquivo = models.FileField(upload_to='anexos/')
 
     def __str__(self):
-        return f"{self.codigo}"
+        return f"{self.titulo}"
 
 
 class ProdutoOrdemServico(models.Model):
@@ -99,7 +98,7 @@ class ServicoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='servicos')
     servico = models.ForeignKey(Servico, on_delete=models.CASCADE)
     profissional = models.ForeignKey(Tecnico, on_delete=models.SET_NULL, null=True, blank=True)
-    
+    quantidade = models.IntegerField(default=1)
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
 
