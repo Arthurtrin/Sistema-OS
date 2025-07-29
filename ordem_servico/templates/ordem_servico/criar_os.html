@@ -347,77 +347,152 @@
         </div>
 
         <!-- Serviços -->
-        <div class="tab-pane fade" id="servicos" role="tabpanel">
-          <div class="card-body">
-            <div class="mb-3">
-              {{ servico_formset.management_form }}
-              <div id="servicos-container">
-                {% for servico_form in servico_formset %}
-                  <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
-                    <div class="row g-2">
-                      <div class="col-md-5">
-                        <label>Serviço:</label>
-                        <select name="servico" class="form-select servico-select">
-                          <option value="">Selecione o Serviço</option>
-                          {% for servico in servico_form.fields.servico.queryset %}
-                            <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
-                              {{ servico.nome }}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                      <div class="col-md-5">
-                        <label>Profissional:</label>
-                        <select name="tecnico" class="form-select tecnico-select">
-                          <option value="">Selecione o Profissional</option>
-                          {% for tecnico in tecnicos %}
-                            <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
-                              {{ tecnico.nome }}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                      <div class="col-md-1 d-flex align-items-end">
-                          <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
-                            <i class="fas fa-trash-alt"></i>
-                          </button>
-                      </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-md-2">
-                          <label>Quantidade:</label>
-                          {{ servico_form.quantidade }}
-                        </div>
-                        <div class="col-md-3">
-                          <label>Preço Unitário:</label>
-                          <input type="text" class="form-control preco-servico-input" readonly>
-                        </div>
-                        <div class="col-md-2">
-                          <label>Preço Total:</label>
-                          <input type="text" class="form-control preco-total-input" readonly>
-                        </div>
-                        <div class="col-md-2">
-                          <label>Comissão:</label>
-                          <input type="text" class="form-control comissao-tecnico-input" readonly>
-                        </div>
-                        <div class="col-md-2">
-                          <label>Comissão Total:</label>
-                          <input type="text" class="form-control comissao-total-input" readonly>
-                        </div>
-                        
-                        <!-- Campo oculto de controle -->
-                        <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
-                    </div>
-                  </div>
+<div class="tab-pane fade" id="servicos" role="tabpanel">
+  <div class="card-body">
+    <div class="mb-3">
+      <div id="servicos-container">
+        <!-- Bloco Inicial -->
+        <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label>Serviço:</label>
+              <select name="form-0-servico" class="form-select servico-select">
+                <option value="">Selecione o Serviço</option>
+                {% for servico in servicos %}
+                  <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                    {{ servico.nome }}
+                  </option>
                 {% endfor %}
-              </div>
-
-              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-servico">
-                <i class="fas fa-plus"></i> Adicionar Serviço
+              </select>
+            </div>
+            <div class="col-md-5">
+              <label>Profissional:</label>
+              <select name="form-0-tecnico" class="form-select tecnico-select">
+                <option value="">Selecione o Profissional</option>
+                {% for tecnico in tecnicos %}
+                  <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                    {{ tecnico.nome }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                <i class="fas fa-trash-alt"></i>
               </button>
             </div>
           </div>
+          <div class="row g-2">
+            <div class="col-md-2">
+              <label>Quantidade:</label>
+              <input type="number" name="form-0-quantidade" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label>Preço Unitário:</label>
+              <input type="text" name="form-0-preco_unitario" class="form-control preco-servico-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Preço Total:</label>
+              <input type="text" name="form-0-preco_total" class="form-control preco-total-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Comissão:</label>
+              <input type="text" name="form-0-comissao" class="form-control comissao-tecnico-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Comissão Total:</label>
+              <input type="text" name="form-0-comissao_total" class="form-control comissao-total-input" readonly>
+            </div>
+            <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
+          </div>
         </div>
+      </div>
+
+      <!-- Template Oculto -->
+      <div id="servico-template" class="d-none">
+        <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label>Serviço:</label>
+              <select name="form-__prefix__-servico" class="form-select servico-select">
+                <option value="">Selecione o Serviço</option>
+                {% for servico in servicos %}
+                  <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                    {{ servico.nome }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-5">
+              <label>Profissional:</label>
+              <select name="form-__prefix__-tecnico" class="form-select tecnico-select">
+                <option value="">Selecione o Profissional</option>
+                {% for tecnico in tecnicos %}
+                  <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                    {{ tecnico.nome }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row g-2">
+            <div class="col-md-2">
+              <label>Quantidade:</label>
+              <input type="number" name="form-__prefix__-quantidade" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label>Preço Unitário:</label>
+              <input type="text" name="form-__prefix__-preco_unitario" class="form-control preco-servico-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Preço Total:</label>
+              <input type="text" name="form-__prefix__-preco_total" class="form-control preco-total-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Comissão:</label>
+              <input type="text" name="form-__prefix__-comissao" class="form-control comissao-tecnico-input" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Comissão Total:</label>
+              <input type="text" name="form-__prefix__-comissao_total" class="form-control comissao-total-input" readonly>
+            </div>
+            <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão Adicionar -->
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-servico">
+        <i class="fas fa-plus"></i> Adicionar Serviço
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  let contadorServicos = 1;
+
+  document.getElementById('add-servico').addEventListener('click', function() {
+    const template = document.getElementById('servico-template').innerHTML;
+    const novoHtml = template.replace(/__prefix__/g, contadorServicos);
+    const container = document.getElementById('servicos-container');
+    container.insertAdjacentHTML('beforeend', novoHtml);
+    contadorServicos++;
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-remove-servico')) {
+      e.target.closest('.servico-form').remove();
+    }
+  });
+</script>
+
 
         <!-- Anexo e Observação -->
         <div class="tab-pane fade" id="anexo" role="tabpanel">
@@ -456,134 +531,6 @@
     </div>
   </form>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const servicoForms = document.querySelectorAll('.row.g-2');
-
-    servicoForms.forEach(function(form, index) {
-      const precoServico = form.querySelector('.preco-servico-input');
-      const precoTotal = form.querySelector('.preco-total-input');
-      const comissao = form.querySelector('.comissao-tecnico-input');
-      const comissaoTotal = form.querySelector('.comissao-total-input');
-
-      if (precoServico) precoServico.name = `servico-${index}-preco_servico`;
-      if (precoTotal) precoTotal.name = `servico-${index}-preco_total`;
-      if (comissao) comissao.name = `servico-${index}-comissao`;
-      if (comissaoTotal) comissaoTotal.name = `servico-${index}-comissao_total`;
-    });
-  });
-</script>
-
-<script>
-  // Função para aplicar eventos em UM formulário específico
-  function aplicarEventosNoFormulario(form) {
-    const selectServico = form.querySelector('.servico-select');
-    const precoServicoInput = form.querySelector('.preco-servico-input');
-    const precoTotalInput = form.querySelector('.preco-total-input');
-    const quantidadeInput = form.querySelector('input[name$="quantidade"]');
-
-    const selectTecnico = form.querySelector('.tecnico-select');
-    const comissaoTecnicoInput = form.querySelector('.comissao-tecnico-input');
-    const comissaoTotalInput = form.querySelector('.comissao-total-input');
-
-    function atualizarTudo() {
-      const selectedServico = selectServico?.options[selectServico.selectedIndex];
-      const selectedTecnico = selectTecnico?.options[selectTecnico.selectedIndex];
-
-      const precoUnitario = parseFloat(selectedServico?.getAttribute('data-preco')) || 0;
-      const comissaoPercentual = parseFloat(selectedTecnico?.getAttribute('data-preco')) || 0;
-      const quantidade = parseFloat(quantidadeInput.value) || 0;
-
-      const precoTotal = precoUnitario * quantidade;
-      const comissaoUnitaria = (precoUnitario * comissaoPercentual) / 100;
-      const comissaoTotal = (precoTotal * comissaoPercentual) / 100;
-
-      // Preço do serviço
-      precoServicoInput.value = precoUnitario ? `R$ ${precoUnitario.toFixed(2)}` : '';
-      precoTotalInput.value = precoTotal ? `R$ ${precoTotal.toFixed(2)}` : '';
-
-      // Comissão do técnico
-      comissaoTecnicoInput.value = comissaoPercentual ? `R$ ${comissaoUnitaria.toFixed(2)}` : '';
-      comissaoTotalInput.value = comissaoPercentual ? `R$ ${comissaoTotal.toFixed(2)}` : '';
-    }
-
-    if (selectServico) selectServico.addEventListener('change', atualizarTudo);
-    if (selectTecnico) selectTecnico.addEventListener('change', atualizarTudo);
-    quantidadeInput.addEventListener('input', atualizarTudo);
-    atualizarTudo();
-  }
-
-  // Função para aplicar eventos a todos os formulários existentes
-  function aplicarEventosNosServicos() {
-    document.querySelectorAll('.servico-form').forEach(function (form) {
-      if (!form.dataset.eventosAplicados) {
-        aplicarEventosNoFormulario(form);
-        form.dataset.eventosAplicados = "true";
-      }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    aplicarEventosNosServicos();
-
-    const servicoContainer = document.getElementById('servicos-container');
-    const addServicoBtn = document.getElementById('add-servico');
-    let totalServicos = document.querySelectorAll('.servico-form').length;
-    const totalServicosInput = document.querySelector('#id_servico_form-TOTAL_FORMS');
-
-    function cloneServicoForm(index) {
-      const originalForm = document.querySelector('.servico-form');
-      const newForm = originalForm.cloneNode(true);
-
-      newForm.querySelectorAll('input, select, label').forEach(el => {
-        if (el.name) {
-          el.name = el.name.replace(/servico_form-(\d+)-/, `servico_form-${index}-`);
-        }
-        if (el.id) {
-          el.id = el.id.replace(/servico_form-(\d+)-/, `servico_form-${index}-`);
-        }
-        if (el.tagName === 'INPUT') {
-          el.value = '';
-        }
-      });
-
-      const acao = newForm.querySelector('.campo-acao');
-      if (acao) {
-        acao.value = 'adicionado';
-      }
-
-      return newForm;
-    }
-
-    addServicoBtn.addEventListener('click', function () {
-      const newFormElement = cloneServicoForm(totalServicos);
-      servicoContainer.appendChild(newFormElement);
-      aplicarEventosNoFormulario(newFormElement); // Aplica eventos ao novo form
-      newFormElement.dataset.eventosAplicados = "true";
-      totalServicos++;
-      totalServicosInput.value = totalServicos;
-    });
-
-    servicoContainer.addEventListener('click', function (e) {
-      if (e.target.closest('.btn-remove-servico')) {
-        const formDiv = e.target.closest('.servico-form');
-        const acaoInput = formDiv.querySelector('.campo-acao');
-        if (acaoInput.value === 'mantem') {
-          acaoInput.value = 'deletado';
-          formDiv.style.display = 'none';
-        } else {
-          formDiv.remove();
-          totalServicos--;
-          totalServicosInput.value = totalServicos;
-        }
-      }
-    });
-  });
-</script>
-
-
-
 
 <!-- JS -->
 <script>

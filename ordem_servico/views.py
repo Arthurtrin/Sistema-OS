@@ -41,7 +41,7 @@ def criar_os(request):
         produto_formset = ProdutoFormSet(request.POST, prefix='produto')
         servico_formset = ServicoFormSet(request.POST, prefix='servico')
 
-        if os_form.is_valid() and produto_formset.is_valid() and servico_formset.is_valid():
+        if os_form.is_valid() and produto_formset.is_valid():
             erro_estoque = False
 
             # Verifica estoque dos produtos
@@ -97,20 +97,41 @@ def criar_os(request):
 
             # precisa editar abaixo
             # Salva os serviços na OS
-            for i, form in enumerate(servico_formset.forms):
-                print("formulario é valido:", form.is_valid())
-                acao = request.POST.get(f'servico-{i}-acao', 'mantem')
-                
-                print("ação:", acao)
+            contador = 0
+
+            while True:
+                servico_id = request.POST.get(f'form-{contador}-servico')
+                tecnico_id = request.POST.get(f'form-{contador}-tecnico')
+                quantidade = request.POST.get(f'form-{contador}-quantidade')
+                acao = request.POST.get(f'form-{contador}-acao', 'mantem')
+
+                # Se não tem serviço, assume que não há mais blocos
+                if servico_id is None:
+                    break
+
+                print(f'--- Bloco {contador} ---')
+                print('Ação:', acao)
+
                 if acao == 'delete':
-                    print("delete")
+                    print('>> Ignorado (delete)')
+                    contador += 1
                     continue
-                if acao == 'mantem' and form.is_valid():
-                    print("mantem")
-                    # Verifica se o campo obrigatório "servico" foi preenchido
-                    servico_os = form.save(commit=False)
-                    servico_os.ordem_servico = ordem_servico
-                    servico_os.save()
+
+                # Tenta buscar os objetos do banco
+                servico = tecnico = None
+                if tecnico_id and servico_id:
+                    try:
+                        servico = Servico.objects.get(id=servico_id)
+                        tecnico = Tecnico.objects.get(id=tecnico_id)
+                    except:
+                        pass
+
+                print('Serviço:', servico)
+                print('Profissional:', tecnico)
+                print('Quantidade:', quantidade)
+
+                contador += 1
+
 
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
