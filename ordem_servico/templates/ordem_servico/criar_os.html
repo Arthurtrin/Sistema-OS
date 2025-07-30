@@ -347,145 +347,183 @@
         </div>
 
         <!-- Serviços -->
-<div class="tab-pane fade" id="servicos" role="tabpanel">
-  <div class="card-body">
-    <div class="mb-3">
-      <div id="servicos-container">
-        <!-- Bloco Inicial -->
-        <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
-          <div class="row g-2">
-            <div class="col-md-5">
-              <label>Serviço:</label>
-              <select name="form-0-servico" class="form-select servico-select">
-                <option value="">Selecione o Serviço</option>
-                {% for servico in servicos %}
-                  <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
-                    {{ servico.nome }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-5">
-              <label>Profissional:</label>
-              <select name="form-0-tecnico" class="form-select tecnico-select">
-                <option value="">Selecione o Profissional</option>
-                {% for tecnico in tecnicos %}
-                  <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
-                    {{ tecnico.nome }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
-                <i class="fas fa-trash-alt"></i>
+        <div class="tab-pane fade" id="servicos" role="tabpanel">
+          <div class="card-body">
+            <div class="mb-3">
+              <div id="servicos-container">
+                <!-- Bloco Inicial -->
+                <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-5">
+                      <label>Serviço:</label>
+                      <select name="form-0-servico" class="form-select servico-select">
+                        <option value="">Selecione o Serviço</option>
+                        {% for servico in servicos %}
+                          <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                            {{ servico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Profissional:</label>
+                      <select name="form-0-tecnico" class="form-select tecnico-select">
+                        <option value="">Selecione o Profissional</option>
+                        {% for tecnico in tecnicos %}
+                          <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                            {{ tecnico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-0-quantidade" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label>Preço Unitário:</label>
+                      <input type="text" name="form-0-preco_unitario" class="form-control preco-servico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Preço Total:</label>
+                      <input type="text" name="form-0-preco_total" class="form-control preco-total-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão:</label>
+                      <input type="text" name="form-0-comissao" class="form-control comissao-tecnico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão Total:</label>
+                      <input type="text" name="form-0-comissao_total" class="form-control comissao-total-input" readonly>
+                    </div>
+                    <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Template Oculto -->
+              <div id="servico-template" class="d-none">
+                <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-5">
+                      <label>Serviço:</label>
+                      <select name="form-__prefix__-servico" class="form-select servico-select">
+                        <option value="">Selecione o Serviço</option>
+                        {% for servico in servicos %}
+                          <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                            {{ servico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Profissional:</label>
+                      <select name="form-__prefix__-tecnico" class="form-select tecnico-select">
+                        <option value="">Selecione o Profissional</option>
+                        {% for tecnico in tecnicos %}
+                          <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                            {{ tecnico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-__prefix__-quantidade" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label>Preço Unitário:</label>
+                      <input type="text" name="form-__prefix__-preco_unitario" class="form-control preco-servico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Preço Total:</label>
+                      <input type="text" name="form-__prefix__-preco_total" class="form-control preco-total-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão:</label>
+                      <input type="text" name="form-__prefix__-comissao" class="form-control comissao-tecnico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão Total:</label>
+                      <input type="text" name="form-__prefix__-comissao_total" class="form-control comissao-total-input" readonly>
+                    </div>
+                    <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botão Adicionar -->
+              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-servico">
+                <i class="fas fa-plus"></i> Adicionar Serviço
               </button>
             </div>
           </div>
-          <div class="row g-2">
-            <div class="col-md-2">
-              <label>Quantidade:</label>
-              <input type="number" name="form-0-quantidade" class="form-control">
-            </div>
-            <div class="col-md-3">
-              <label>Preço Unitário:</label>
-              <input type="text" name="form-0-preco_unitario" class="form-control preco-servico-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Preço Total:</label>
-              <input type="text" name="form-0-preco_total" class="form-control preco-total-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Comissão:</label>
-              <input type="text" name="form-0-comissao" class="form-control comissao-tecnico-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Comissão Total:</label>
-              <input type="text" name="form-0-comissao_total" class="form-control comissao-total-input" readonly>
-            </div>
-            <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
-          </div>
         </div>
-      </div>
 
-      <!-- Template Oculto -->
-      <div id="servico-template" class="d-none">
-        <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
-          <div class="row g-2">
-            <div class="col-md-5">
-              <label>Serviço:</label>
-              <select name="form-__prefix__-servico" class="form-select servico-select">
-                <option value="">Selecione o Serviço</option>
-                {% for servico in servicos %}
-                  <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
-                    {{ servico.nome }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-5">
-              <label>Profissional:</label>
-              <select name="form-__prefix__-tecnico" class="form-select tecnico-select">
-                <option value="">Selecione o Profissional</option>
-                {% for tecnico in tecnicos %}
-                  <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
-                    {{ tecnico.nome }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </div>
-          </div>
-          <div class="row g-2">
-            <div class="col-md-2">
-              <label>Quantidade:</label>
-              <input type="number" name="form-__prefix__-quantidade" class="form-control">
-            </div>
-            <div class="col-md-3">
-              <label>Preço Unitário:</label>
-              <input type="text" name="form-__prefix__-preco_unitario" class="form-control preco-servico-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Preço Total:</label>
-              <input type="text" name="form-__prefix__-preco_total" class="form-control preco-total-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Comissão:</label>
-              <input type="text" name="form-__prefix__-comissao" class="form-control comissao-tecnico-input" readonly>
-            </div>
-            <div class="col-md-2">
-              <label>Comissão Total:</label>
-              <input type="text" name="form-__prefix__-comissao_total" class="form-control comissao-total-input" readonly>
-            </div>
-            <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
-          </div>
-        </div>
-      </div>
 
-      <!-- Botão Adicionar -->
-      <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-servico">
-        <i class="fas fa-plus"></i> Adicionar Serviço
-      </button>
-    </div>
-  </div>
-</div>
+<script>
+  function aplicarEventosNosServicos() {
+    document.querySelectorAll('.servico-form').forEach(function(form) {
+      const selectServico = form.querySelector('.servico-select');
+      const selectTecnico = form.querySelector('.tecnico-select');
+      const quantidadeInput = form.querySelector('input[name$="quantidade"]');
+      const precoUnitarioInput = form.querySelector('.preco-servico-input');
+      const precoTotalInput = form.querySelector('.preco-total-input');
+      const comissaoInput = form.querySelector('.comissao-tecnico-input');
+      const comissaoTotalInput = form.querySelector('.comissao-total-input');
+
+      function calcular() {
+        const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
+        const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
+        const quantidade = parseFloat(quantidadeInput.value || 0);
+
+        const precoTotal = precoServico * quantidade;
+        const comissao = (comissaoTecnico / 100) * precoServico;
+        const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+
+        precoUnitarioInput.value = precoServico.toFixed(2);
+        precoTotalInput.value = precoTotal.toFixed(2);
+        comissaoInput.value = comissao.toFixed(2);
+        comissaoTotalInput.value = comissaoTotal.toFixed(2);
+      }
+
+      selectServico.addEventListener('change', calcular);
+      selectTecnico.addEventListener('change', calcular);
+      quantidadeInput.addEventListener('input', calcular);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    aplicarEventosNosServicos();
+
+    document.getElementById('add-servico')?.addEventListener('click', function() {
+      const container = document.getElementById('servicos-container');
+      const template = document.getElementById('servico-template').innerHTML;
+      const formsCount = container.querySelectorAll('.servico-form').length;
+      const novoHtml = template.replace(/__prefix__/g, formsCount);
+      container.insertAdjacentHTML('beforeend', novoHtml);
+      aplicarEventosNosServicos();
+    });
+  });
+</script>
+
 
 <!-- Script -->
 <script>
-  let contadorServicos = 1;
-
-  document.getElementById('add-servico').addEventListener('click', function() {
-    const template = document.getElementById('servico-template').innerHTML;
-    const novoHtml = template.replace(/__prefix__/g, contadorServicos);
-    const container = document.getElementById('servicos-container');
-    container.insertAdjacentHTML('beforeend', novoHtml);
-    contadorServicos++;
-  });
-
   document.addEventListener('click', function(e) {
     if (e.target.closest('.btn-remove-servico')) {
       e.target.closest('.servico-form').remove();
@@ -494,6 +532,95 @@
 </script>
 
 
+
+      <div class="tab-pane fade" id="despesas" role="tabpanel">
+          <style>
+          .form-despesa {
+            display: none;
+            margin-top: 20px;
+          }
+        </style>
+
+      <div class="row row-cols-2 row-cols-md-4 g-3">
+        {% for nome in nomes %}
+        <div class="col">
+          <a href="#" class="text-decoration-none" onclick="mostrarFormulario('{{ nome|slugify }}')">
+            <div class="card text-center h-100 shadow-sm">
+              <div class="card-body">
+                {{ nome }}
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Formulários escondidos por padrão -->
+      <div id="formularios-despesas">
+        {% for nome in nomes %}
+        <div id="form-{{ nome|slugify }}" class="form-despesa card shadow-sm p-3">
+          <h5>{{ nome }}</h5>
+          
+          <div class="clonavel-{{ nome|slugify }}">
+            <div class="row g-2 mb-2 input-bloco">
+              <div class="col-md-4">
+                <label class="form-label">Descrição</label>
+                <input type="text" class="form-control" name="descricao_{{ nome|slugify }}">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Quantidade</label>
+                <input type="number" class="form-control" name="quantidade_{{ nome|slugify }}">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Preço Unitário</label>
+                <input type="number" step="0.01" class="form-control" name="preco_unitario_{{ nome|slugify }}">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Preço Total</label>
+                <input type="number" step="0.01" class="form-control" name="preco_total_{{ nome|slugify }}" readonly>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-primary mt-2" onclick="clonarBloco('{{ nome|slugify }}')">
+            Adicionar
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+
+
+
+<script>
+  function clonarBloco(tipo) {
+    const container = document.querySelector('.clonavel-' + tipo);
+    const blocos = container.querySelectorAll('.input-bloco');
+    const ultimoBloco = blocos[blocos.length - 1];
+    const novoBloco = ultimoBloco.cloneNode(true);
+
+    // Limpa os inputs do novo bloco
+    novoBloco.querySelectorAll('input').forEach(input => input.value = '');
+
+    container.appendChild(novoBloco);
+  }
+</script>
+
+
+
+<script>
+  function mostrarFormulario(id) {
+    // Oculta todos os formulários primeiro
+    document.querySelectorAll('.form-despesa').forEach(div => div.style.display = 'none');
+    // Exibe o formulário correspondente
+    const form = document.getElementById('form-' + id);
+    if (form) {
+      form.style.display = 'block';
+      form.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+</script>
+
+        </div>
         <!-- Anexo e Observação -->
         <div class="tab-pane fade" id="anexo" role="tabpanel">
           <div class="card-body">
