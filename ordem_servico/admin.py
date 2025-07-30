@@ -1,10 +1,14 @@
 from django.contrib import admin
-from .models import OrdemServico, ProdutoOrdemServico, Segmento, Unidade, Status, ServicoOrdemServico
+from .models import OrdemServico, ProdutoOrdemServico, Segmento, Unidade, Status, ServicoOrdemServico, DespesaOrdemServico
 
 class ProdutoOrdemServicoInline(admin.TabularInline):
     model = ProdutoOrdemServico
     extra = 1  # Quantos campos em branco aparecerão para adicionar novos produtos
     autocomplete_fields = ['produto']  # Se tiver muitos produtos, isso ajuda bastante
+
+class DespesaOrdemServicoInline(admin.TabularInline):
+    model = DespesaOrdemServico
+    extra = 1
 
 class ServicoOrdemServicoInline(admin.TabularInline):
     model = ServicoOrdemServico
@@ -15,7 +19,7 @@ class OrdemServicoAdmin(admin.ModelAdmin):
     list_display = ['titulo', 'data_abertura', 'status']
     search_fields = ['titulo', 'n_cliente__nome_cliente']
     list_filter = ['status', 'data_abertura', 'uf']
-    inlines = [ProdutoOrdemServicoInline, ServicoOrdemServicoInline]
+    inlines = [ProdutoOrdemServicoInline, ServicoOrdemServicoInline, DespesaOrdemServicoInline]
 
 # Simples registro dos modelos auxiliares
 @admin.register(Segmento)

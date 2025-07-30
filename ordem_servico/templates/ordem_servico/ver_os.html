@@ -179,6 +179,72 @@
     {% endif %}
   </div>
 
+  <div class="nf-section">
+    <div class="nf-title">SERVIÇOS VINCULADOS</div>
+    {% if ordem.servicos.all %}
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #000; padding: 5px;">Serviço</th>
+            <th style="border: 1px solid #000; padding: 5px;">Profissional</th>
+            <th style="border: 1px solid #000; padding: 5px;">Quantidade</th>
+            <th style="border: 1px solid #000; padding: 5px;">Preço Unitário</th>
+            <th style="border: 1px solid #000; padding: 5px;">Preço Total</th>
+            <th style="border: 1px solid #000; padding: 5px;">Comissao</th>
+            <th style="border: 1px solid #000; padding: 5px;">Comissao Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for servico in ordem.servicos.all %}
+            <tr>
+              <td style="border: 1px solid #000; padding: 5px;">{{ servico.servico }}</td>
+              <td style="border: 1px solid #000; padding: 5px;">{{ servico.profissional }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">{{ servico.quantidade }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.preco_unitario }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.preco_total }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.comissao }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.comissao_total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Nenhum serviço vinculado a esta ordem de serviço.</p>
+    {% endif %}
+  </div>
+
+  <div class="nf-section">
+    <div class="nf-title">DESPESAS</div>
+    {% if ordem.despesas.all %}
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #000; padding: 5px;">Tipo</th>
+            <th style="border: 1px solid #000; padding: 5px;">Descrição</th>
+            <th style="border: 1px solid #000; padding: 5px;">Quantidade</th>
+            <th style="border: 1px solid #000; padding: 5px;">Preço Unitário</th>
+            <th style="border: 1px solid #000; padding: 5px;">Preço Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for despesa in ordem.despesas.all %}
+            <tr>
+              <td style="border: 1px solid #000; padding: 5px;">{{ despesa.get_tipo_display }}</td>
+              <td style="border: 1px solid #000; padding: 5px;">{{ despesa.descricao }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">{{ despesa.quantidade }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ despesa.preco_unitario }}</td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$  {{ despesa.preco_total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Nenhum serviço vinculado a esta ordem de serviço.</p>
+    {% endif %}
+  </div>
+
+
+
   <div class="print-btn">
     <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
   </div>

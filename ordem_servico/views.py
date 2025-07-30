@@ -11,11 +11,23 @@ from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db.models import ProtectedError
 
-from .models import Produto, ProdutoOrdemServico, ServicoOrdemServico
+from .models import Produto, ProdutoOrdemServico, ServicoOrdemServico, DespesaOrdemServico
 from .forms import OrdemServicoForm, ProdutoOrdemServicoForm, ServicoOrdemServicoForm
 from servicos.models import Servico
 from tecnicos.models import Tecnico
+from decimal import Decimal  
 
+def criar_despesa(despesa, ordem_servico):
+    print("chegou aqui")
+    DespesaOrdemServico.objects.create(
+        ordem_servico = ordem_servico,
+        tipo = despesa['tipo'],
+        descricao = despesa['descricao'],
+        quantidade = int(despesa['quantidade']),
+        preco_unitario = Decimal(despesa['preco_unitario']),
+        preco_total = Decimal(despesa['preco_total'])
+    )
+    print("chegou aqui2")
 
 @login_required
 def criar_os(request):
@@ -95,7 +107,7 @@ def criar_os(request):
                     produto.quantidade -= produto_os.quantidade
                     produto.save()
 
-            # precisa editar abaixo
+            
             # Salva os serviços na OS
             contador = 0
 
@@ -122,7 +134,7 @@ def criar_os(request):
                 if tecnico_id and servico_id:
                     servico = Servico.objects.get(id=servico_id)
                     tecnico = Tecnico.objects.get(id=tecnico_id)
-                from decimal import Decimal    
+                  
                 ServicoOrdemServico.objects.create(
                     ordem_servico=ordem_servico,
                     servico=servico,
@@ -141,7 +153,7 @@ def criar_os(request):
 
             despesas = []
             tipos = [
-                'combustivel', 'alimentacao', 'mao-de-obra', 'sms', 'consumiveis',
+                'combustivel', 'alimentacao', 'hospedagem', 'mao-de-obra', 'sms', 'consumiveis',
                 'comissao', 'locacao', 'outros', 'materia-prima', 'transporte', 'equipamento'
             ]
 
@@ -162,19 +174,18 @@ def criar_os(request):
                         })
             for despesa in despesas:
                 print(despesa)
+                criar_despesa(despesa, ordem_servico)
 
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
 
-
-            
     else:
         os_form = OrdemServicoForm()
         produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='produto')
         servico_formset = ServicoFormSet(queryset=ServicoOrdemServico.objects.none(), prefix='servico')
 
     nomes = [
-    'Combustível', 'Alimentação', 'Mão de obra', 'SMS',
+    'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
     'Consumíveis', 'Comissão', 'Locação', 'Outros',
     'Matéria Prima', 'Transporte', 'Equipamento'
     ]

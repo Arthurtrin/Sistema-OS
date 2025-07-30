@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'ordem_servico',
     'configuracoes', 
     'servicos',
+    'despesas',
     
 ]
 

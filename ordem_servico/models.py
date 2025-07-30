@@ -107,3 +107,29 @@ class ServicoOrdemServico(models.Model):
 
     def __str__(self):
         return f'{self.servico.nome} - {self.ordem_servico.titulo}'
+
+class DespesaOrdemServico(models.Model):
+    TIPO_CHOICES = [
+        ('combustivel', 'Combustível'),
+        ('alimentacao', 'Alimentação'),
+        ('hospedagem', 'Hospedagem'),
+        ('mao-de-obra', 'Mão de obra'),
+        ('sms', 'SMS'),
+        ('consumiveis', 'Consumíveis'),
+        ('comissao', 'Comissão'),
+        ('locacao', 'Locação'),
+        ('outros', 'Outros'),
+        ('materia-prima', 'Matéria Prima'),
+        ('transporte', 'Transporte'),
+        ('equipamento', 'Equipamento'),
+    ]
+
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='despesas')
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    descricao = models.TextField()
+    quantidade = models.IntegerField()
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.ordem_servico.titulo} - {self.get_tipo_display()} - {self.descricao}'
