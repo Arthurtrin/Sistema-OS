@@ -569,15 +569,15 @@
               </div>
               <div class="col-md-2">
                 <label class="form-label">Quantidade</label>
-                <input type="number" class="form-control" name="quantidade_{{ nome|slugify }}">
+                <input type="number" class="form-control quantidade" name="quantidade_{{ nome|slugify }}">
               </div>
               <div class="col-md-3">
                 <label class="form-label">Preço Unitário</label>
-                <input type="number" step="0.01" class="form-control" name="preco_unitario_{{ nome|slugify }}">
+                <input type="number" step="0.01" class="form-control preco_unitario" name="preco_unitario_{{ nome|slugify }}">
               </div>
               <div class="col-md-3">
                 <label class="form-label">Preço Total</label>
-                <input type="number" step="0.01" class="form-control" name="preco_total_{{ nome|slugify }}" readonly>
+                <input type="number" step="0.01" class="form-control preco_total" name="preco_total_{{ nome|slugify }}" readonly>
               </div>
             </div>
           </div>
@@ -589,7 +589,22 @@
         {% endfor %}
       </div>
 
-
+<script>
+  document.addEventListener('input', function(e) {
+    // Verifica se o input alterado foi de quantidade ou preço unitário
+    if (e.target.classList.contains('quantidade') || e.target.classList.contains('preco_unitario')) {
+      const linha = e.target.closest('.input-bloco');  // pega o bloco onde o input está
+      if (linha) {
+        const quantidade = parseFloat(linha.querySelector('.quantidade')?.value) || 0;
+        const precoUnitario = parseFloat(linha.querySelector('.preco_unitario')?.value) || 0;
+        const precoTotal = linha.querySelector('.preco_total');
+        if (precoTotal) {
+          precoTotal.value = (quantidade * precoUnitario).toFixed(2);
+        }
+      }
+    }
+  });
+</script>
 
 <script>
   function clonarBloco(tipo) {
@@ -604,8 +619,6 @@
     container.appendChild(novoBloco);
   }
 </script>
-
-
 
 <script>
   function mostrarFormulario(id) {

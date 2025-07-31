@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Editar Ordem de Serviço{% endblock %}
+{% block title %}Cadastrar Ordem de Serviço{% endblock %}
 
 {% block content %}
 
@@ -75,285 +75,598 @@
   .card-collapse .card-body {
     padding: 1rem;
   }
+
+  .nav-tabs .nav-link {
+    color: black;
+    font-weight: 500;
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: #343a40;
+    border-color: #dee2e6 #dee2e6 #fff;
+    color: white;
+  }
+
+  #formTabs {
+  overflow-x: unset !important;
+  white-space: normal !important;
+  flex-wrap: wrap !important;
+}
 </style>
 
 <div class="container py-3">
-  <h2 class="mb-3">Editar Ordem de Serviço</h2>
+  <h2 class="mb-3">Gerar Nova Ordem de Serviço</h2>
   <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
 
-    <div class="accordion" id="formAccordion">
-      <!-- seus outros blocos aqui (Identificação, Obra, etc) -->
-      <div class="card-collapse">
-        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#identificacao" aria-expanded="true">
-          Identificação
-        </div>
-        <div id="identificacao" class="collapse show" data-bs-parent="#formAccordion">
+    <div class="border rounded" style="padding: 10px; padding-top: 0px; background-color:#f8f8f8; border-radius: 10px;">
+        <!-- Nav Tabs -->
+        <ul class="nav nav-tabs  " id="formTabs" role="tablist" style="overflow-x: auto; white-space: nowrap; ">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="identificacao-tab" data-bs-toggle="tab" data-bs-target="#identificacao" type="button" role="tab">
+              <i class="fas fa-id-card"></i> Identificação
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="obra-tab" data-bs-toggle="tab" data-bs-target="#obra" type="button" role="tab">
+              <i class="fas fa-tools"></i> Obra
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="produtos-tab" data-bs-toggle="tab" data-bs-target="#produtos" type="button" role="tab">
+              <i class="fas fa-box"></i> Produtos
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="servicos-tab" data-bs-toggle="tab" data-bs-target="#servicos" type="button" role="tab">
+              <i class="fas fa-briefcase"></i> Serviços
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="despesas-tab" data-bs-toggle="tab" data-bs-target="#despesas" type="button" role="tab">
+              <i class="fas fa-file-invoice-dollar"></i> Despesas
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="anexo-tab" data-bs-toggle="tab" data-bs-target="#anexo" type="button" role="tab">
+              <i class="fas fa-paperclip"></i> Anexo e Observação
+            </button>
+          </li>
+        </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content  p-3" id="formTabsContent" style="background-color: #f8f8f8;">
+
+        <!-- Identificação -->
+        <div class="tab-pane fade show active" id="identificacao" role="tabpanel">
           <div class="card-body">
-            <div class="row g-2">
-              <div class="col-md-4">
-                <label for="{{ form.titulo.id_for_label }}" class="form-label-professional">Título</label>
-                {{ form.titulo }}
-                {% if form.titulo.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.titulo.errors|striptags }}
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    <label for="{{ form.titulo.id_for_label }}" class="form-label-professional">Título</label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.titulo.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.data_abertura.id_for_label }}" class="form-label-professional">Data da Abertura</label>
+                    {{ form.data_abertura }}
+                    {% if form.data_abertura.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.data_abertura.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.status.id_for_label }}" class="form-label-professional">Status</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.status.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                 
+                  <div class="col-md-2">
+                    <label for="{{ form.n_cliente.id_for_label }}" class="form-label-professional">Cliente</label>
+                    {{ form.n_cliente }}
+                    {% if form.n_cliente.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.n_cliente.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.data_abertura.id_for_label }}" class="form-label-professional">Data da Abertura</label>
-                {{ form.data_abertura }}
-                {% if form.data_abertura.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.data_abertura.errors|striptags }}
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-4">
+                    <label for="{{ form.solicitante.id_for_label }}" class="form-label-professional">Solicitante</label>
+                    {{ form.solicitante }}
+                    {% if form.solicitante.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.solicitante.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.unidade.id_for_label }}" class="form-label-professional">Unidade</label>
+                    {{ form.unidade }}
+                    {% if form.unidade.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.unidade.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="col-md-2">
+                    <label for="{{ form.segmento.id_for_label }}" class="form-label-professional">Segmento</label>
+                    {{ form.segmento }}
+                    {% if form.segmento.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.segmento.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="col-md-2">
+                    <label for="{{ form.n_proposta.id_for_label }}" class="form-label-professional">Nº Proposta</label>
+                    {{ form.n_proposta }}
+                    {% if form.n_proposta.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.n_proposta.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="col-md-2">
+                    <label for="{{ form.n_desenho.id_for_label }}" class="form-label-professional">Nº Desenho</label>
+                    {{ form.n_desenho }}
+                    {% if form.n_desenho.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.n_desenho.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endif %}
               </div>
-              <div class="col-md-2">
-                <label for="{{ form.status.id_for_label }}" class="form-label-professional">Status</label>
-                {{ form.status }}
-                {% if form.status.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.status.errors|striptags }}
+        </div>
+
+        <!-- Obra -->
+        <div class="tab-pane fade" id="obra" role="tabpanel">
+          <div class="row g-2">
+                  <div class="col-md-6">
+                    <label for="{{ form.obra_nome.id_for_label }}" class="form-label-professional">Nome</label>
+                    {{ form.obra_nome }}
+                    {% if form.obra_nome.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.obra_nome.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.obra_inicio.id_for_label }}" class="form-label-professional">Início</label>
+                    {{ form.obra_inicio }}
+                    {% if form.obra_inicio.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.obra_inicio.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.obra_termino.id_for_label }}" class="form-label-professional">Término</label>
+                    {{ form.obra_termino }}
+                    {% if form.obra_termino.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.obra_termino.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.n_art.id_for_label }}" class="form-label-professional">Nº ART</label>
+                    {{ form.n_art }}
+                    {% if form.n_art.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.n_art.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.digitador.id_for_label }}" class="form-label-professional">Digitador</label>
-                {{ form.digitador }}
-                {% if form.digitador.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.digitador.errors|striptags }}
+
+                <div class="row g-2 mt-2">
+                  <div class="col-md-4">
+                    <label for="{{ form.municipio.id_for_label }}" class="form-label-professional">Município</label>
+                    {{ form.municipio }}
+                    {% if form.municipio.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.municipio.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                    <label for="{{ form.uf.id_for_label }}" class="form-label-professional">UF</label>
+                    {{ form.uf }}
+                    {% if form.uf.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.uf.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                    <label for="{{ form.uc_os.id_for_label }}" class="form-label-professional">UC/OS</label>
+                    {{ form.uc_os }}
+                    {% if form.uc_os.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.uc_os.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                    <label for="{{ form.oc.id_for_label }}" class="form-label-professional">OC</label>
+                    {{ form.oc }}
+                    {% if form.oc.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.oc.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.n_cliente.id_for_label }}" class="form-label-professional">Cliente</label>
-                {{ form.n_cliente }}
-                {% if form.n_cliente.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.n_cliente.errors|striptags }}
+        </div>
+
+        <!-- Produtos -->
+        <div class="tab-pane fade" id="produtos" role="tabpanel">
+          <div class="card-body">
+          <div class="mb-3">
+            {{ produto_formset.management_form }}
+            <div id="produtos-container">
+              {% for produto_form in produto_formset %}
+                <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="col-md-6">
+                    {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
+                  </div>
+                  <div class="col-md-3">
+                    {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
+                  </div>
+                  <div class="col-md-3 d-flex align-items-center justify-content-end">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+
+                  <!-- Campo oculto de controle -->
+                  <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
                 </div>
-                {% endif %}
-              </div>
+              {% endfor %}
             </div>
-            <div class="row g-2" style="margin-top: 5px;">
-              <div class="col-md-4">
-                <label for="{{ form.solicitante.id_for_label }}" class="form-label-professional">Solicitante</label>
-                {{ form.solicitante }}
-                {% if form.solicitante.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.solicitante.errors|striptags }}
+
+            <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
+              <i class="fas fa-plus"></i> Adicionar Produto
+            </button>
+          </div>
+        </div>
+        </div>
+
+        <!-- Serviços -->
+        <div class="tab-pane fade" id="servicos" role="tabpanel">
+          <div class="card-body">
+            <div class="mb-3">
+              <div id="servicos-container">
+                <!-- Bloco Inicial -->
+                <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-5">
+                      <label>Serviço:</label>
+                      <select name="form-0-servico" class="form-select servico-select">
+                        <option value="">Selecione o Serviço</option>
+                        {% for servico in servicos %}
+                          <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                            {{ servico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Profissional:</label>
+                      <select name="form-0-tecnico" class="form-select tecnico-select">
+                        <option value="">Selecione o Profissional</option>
+                        {% for tecnico in tecnicos %}
+                          <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                            {{ tecnico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-0-quantidade" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label>Preço Unitário:</label>
+                      <input type="text" name="form-0-preco_unitario" class="form-control preco-servico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Preço Total:</label>
+                      <input type="text" name="form-0-preco_total" class="form-control preco-total-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão:</label>
+                      <input type="text" name="form-0-comissao" class="form-control comissao-tecnico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão Total:</label>
+                      <input type="text" name="form-0-comissao_total" class="form-control comissao-total-input" readonly>
+                    </div>
+                    <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
+                  </div>
                 </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.unidade.id_for_label }}" class="form-label-professional">Unidade</label>
-                {{ form.unidade }}
-                {% if form.unidade.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.unidade.errors|striptags }}
-                </div>
-                {% endif %}
               </div>
 
-              <div class="col-md-2">
-                <label for="{{ form.segmento.id_for_label }}" class="form-label-professional">Segmento</label>
-                {{ form.segmento }}
-                {% if form.segmento.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.segmento.errors|striptags }}
+              <!-- Template Oculto -->
+              <div id="servico-template" class="d-none">
+                <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-5">
+                      <label>Serviço:</label>
+                      <select name="form-__prefix__-servico" class="form-select servico-select">
+                        <option value="">Selecione o Serviço</option>
+                        {% for servico in servicos %}
+                          <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                            {{ servico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Profissional:</label>
+                      <select name="form-__prefix__-tecnico" class="form-select tecnico-select">
+                        <option value="">Selecione o Profissional</option>
+                        {% for tecnico in tecnicos %}
+                          <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
+                            {{ tecnico.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-servico" title="Remover serviço">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-__prefix__-quantidade" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                      <label>Preço Unitário:</label>
+                      <input type="text" name="form-__prefix__-preco_unitario" class="form-control preco-servico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Preço Total:</label>
+                      <input type="text" name="form-__prefix__-preco_total" class="form-control preco-total-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão:</label>
+                      <input type="text" name="form-__prefix__-comissao" class="form-control comissao-tecnico-input" readonly>
+                    </div>
+                    <div class="col-md-2">
+                      <label>Comissão Total:</label>
+                      <input type="text" name="form-__prefix__-comissao_total" class="form-control comissao-total-input" readonly>
+                    </div>
+                    <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+                  </div>
                 </div>
-                {% endif %}
               </div>
 
-              <div class="col-md-2">
-                <label for="{{ form.n_proposta.id_for_label }}" class="form-label-professional">Nº Proposta</label>
-                {{ form.n_proposta }}
-                {% if form.n_proposta.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.n_proposta.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
-              
-              <div class="col-md-2">
-                <label for="{{ form.n_desenho.id_for_label }}" class="form-label-professional">Nº Desenho</label>
-                {{ form.n_desenho }}
-                {% if form.n_desenho.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.n_desenho.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
+              <!-- Botão Adicionar -->
+              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-servico">
+                <i class="fas fa-plus"></i> Adicionar Serviço
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="card-collapse">
-        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#contato_doc">
-          Obra
-        </div>
-        <div id="contato_doc" class="collapse" data-bs-parent="#formAccordion">
-          <div class="card-body">
 
-            <!-- Campos da Obra -->
-            <div class="row g-2">
-              <div class="col-md-6">
-                <label for="{{ form.obra_nome.id_for_label }}" class="form-label-professional">Nome</label>
-                {{ form.obra_nome }}
-                {% if form.obra_nome.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.obra_nome.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.obra_inicio.id_for_label }}" class="form-label-professional">Início</label>
-                {{ form.obra_inicio }}
-                {% if form.obra_inicio.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.obra_inicio.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.obra_termino.id_for_label }}" class="form-label-professional">Término</label>
-                {{ form.obra_termino }}
-                {% if form.obra_termino.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.obra_termino.errors|striptags }}
-                </div>
-                {% endif %}
-              </div>
-              <div class="col-md-2">
-                <label for="{{ form.n_art.id_for_label }}" class="form-label-professional">Nº ART</label>
-                {{ form.n_art }}
-                {% if form.n_art.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.n_art.errors|striptags }}
-                </div>
-                {% endif %}
+<script>
+  function aplicarEventosNosServicos() {
+    document.querySelectorAll('.servico-form').forEach(function(form) {
+      const selectServico = form.querySelector('.servico-select');
+      const selectTecnico = form.querySelector('.tecnico-select');
+      const quantidadeInput = form.querySelector('input[name$="quantidade"]');
+      const precoUnitarioInput = form.querySelector('.preco-servico-input');
+      const precoTotalInput = form.querySelector('.preco-total-input');
+      const comissaoInput = form.querySelector('.comissao-tecnico-input');
+      const comissaoTotalInput = form.querySelector('.comissao-total-input');
+
+      function calcular() {
+        const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
+        const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
+        const quantidade = parseFloat(quantidadeInput.value || 0);
+
+        const precoTotal = precoServico * quantidade;
+        const comissao = (comissaoTecnico / 100) * precoServico;
+        const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+
+        precoUnitarioInput.value = precoServico.toFixed(2);
+        precoTotalInput.value = precoTotal.toFixed(2);
+        comissaoInput.value = comissao.toFixed(2);
+        comissaoTotalInput.value = comissaoTotal.toFixed(2);
+      }
+
+      selectServico.addEventListener('change', calcular);
+      selectTecnico.addEventListener('change', calcular);
+      quantidadeInput.addEventListener('input', calcular);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    aplicarEventosNosServicos();
+
+    document.getElementById('add-servico')?.addEventListener('click', function() {
+      const container = document.getElementById('servicos-container');
+      const template = document.getElementById('servico-template').innerHTML;
+      const formsCount = container.querySelectorAll('.servico-form').length;
+      const novoHtml = template.replace(/__prefix__/g, formsCount);
+      container.insertAdjacentHTML('beforeend', novoHtml);
+      aplicarEventosNosServicos();
+    });
+  });
+</script>
+
+
+<!-- Script -->
+<script>
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-remove-servico')) {
+      e.target.closest('.servico-form').remove();
+    }
+  });
+</script>
+
+
+
+      <div class="tab-pane fade" id="despesas" role="tabpanel">
+          <style>
+          .form-despesa {
+            display: none;
+            margin-top: 20px;
+          }
+        </style>
+
+      <div class="row row-cols-2 row-cols-md-4 g-3">
+        {% for nome in nomes %}
+        <div class="col">
+          <a href="#" class="text-decoration-none" onclick="mostrarFormulario('{{ nome|slugify }}')">
+            <div class="card text-center h-100 shadow-sm">
+              <div class="card-body">
+                {{ nome }}
               </div>
             </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
 
-            <div class="row g-2 mt-2">
+      <!-- Formulários escondidos por padrão -->
+      <div id="formularios-despesas">
+        {% for nome in nomes %}
+        <div id="form-{{ nome|slugify }}" class="form-despesa card shadow-sm p-3">
+          <h5>{{ nome }}</h5>
+          
+          <div class="clonavel-{{ nome|slugify }}">
+            <div class="row g-2 mb-2 input-bloco">
               <div class="col-md-4">
-                <label for="{{ form.municipio.id_for_label }}" class="form-label-professional">Município</label>
-                {{ form.municipio }}
-                {% if form.municipio.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.municipio.errors|striptags }}
-                </div>
-                {% endif %}
+                <label class="form-label">Descrição</label>
+                <input type="text" class="form-control" name="descricao_{{ nome|slugify }}">
               </div>
               <div class="col-md-2">
-                <label for="{{ form.uf.id_for_label }}" class="form-label-professional">UF</label>
-                {{ form.uf }}
-                {% if form.uf.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.uf.errors|striptags }}
-                </div>
-                {% endif %}
+                <label class="form-label">Quantidade</label>
+                <input type="number" class="form-control quantidade" name="quantidade_{{ nome|slugify }}">
               </div>
               <div class="col-md-3">
-                <label for="{{ form.uc_os.id_for_label }}" class="form-label-professional">UC/OS</label>
-                {{ form.uc_os }}
-                {% if form.uc_os.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.uc_os.errors|striptags }}
-                </div>
-                {% endif %}
+                <label class="form-label">Preço Unitário</label>
+                <input type="number" step="0.01" class="form-control preco_unitario" name="preco_unitario_{{ nome|slugify }}">
               </div>
               <div class="col-md-3">
-                <label for="{{ form.oc.id_for_label }}" class="form-label-professional">OC</label>
-                {{ form.oc }}
-                {% if form.oc.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.oc.errors|striptags }}
-                </div>
-                {% endif %}
+                <label class="form-label">Preço Total</label>
+                <input type="number" step="0.01" class="form-control preco_total" name="preco_total_{{ nome|slugify }}" readonly>
               </div>
             </div>
           </div>
+
+          <button type="button" class="btn btn-outline-primary mt-2" onclick="clonarBloco('{{ nome|slugify }}')">
+            Adicionar
+          </button>
         </div>
+        {% endfor %}
       </div>
-      
-      <!-- PRODUTOS -->
-            <div class="card-collapse">
-  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#produtos">
-    Produtos
-  </div>
-  <div id="produtos" class="collapse" data-bs-parent="#formAccordion">
-    <div class="card-body">
-      <div class="mb-3">
-        {{ produto_formset.management_form }}
-        <div id="produtos-container">
-          {% for produto_form in produto_formset %}
-            <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
-              <div class="col-md-6">
-                {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
-              </div>
-              <div class="col-md-3">
-                {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
-              </div>
-              <div class="col-md-3 d-flex align-items-center justify-content-end">
-                <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </div>
 
-              <!-- Campo oculto de controle -->
-              <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
-            </div>
-          {% endfor %}
+<script>
+  document.addEventListener('input', function(e) {
+    // Verifica se o input alterado foi de quantidade ou preço unitário
+    if (e.target.classList.contains('quantidade') || e.target.classList.contains('preco_unitario')) {
+      const linha = e.target.closest('.input-bloco');  // pega o bloco onde o input está
+      if (linha) {
+        const quantidade = parseFloat(linha.querySelector('.quantidade')?.value) || 0;
+        const precoUnitario = parseFloat(linha.querySelector('.preco_unitario')?.value) || 0;
+        const precoTotal = linha.querySelector('.preco_total');
+        if (precoTotal) {
+          precoTotal.value = (quantidade * precoUnitario).toFixed(2);
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  function clonarBloco(tipo) {
+    const container = document.querySelector('.clonavel-' + tipo);
+    const blocos = container.querySelectorAll('.input-bloco');
+    const ultimoBloco = blocos[blocos.length - 1];
+    const novoBloco = ultimoBloco.cloneNode(true);
+
+    // Limpa os inputs do novo bloco
+    novoBloco.querySelectorAll('input').forEach(input => input.value = '');
+
+    container.appendChild(novoBloco);
+  }
+</script>
+
+<script>
+  function mostrarFormulario(id) {
+    // Oculta todos os formulários primeiro
+    document.querySelectorAll('.form-despesa').forEach(div => div.style.display = 'none');
+    // Exibe o formulário correspondente
+    const form = document.getElementById('form-' + id);
+    if (form) {
+      form.style.display = 'block';
+      form.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+</script>
+
         </div>
-
-        <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
-          <i class="fas fa-plus"></i> Adicionar Produto
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-      <div class="card-collapse">
-        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#seg_ativ_obs">
-          Anexo e Observação
-        </div>
-        <div id="seg_ativ_obs" class="collapse" data-bs-parent="#formAccordion">
+        <!-- Anexo e Observação -->
+        <div class="tab-pane fade" id="anexo" role="tabpanel">
           <div class="card-body">
-            <div class="row g-2">
-              <div class="col-md-12">
-                <label for="{{ form.arquivo.id_for_label }}" class="form-label-professional">Arquivo</label>
-                {{ form.arquivo }}
-                {% if form.arquivo.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.arquivo.errors|striptags }}
+                <div class="row g-2">
+                  <div class="col-md-12">
+                    <label for="{{ form.arquivo.id_for_label }}" class="form-label-professional">Arquivo</label>
+                    {{ form.arquivo }}
+                    {% if form.arquivo.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.arquivo.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div> 
                 </div>
-                {% endif %}
-              </div> 
-            </div>
-            <div class="row g-2 mt-2">
-              <div class="col-md-12">
-                <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
-                {{ form.descricao }}
-                {% if form.descricao.errors %}
-                <div class="invalid-feedback d-block">
-                  {{ form.descricao.errors|striptags }}
+                <div class="row g-2 mt-2">
+                  <div class="col-md-12">
+                    <label for="{{ form.descricao.id_for_label }}" class="form-label-professional">Descrição</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.descricao.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endif %}
               </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
 
     <div class="text-end mt-3">
       <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
-        <i class="fas fa-save me-2"></i>Salvar Alterações
+        <i class="fas fa-save me-2"></i>Salvar Os
       </button>
     </div>
   </form>
@@ -361,6 +674,7 @@
 
 <!-- JS -->
 <script>
+
   document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('produtos-container');
     const addBtn = document.getElementById('add-produto');
@@ -420,7 +734,9 @@
       }
     });
   });
+
 </script>
+
 
 
 

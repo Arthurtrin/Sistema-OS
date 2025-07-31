@@ -17,17 +17,81 @@ from servicos.models import Servico
 from tecnicos.models import Tecnico
 from decimal import Decimal  
 
-def criar_despesa(despesa, ordem_servico):
-    print("chegou aqui")
-    DespesaOrdemServico.objects.create(
-        ordem_servico = ordem_servico,
-        tipo = despesa['tipo'],
-        descricao = despesa['descricao'],
-        quantidade = int(despesa['quantidade']),
-        preco_unitario = Decimal(despesa['preco_unitario']),
-        preco_total = Decimal(despesa['preco_total'])
-    )
-    print("chegou aqui2")
+# Salva os despesas na OS
+def criar_despesa(request, ordem_servico):
+    try:
+        despesas = []
+        tipos = [
+            'combustivel', 'alimentacao', 'hospedagem', 'mao-de-obra', 'sms', 'consumiveis',
+            'comissao', 'locacao', 'outros', 'materia-prima', 'transporte', 'equipamento'
+        ]
+
+        for tipo in tipos:
+            descricoes = request.POST.getlist(f'descricao_{tipo}')
+            quantidades = request.POST.getlist(f'quantidade_{tipo}')
+            precos_unitarios = request.POST.getlist(f'preco_unitario_{tipo}')
+            precos_totais = request.POST.getlist(f'preco_total_{tipo}')
+
+            for i in range(len(descricoes)):
+                if descricoes[i].strip():  # evita adicionar campos em branco
+                    despesas.append({
+                        'tipo': tipo,
+                        'descricao': descricoes[i],
+                        'quantidade': quantidades[i],
+                        'preco_unitario': float(precos_unitarios[i]),
+                        'preco_total': float(precos_unitarios[i]) * int(quantidades[i])
+                    })
+
+        for despesa in despesas:      
+            DespesaOrdemServico.objects.create(
+                ordem_servico = ordem_servico,
+                tipo = despesa['tipo'],
+                descricao = despesa['descricao'],
+                quantidade = int(despesa['quantidade']),
+                preco_unitario = Decimal(despesa['preco_unitario']),
+                preco_total = Decimal(despesa['preco_total'])
+            )
+    except:
+        print("deu erro na parte de despesas, mané")
+
+# Salva os serviços na OS
+def criar_servico(request, ordem_servico):
+    try:
+        contador = 0
+        while True:
+            servico_id = request.POST.get(f'form-{contador}-servico')
+            tecnico_id = request.POST.get(f'form-{contador}-tecnico')
+            quantidade = request.POST.get(f'form-{contador}-quantidade')
+            acao = request.POST.get(f'form-{contador}-acao', 'mantem')
+
+            # Se não tem serviço, assume que não há mais blocos
+            if servico_id is None:
+                break
+
+            if acao == 'delete':
+                contador += 1
+                continue
+
+            # Tenta buscar os objetos do banco
+            servico = tecnico = None
+            if tecnico_id and servico_id:
+                servico = Servico.objects.get(id=servico_id)
+                tecnico = Tecnico.objects.get(id=tecnico_id)
+
+            #cria uma instancia de ServicoOrdemServico
+            ServicoOrdemServico.objects.create(
+                ordem_servico=ordem_servico,
+                servico=servico,
+                profissional=tecnico,
+                quantidade=quantidade,
+                preco_unitario=servico.preco,
+                preco_total=servico.preco * Decimal(str(quantidade)),
+                comissao= (tecnico.comissao/100)*servico.preco,
+                comissao_total= (tecnico.comissao/100)*(servico.preco * Decimal(str(quantidade))),
+            )
+            contador += 1    
+    except:
+        print("deu erro na parte de serviço, mané")
 
 @login_required
 def criar_os(request):
@@ -37,25 +101,16 @@ def criar_os(request):
         extra=1,
         can_delete=True
     )
-
-    ServicoFormSet = modelformset_factory(
-        ServicoOrdemServico,  # Model intermediário que liga serviço à OS
-        form=ServicoOrdemServicoForm,
-        extra=1,
-        can_delete=True
-    )
-
     servicos = Servico.objects.all()
     tecnicos = Tecnico.objects.all()
 
     if request.method == 'POST':
         os_form = OrdemServicoForm(request.POST, request.FILES)
         produto_formset = ProdutoFormSet(request.POST, prefix='produto')
-        servico_formset = ServicoFormSet(request.POST, prefix='servico')
 
         if os_form.is_valid() and produto_formset.is_valid():
             erro_estoque = False
-
+            
             # Verifica estoque dos produtos
             for i, form in enumerate(produto_formset.forms):
                 acao = request.POST.get(f'produto-{i}-acao', 'mantem')
@@ -81,10 +136,8 @@ def criar_os(request):
                 return render(request, 'ordem_servico/criar_os.html', {
                     'form': os_form,
                     'produto_formset': produto_formset,
-                    'servico_formset': servico_formset,
                     'servicos': servicos,
                     'tecnicos': tecnicos
-
                 })
 
             # Salva Ordem de Serviço
@@ -107,74 +160,8 @@ def criar_os(request):
                     produto.quantidade -= produto_os.quantidade
                     produto.save()
 
-            
-            # Salva os serviços na OS
-            contador = 0
-
-            while True:
-                servico_id = request.POST.get(f'form-{contador}-servico')
-                tecnico_id = request.POST.get(f'form-{contador}-tecnico')
-                quantidade = request.POST.get(f'form-{contador}-quantidade')
-                acao = request.POST.get(f'form-{contador}-acao', 'mantem')
-
-                # Se não tem serviço, assume que não há mais blocos
-                if servico_id is None:
-                    break
-
-                print(f'--- Bloco {contador} ---')
-                print('Ação:', acao)
-
-                if acao == 'delete':
-                    print('>> Ignorado (delete)')
-                    contador += 1
-                    continue
-
-                # Tenta buscar os objetos do banco
-                servico = tecnico = None
-                if tecnico_id and servico_id:
-                    servico = Servico.objects.get(id=servico_id)
-                    tecnico = Tecnico.objects.get(id=tecnico_id)
-                  
-                ServicoOrdemServico.objects.create(
-                    ordem_servico=ordem_servico,
-                    servico=servico,
-                    profissional=tecnico,
-                    quantidade=quantidade,
-                    preco_unitario=servico.preco,
-                    preco_total=servico.preco * Decimal(str(quantidade)),
-                    comissao= (tecnico.comissao/100)*servico.preco,
-                    comissao_total= (tecnico.comissao/100)*(servico.preco * Decimal(str(quantidade))),
-                )
-                print('Serviço:', servico)
-                print('Profissional:', tecnico)
-                print('Quantidade:', quantidade)
-
-                contador += 1
-
-            despesas = []
-            tipos = [
-                'combustivel', 'alimentacao', 'hospedagem', 'mao-de-obra', 'sms', 'consumiveis',
-                'comissao', 'locacao', 'outros', 'materia-prima', 'transporte', 'equipamento'
-            ]
-
-            for tipo in tipos:
-                descricoes = request.POST.getlist(f'descricao_{tipo}')
-                quantidades = request.POST.getlist(f'quantidade_{tipo}')
-                precos_unitarios = request.POST.getlist(f'preco_unitario_{tipo}')
-                precos_totais = request.POST.getlist(f'preco_total_{tipo}')
-
-                for i in range(len(descricoes)):
-                    if descricoes[i].strip():  # evita adicionar campos em branco
-                        despesas.append({
-                            'tipo': tipo,
-                            'descricao': descricoes[i],
-                            'quantidade': quantidades[i],
-                            'preco_unitario': float(precos_unitarios[i]),
-                            'preco_total': float(precos_unitarios[i]) * int(quantidades[i])
-                        })
-            for despesa in despesas:
-                print(despesa)
-                criar_despesa(despesa, ordem_servico)
+            criar_servico(request, ordem_servico)
+            criar_despesa(request, ordem_servico)
 
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
@@ -182,7 +169,6 @@ def criar_os(request):
     else:
         os_form = OrdemServicoForm()
         produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='produto')
-        servico_formset = ServicoFormSet(queryset=ServicoOrdemServico.objects.none(), prefix='servico')
 
     nomes = [
     'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
@@ -193,7 +179,6 @@ def criar_os(request):
     return render(request, 'ordem_servico/criar_os.html', {
         'form': os_form,
         'produto_formset': produto_formset,
-        'servico_formset': servico_formset,
         'servicos': servicos,
         'tecnicos': tecnicos,
         'nomes': nomes
