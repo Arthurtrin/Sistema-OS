@@ -11,7 +11,7 @@ from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db.models import ProtectedError
 
-from .models import Produto, ProdutoOrdemServico, ServicoOrdemServico, DespesaOrdemServico
+from .models import ProdutoOrdemServico, ServicoOrdemServico, DespesaOrdemServico
 from .forms import OrdemServicoForm, ProdutoOrdemServicoForm, ServicoOrdemServicoForm
 from servicos.models import Servico
 from tecnicos.models import Tecnico
@@ -55,7 +55,9 @@ def criar_despesa(request, ordem_servico):
         print("deu erro na parte de despesas, mané")
 
 # Salva os serviços na OS
-def criar_servico(request, ordem_servico):
+"""def criar_servico(request, ordem_servico):
+    total_forms = int(request.POST.get('servico-TOTAL_FORMS', 0))
+    print(total_forms)
     try:
         contador = 0
         while True:
@@ -93,51 +95,72 @@ def criar_servico(request, ordem_servico):
     except:
         print("deu erro na parte de serviço, mané")
 
+"""
+def criar_servico(request, ordem_servico):
+    total_forms = int(request.POST.get('servico-TOTAL_FORMS', 0))
+    print("criar serviço:")
+    print(total_forms)
+    for i in range(total_forms):
+        servico_id = request.POST.get(f'form-{i}-servico')
+        tecnico_id = request.POST.get(f'form-{i}-tecnico')
+        quantidade_lista = request.POST.getlist(f'form-{i}-quantidade-servico')
+        quantidade = quantidade_lista[0] if quantidade_lista else None
+        acao = request.POST.get(f'form-{i}-acao', 'mantem')
+
+        if not servico_id or acao != 'mantem':
+            continue
+
+        servico = Servico.objects.get(id=servico_id)
+        tecnico = Tecnico.objects.get(id=tecnico_id)
+        print(servico)
+        print(tecnico)
+        print(quantidade)
+        print(acao)
+
 @login_required
 def criar_os(request):
-    ProdutoFormSet = modelformset_factory(
-        ProdutoOrdemServico,
-        form=ProdutoOrdemServicoForm,
-        extra=1,
-        can_delete=True
-    )
     servicos = Servico.objects.all()
     tecnicos = Tecnico.objects.all()
+    produtos = Produto.objects.all()
 
     if request.method == 'POST':
         os_form = OrdemServicoForm(request.POST, request.FILES)
-        produto_formset = ProdutoFormSet(request.POST, prefix='produto')
-
-        if os_form.is_valid() and produto_formset.is_valid():
+        
+        if os_form.is_valid():
             erro_estoque = False
-            
-            # Verifica estoque dos produtos
-            for i, form in enumerate(produto_formset.forms):
-                acao = request.POST.get(f'produto-{i}-acao', 'mantem')
-                if acao == 'mantem':
-                    produto = form.cleaned_data.get('produto')
-                    quantidade = form.cleaned_data.get('quantidade')
 
-                    if produto and quantidade is not None:
-                        try:
-                            produto_db = Produto.objects.get(id=produto.id)
-                            if produto_db.quantidade < quantidade:
-                                erro_estoque = True
-                                messages.error(
-                                    request,
-                                    f"Estoque insuficiente para o produto \"{produto_db.nome}\". "
-                                    f"Disponível: {produto_db.quantidade}, Solicitado: {quantidade}"
-                                )
-                        except Produto.DoesNotExist:
-                            erro_estoque = True
-                            messages.error(request, 'Produto não encontrado no banco de dados.')
+            total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
+            for i in range(total_forms):
+                produto_id = request.POST.get(f'form-{i}-produto')
+                quantidade_lista = request.POST.getlist(f'form-{i}-quantidade')
+                quantidade = quantidade_lista[0] if quantidade_lista else None
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+
+                if not produto_id or acao != 'mantem':
+                    continue
+                
+                try:
+                    produto = Produto.objects.get(id=produto_id)
+                    if produto.quantidade < int(quantidade):
+                        erro_estoque = True
+                        messages.error(
+                            request,
+                            f"Estoque insuficiente para o produto \"{produto.nome}\". "
+                            f"Disponível: {produto.quantidade}, Solicitado: {quantidade}"
+                        )
+                except Produto.DoesNotExist:
+                    erro_estoque = True
+                    messages.error(request, 'Produto não encontrado no banco de dados.')
+                print(f"Produto: {produto.nome}, Quantidade: {quantidade}")
+
+            print("produto disponivel")
 
             if erro_estoque:
                 return render(request, 'ordem_servico/criar_os.html', {
                     'form': os_form,
-                    'produto_formset': produto_formset,
                     'servicos': servicos,
-                    'tecnicos': tecnicos
+                    'tecnicos': tecnicos,
+                    'produtos': produtos
                 })
 
             # Salva Ordem de Serviço
@@ -146,19 +169,29 @@ def criar_os(request):
             ordem_servico.save()
 
             # Salva os produtos na OS
-            for i, form in enumerate(produto_formset.forms):
+            for i in range(total_forms):
+                produto_id = request.POST.get(f'form-{i}-produto')
+                quantidade_lista = request.POST.getlist(f'form-{i}-quantidade')
+                quantidade = quantidade_lista[0] if quantidade_lista else None
                 acao = request.POST.get(f'produto-{i}-acao', 'mantem')
-                if acao == 'delete':
-                    continue
-                if acao == 'mantem' and form.has_changed():
-                    produto_os = form.save(commit=False)
-                    produto_os.ordem_servico = ordem_servico
-                    produto_os.save()
 
-                    # Baixa estoque
-                    produto = Produto.objects.get(id=produto_os.produto.id)
-                    produto.quantidade -= produto_os.quantidade
-                    produto.save()
+                if not produto_id or acao != 'mantem':
+                    continue
+
+                try:
+                    produto = Produto.objects.get(id=produto_id)
+                    ProdutoOrdemServico.objects.create(
+                        ordem_servico = ordem_servico,
+                        produto = produto,
+                        quantidade = quantidade
+                    )
+                except Produto.DoesNotExist:
+                    messages.error(request, 'Produto não encontrado no banco de dados.')
+
+                # Baixa estoque
+                produto = Produto.objects.get(id=produto_id)
+                produto.quantidade -= int(quantidade)
+                produto.save()
 
             criar_servico(request, ordem_servico)
             criar_despesa(request, ordem_servico)
@@ -168,7 +201,6 @@ def criar_os(request):
 
     else:
         os_form = OrdemServicoForm()
-        produto_formset = ProdutoFormSet(queryset=ProdutoOrdemServico.objects.none(), prefix='produto')
 
     nomes = [
     'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
@@ -178,10 +210,10 @@ def criar_os(request):
 
     return render(request, 'ordem_servico/criar_os.html', {
         'form': os_form,
-        'produto_formset': produto_formset,
         'servicos': servicos,
         'tecnicos': tecnicos,
-        'nomes': nomes
+        'nomes': nomes,
+        'produtos': produtos
     })
 
 

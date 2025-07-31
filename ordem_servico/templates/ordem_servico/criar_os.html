@@ -92,6 +92,10 @@
   white-space: normal !important;
   flex-wrap: wrap !important;
 }
+.form-despesa {
+  display: none;
+  margin-top: 20px;
+}
 </style>
 
 <div class="container py-3">
@@ -312,44 +316,122 @@
                   </div>
                 </div>
         </div>
-
+      
         <!-- Produtos -->
         <div class="tab-pane fade" id="produtos" role="tabpanel">
           <div class="card-body">
-          <div class="mb-3">
-            {{ produto_formset.management_form }}
-            <div id="produtos-container">
-              {% for produto_form in produto_formset %}
-                <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
-                  <div class="col-md-6">
-                    {{ produto_form.produto.label_tag }} {{ produto_form.produto }}
+            <div class="mb-3">
+              <input type="hidden" id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="1">
+              <div id="produtos-container">
+                <!-- Bloco Inicial -->
+                <div class="row g-1 produto-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <label>Produto:</label>
+                      <select name="form-0-produto" class="form-select produto-select">
+                        <option value="">Selecione o Produto</option>
+                        {% for produto in produtos %}
+                          <option value="{{ produto.id }}" data-preco="{{ produto.preco }}">
+                            {{ produto.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
                   </div>
-                  <div class="col-md-3">
-                    {{ produto_form.quantidade.label_tag }} {{ produto_form.quantidade }}
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-0-quantidade" required class="form-control quantidade-produto-input">
+                    </div>
+                    
+                    <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
                   </div>
-                  <div class="col-md-3 d-flex align-items-center justify-content-end">
-                    <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                  </div>
-
-                  <!-- Campo oculto de controle -->
-                  <input type="hidden" name="form-{{ forloop.counter0 }}-acao" value="mantem" class="campo-acao" />
                 </div>
-              {% endfor %}
-            </div>
+              </div>
 
-            <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
-              <i class="fas fa-plus"></i> Adicionar Produto
-            </button>
+              <!-- Template Oculto -->
+              <div id="produto-template" class="d-none">
+                <div class="row g-1 produto-form border rounded p-3 mb-3 position-relative bg-light">
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <label>Produto:</label>
+                      <select name="form-__prefix__-produto" class="form-select produto-select">
+                        <option value="">Selecione o Produto</option>
+                        {% for produto in produtos %}
+                          <option value="{{ produto.id }}" data-preco="{{ produto.preco }}">
+                            {{ produto.nome }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-__prefix__-quantidade" class="form-control quantidade-produto-input">
+                    </div>
+                    <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Botão Adicionar -->
+              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
+                <i class="fas fa-plus"></i> Adicionar Produto
+              </button>
+            </div>
           </div>
         </div>
-        </div>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+          let totalProdutos = 1;
+
+          function atualizarTotalForms() {
+            const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+            totalFormsInput.value = totalProdutos;
+          }
+
+          document.getElementById('add-produto').addEventListener('click', function () {
+            const container = document.getElementById('produtos-container');
+            const template = document.getElementById('produto-template').innerHTML;
+            const newForm = template.replace(/__prefix__/g, totalProdutos);
+            container.insertAdjacentHTML('beforeend', newForm);
+            totalProdutos++;
+            atualizarTotalForms();
+          });
+
+          document.getElementById('produtos-container').addEventListener('click', function (e) {
+            if (e.target.closest('.btn-remove-produto')) {
+              const bloco = e.target.closest('.produto-form');
+              if (bloco) {
+                bloco.remove();
+
+                // Atualiza o total de formulários visíveis
+                totalProdutos = document.querySelectorAll('.produto-form').length;
+                atualizarTotalForms();
+              }
+            }
+          });
+        });
+        </script>
 
         <!-- Serviços -->
         <div class="tab-pane fade" id="servicos" role="tabpanel">
           <div class="card-body">
             <div class="mb-3">
+              <input type="hidden" name="servico-TOTAL_FORMS" id="id_servico-TOTAL_FORMS" value="1">
               <div id="servicos-container">
                 <!-- Bloco Inicial -->
                 <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
@@ -385,7 +467,7 @@
                   <div class="row g-2">
                     <div class="col-md-2">
                       <label>Quantidade:</label>
-                      <input type="number" name="form-0-quantidade" class="form-control">
+                      <input type="number" name="form-0-quantidade-servico" class="form-control">
                     </div>
                     <div class="col-md-3">
                       <label>Preço Unitário:</label>
@@ -403,7 +485,7 @@
                       <label>Comissão Total:</label>
                       <input type="text" name="form-0-comissao_total" class="form-control comissao-total-input" readonly>
                     </div>
-                    <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
+                    <input type="hidden" name="form-0-acao-servico" value="mantem" class="campo-acao" />
                   </div>
                 </div>
               </div>
@@ -443,7 +525,7 @@
                   <div class="row g-2">
                     <div class="col-md-2">
                       <label>Quantidade:</label>
-                      <input type="number" name="form-__prefix__-quantidade" class="form-control">
+                      <input type="number" name="form-__prefix__-quantidade-servico" class="form-control">
                     </div>
                     <div class="col-md-3">
                       <label>Preço Unitário:</label>
@@ -461,7 +543,7 @@
                       <label>Comissão Total:</label>
                       <input type="text" name="form-__prefix__-comissao_total" class="form-control comissao-total-input" readonly>
                     </div>
-                    <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
+                    <input type="hidden" name="form-__prefix__-acao-servico" value="mantem" class="campo-acao" />
                   </div>
                 </div>
               </div>
@@ -474,120 +556,114 @@
           </div>
         </div>
 
+        <script>
+          function aplicarEventosNosServicos() {
+            document.querySelectorAll('.servico-form').forEach(function(form) {
+              const selectServico = form.querySelector('.servico-select');
+              const selectTecnico = form.querySelector('.tecnico-select');
+              const quantidadeInput = form.querySelector('input[name$="quantidade-servico"]');
+              const precoUnitarioInput = form.querySelector('.preco-servico-input');
+              const precoTotalInput = form.querySelector('.preco-total-input');
+              const comissaoInput = form.querySelector('.comissao-tecnico-input');
+              const comissaoTotalInput = form.querySelector('.comissao-total-input');
 
-<script>
-  function aplicarEventosNosServicos() {
-    document.querySelectorAll('.servico-form').forEach(function(form) {
-      const selectServico = form.querySelector('.servico-select');
-      const selectTecnico = form.querySelector('.tecnico-select');
-      const quantidadeInput = form.querySelector('input[name$="quantidade"]');
-      const precoUnitarioInput = form.querySelector('.preco-servico-input');
-      const precoTotalInput = form.querySelector('.preco-total-input');
-      const comissaoInput = form.querySelector('.comissao-tecnico-input');
-      const comissaoTotalInput = form.querySelector('.comissao-total-input');
+              function calcular() {
+                const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
+                const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
+                const quantidade = parseFloat(quantidadeInput.value || 0);
 
-      function calcular() {
-        const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
-        const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
-        const quantidade = parseFloat(quantidadeInput.value || 0);
+                const precoTotal = precoServico * quantidade;
+                const comissao = (comissaoTecnico / 100) * precoServico;
+                const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
 
-        const precoTotal = precoServico * quantidade;
-        const comissao = (comissaoTecnico / 100) * precoServico;
-        const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+                precoUnitarioInput.value = precoServico.toFixed(2);
+                precoTotalInput.value = precoTotal.toFixed(2);
+                comissaoInput.value = comissao.toFixed(2);
+                comissaoTotalInput.value = comissaoTotal.toFixed(2);
+              }
 
-        precoUnitarioInput.value = precoServico.toFixed(2);
-        precoTotalInput.value = precoTotal.toFixed(2);
-        comissaoInput.value = comissao.toFixed(2);
-        comissaoTotalInput.value = comissaoTotal.toFixed(2);
-      }
+              selectServico.addEventListener('change', calcular);
+              selectTecnico.addEventListener('change', calcular);
+              quantidadeInput.addEventListener('input', calcular);
+            });
+          }
 
-      selectServico.addEventListener('change', calcular);
-      selectTecnico.addEventListener('change', calcular);
-      quantidadeInput.addEventListener('input', calcular);
-    });
-  }
+          document.addEventListener('DOMContentLoaded', function() {
+            aplicarEventosNosServicos();
 
-  document.addEventListener('DOMContentLoaded', function() {
-    aplicarEventosNosServicos();
+            document.getElementById('add-servico')?.addEventListener('click', function() {
+              const container = document.getElementById('servicos-container');
+              const template = document.getElementById('servico-template').innerHTML;
+              const totalFormsInput = document.getElementById('id_servico-TOTAL_FORMS');
+              let formsCount = parseInt(totalFormsInput.value);
 
-    document.getElementById('add-servico')?.addEventListener('click', function() {
-      const container = document.getElementById('servicos-container');
-      const template = document.getElementById('servico-template').innerHTML;
-      const formsCount = container.querySelectorAll('.servico-form').length;
-      const novoHtml = template.replace(/__prefix__/g, formsCount);
-      container.insertAdjacentHTML('beforeend', novoHtml);
-      aplicarEventosNosServicos();
-    });
-  });
-</script>
+              const novoHtml = template.replace(/__prefix__/g, formsCount);
+              container.insertAdjacentHTML('beforeend', novoHtml);
 
+              totalFormsInput.value = formsCount + 1;
+              aplicarEventosNosServicos();
+            });
 
-<!-- Script -->
-<script>
-  document.addEventListener('click', function(e) {
-    if (e.target.closest('.btn-remove-servico')) {
-      e.target.closest('.servico-form').remove();
-    }
-  });
-</script>
+          });
+        </script>
 
-
+        <!-- Script -->
+        <script>
+          document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-remove-servico')) {
+              e.target.closest('.servico-form').remove();
+            }
+          });
+        </script>
 
       <div class="tab-pane fade" id="despesas" role="tabpanel">
-          <style>
-          .form-despesa {
-            display: none;
-            margin-top: 20px;
-          }
-        </style>
-
-      <div class="row row-cols-2 row-cols-md-4 g-3">
-        {% for nome in nomes %}
-        <div class="col">
-          <a href="#" class="text-decoration-none" onclick="mostrarFormulario('{{ nome|slugify }}')">
-            <div class="card text-center h-100 shadow-sm">
-              <div class="card-body">
-                {{ nome }}
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+          {% for nome in nomes %}
+          <div class="col">
+            <a href="#" class="text-decoration-none" onclick="mostrarFormulario('{{ nome|slugify }}')">
+              <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                  {{ nome }}
+                </div>
               </div>
-            </div>
-          </a>
-        </div>
-        {% endfor %}
-      </div>
-
-      <!-- Formulários escondidos por padrão -->
-      <div id="formularios-despesas">
-        {% for nome in nomes %}
-        <div id="form-{{ nome|slugify }}" class="form-despesa card shadow-sm p-3">
-          <h5>{{ nome }}</h5>
-          
-          <div class="clonavel-{{ nome|slugify }}">
-            <div class="row g-2 mb-2 input-bloco">
-              <div class="col-md-4">
-                <label class="form-label">Descrição</label>
-                <input type="text" class="form-control" name="descricao_{{ nome|slugify }}">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Quantidade</label>
-                <input type="number" class="form-control quantidade" name="quantidade_{{ nome|slugify }}">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Preço Unitário</label>
-                <input type="number" step="0.01" class="form-control preco_unitario" name="preco_unitario_{{ nome|slugify }}">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Preço Total</label>
-                <input type="number" step="0.01" class="form-control preco_total" name="preco_total_{{ nome|slugify }}" readonly>
-              </div>
-            </div>
+            </a>
           </div>
-
-          <button type="button" class="btn btn-outline-primary mt-2" onclick="clonarBloco('{{ nome|slugify }}')">
-            Adicionar
-          </button>
+          {% endfor %}
         </div>
-        {% endfor %}
-      </div>
+
+        <!-- Formulários escondidos por padrão -->
+        <div id="formularios-despesas">
+          {% for nome in nomes %}
+          <div id="form-{{ nome|slugify }}" class="form-despesa card shadow-sm p-3">
+            <h5>{{ nome }}</h5>
+            
+            <div class="clonavel-{{ nome|slugify }}">
+              <div class="row g-2 mb-2 input-bloco">
+                <div class="col-md-4">
+                  <label class="form-label">Descrição</label>
+                  <input type="text" class="form-control" name="descricao_{{ nome|slugify }}">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Quantidade</label>
+                  <input type="number" class="form-control quantidade" name="quantidade_{{ nome|slugify }}">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Preço Unitário</label>
+                  <input type="number" step="0.01" class="form-control preco_unitario" name="preco_unitario_{{ nome|slugify }}">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Preço Total</label>
+                  <input type="number" step="0.01" class="form-control preco_total" name="preco_total_{{ nome|slugify }}" readonly>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-outline-primary mt-2" onclick="clonarBloco('{{ nome|slugify }}')">
+              Adicionar
+            </button>
+          </div>
+          {% endfor %}
+        </div>
 
 <script>
   document.addEventListener('input', function(e) {
@@ -672,70 +748,8 @@
   </form>
 </div>
 
-<!-- JS -->
-<script>
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const container = document.getElementById('produtos-container');
-    const addBtn = document.getElementById('add-produto');
 
-    // Conta o total inicial de formulários
-    let totalForms = document.querySelectorAll('.produto-form').length;
-    const totalFormsInput = document.querySelector('#id_form-TOTAL_FORMS');
-
-    // Template base
-    function cloneForm(index) {
-      const originalForm = document.querySelector('.produto-form');
-      const newForm = originalForm.cloneNode(true);
-
-      // Atualiza os atributos dos inputs e selects clonados
-      newForm.querySelectorAll('input, select, label').forEach(el => {
-        if (el.name) {
-          el.name = el.name.replace(/form-(\d+)-/, `form-${index}-`);
-        }
-        if (el.id) {
-          el.id = el.id.replace(/form-(\d+)-/, `form-${index}-`);
-        }
-        if (el.tagName === 'INPUT') {
-          el.value = '';
-        }
-      });
-
-      // Atualiza o campo oculto de controle
-      const acao = newForm.querySelector('.campo-acao');
-      if (acao) {
-        acao.value = 'adicionado';
-      }
-
-      return newForm.outerHTML;
-    }
-
-    addBtn.addEventListener('click', function () {
-      const newFormHTML = cloneForm(totalForms);
-      container.insertAdjacentHTML('beforeend', newFormHTML);
-      totalForms++;
-      totalFormsInput.value = totalForms;
-    });
-
-    container.addEventListener('click', function (e) {
-      if (e.target.closest('.btn-remove-produto')) {
-        const formDiv = e.target.closest('.produto-form');
-
-        // Se for formulário existente, marca como deletado
-        const acaoInput = formDiv.querySelector('.campo-acao');
-        if (acaoInput.value === 'mantem') {
-          acaoInput.value = 'deletado';
-          formDiv.style.display = 'none';
-        } else {
-          formDiv.remove();
-          totalForms--;
-          totalFormsInput.value = totalForms;
-        }
-      }
-    });
-  });
-
-</script>
 
 
 
