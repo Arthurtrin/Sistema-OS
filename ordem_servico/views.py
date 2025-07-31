@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import OrdemServico, Status, Unidade, Segmento, ProdutoOrdemServico
+from .models import OrdemServico, Status, Unidade, Segmento, ProdutoOrdemServico, ServicoOrdemServico, DespesaOrdemServico
 from .forms import SegmentoForm, StatusForm, UnidadeForm, OrdemServicoForm, ProdutoOrdemServicoForm
 from produtos.models import Produto
 from usuarios.models import Perfil, Chave_Gerenciador
@@ -10,9 +10,6 @@ from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db.models import ProtectedError
-
-from .models import ProdutoOrdemServico, ServicoOrdemServico, DespesaOrdemServico
-from .forms import OrdemServicoForm, ProdutoOrdemServicoForm, ServicoOrdemServicoForm
 from servicos.models import Servico
 from tecnicos.models import Tecnico
 from decimal import Decimal  
@@ -55,51 +52,9 @@ def criar_despesa(request, ordem_servico):
         print("deu erro na parte de despesas, mané")
 
 # Salva os serviços na OS
-"""def criar_servico(request, ordem_servico):
-    total_forms = int(request.POST.get('servico-TOTAL_FORMS', 0))
-    print(total_forms)
-    try:
-        contador = 0
-        while True:
-            servico_id = request.POST.get(f'form-{contador}-servico')
-            tecnico_id = request.POST.get(f'form-{contador}-tecnico')
-            quantidade = request.POST.get(f'form-{contador}-quantidade')
-            acao = request.POST.get(f'form-{contador}-acao', 'mantem')
-
-            # Se não tem serviço, assume que não há mais blocos
-            if servico_id is None:
-                break
-
-            if acao == 'delete':
-                contador += 1
-                continue
-
-            # Tenta buscar os objetos do banco
-            servico = tecnico = None
-            if tecnico_id and servico_id:
-                servico = Servico.objects.get(id=servico_id)
-                tecnico = Tecnico.objects.get(id=tecnico_id)
-
-            #cria uma instancia de ServicoOrdemServico
-            ServicoOrdemServico.objects.create(
-                ordem_servico=ordem_servico,
-                servico=servico,
-                profissional=tecnico,
-                quantidade=quantidade,
-                preco_unitario=servico.preco,
-                preco_total=servico.preco * Decimal(str(quantidade)),
-                comissao= (tecnico.comissao/100)*servico.preco,
-                comissao_total= (tecnico.comissao/100)*(servico.preco * Decimal(str(quantidade))),
-            )
-            contador += 1    
-    except:
-        print("deu erro na parte de serviço, mané")
-
-"""
 def criar_servico(request, ordem_servico):
     total_forms = int(request.POST.get('servico-TOTAL_FORMS', 0))
-    print("criar serviço:")
-    print(total_forms)
+
     for i in range(total_forms):
         servico_id = request.POST.get(f'form-{i}-servico')
         tecnico_id = request.POST.get(f'form-{i}-tecnico')
@@ -112,10 +67,17 @@ def criar_servico(request, ordem_servico):
 
         servico = Servico.objects.get(id=servico_id)
         tecnico = Tecnico.objects.get(id=tecnico_id)
-        print(servico)
-        print(tecnico)
-        print(quantidade)
-        print(acao)
+
+        ServicoOrdemServico.objects.create(
+            ordem_servico=ordem_servico,
+            servico=servico,
+            profissional=tecnico,
+            quantidade=quantidade,
+            preco_unitario=servico.preco,
+            preco_total=servico.preco * Decimal(str(quantidade)),
+            comissao= (tecnico.comissao/100)*servico.preco,
+            comissao_total= (tecnico.comissao/100)*(servico.preco * Decimal(str(quantidade))),
+        )
 
 @login_required
 def criar_os(request):
