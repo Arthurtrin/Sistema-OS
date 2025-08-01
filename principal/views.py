@@ -47,12 +47,7 @@ def home(request):
     if data_abertura:
         ordens = ordens.filter(data_abertura=data_abertura)
 
-    paginator = Paginator(ordens, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     return render(request, 'principal/home.html', {
-        'page_obj': page_obj,
         'pesquisa': pesquisa,
         'data_abertura': data_abertura,
         'clientes': cliente, 

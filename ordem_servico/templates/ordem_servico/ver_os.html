@@ -1,110 +1,162 @@
-<style>
-  .nf-container {
-    max-width: 960px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #000;
-    background-color: #fff;
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-  }
-
-  .nf-header-empresa {
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid #000;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    gap: 20px; /* Espaço entre logo e dados */
-  }
-
-  .nf-header-empresa img {
-    max-height: 100px;
-    width: auto;
-    object-fit: contain;
-  }
-
-  .empresa-dados {
-    flex: 1; /* Faz os dados ocuparem o resto do espaço */
-    text-align: left;
-  }
-
-  .empresa-dados h2 {
-    margin: 0 0 8px 0;
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .empresa-dados p {
-    margin: 2px 0;
-    font-size: 13px;
-  }
-
-  .nf-section {
-    border: 1px solid #000;
-    padding: 10px;
-    margin-bottom: 8px;
-  }
-
-  .nf-title {
-    background-color: #eee;
-    font-weight: bold;
-    padding: 5px 10px;
-    border-bottom: 1px solid #000;
-    margin-bottom: 10px;
-  }
-
-  .nf-line {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  .nf-field {
-    margin: 4px 0;
-    width: 48%;
-  }
-
-  .print-btn {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .print-btn button {
-    padding: 10px 20px;
-    font-size: 14px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  @media print {
-    .print-btn {
-      display: none;
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Ordem de Serviço</title>
+  <style>
+    .nf-container {
+      max-width: 980px;
+      margin: auto;
+      padding: 10px;
+      border: 1px solid #000;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #000;
     }
-  }
-</style>
 
-<div class="nf-container">
+    .nf-header-empresa {
+      display: grid;
+      grid-template-columns: 2fr 4fr 2fr;
+     
+      margin-bottom: 10px;
+      padding: 10px;
+      align-items: center;
+    }
 
-  {% if empresa %}
-  <div class="nf-header-empresa">
-    {% if empresa.logo %}
-      <img src="{{ empresa.logo.url }}" alt="Logo da Empresa">
-    {% endif %}
-    <div class="empresa-dados">
-      <h2>{{ empresa.razao_social }}</h2>
-      <p><strong>CNPJ:</strong> {{ empresa.cnpj }}</p>
-      <p><strong>Email:</strong> {{ empresa.email }} | <strong>Telefone:</strong> {{ empresa.telefone }}</p>
-      <p><strong>Endereço:</strong> {{ empresa.logradouro }} {{empresa.numero}} {{ empresa.bairro }}, {{ empresa.complemento|default:", " }}</p>
-      <p><strong>Cidade/UF:</strong> {{ empresa.cidade }} - {{ empresa.estado }} | <strong>CEP:</strong> {{ empresa.cep }}</p>
+    .nf-header-empresa img {
+      max-height: 80px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .empresa-dados h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .empresa-dados p {
+      margin: 2px 0;
+      font-size: 13px;
+    }
+
+    .ordem-box {
+      text-align: center;
+    }
+
+    .ordem-box .title {
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .ordem-box .numero {
+      border: 2px solid #000;
+      padding: 10px 16px;
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 5px;
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    .nf-title {
+      background-color: #cfcfcf;
+      font-weight: bold;
+      padding: 4px 8px;
+      border: 1px solid #000;
+      border-bottom: none;
+      font-size: 13px;
+    }
+
+    .nf-section {
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+
+    .nf-line {
+      border: 1px solid #000;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .nf-field {
+      justify-content: center;
+      min-width: 200px;
+      margin-right: 10px;
+      margin-left: 5px;
+      margin-bottom: 3px;
+      margin-top: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+
+    .print-btn {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .print-btn button {
+      padding: 8px 16px;
+      font-size: 13px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    @media print {
+      .print-btn {
+        display: none;
+      }
+    }
+
+    a {
+      color: #000;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="nf-container">
+    {% if empresa %}
+    <div class="nf-header-empresa">
+      <div>
+        {% if empresa.logo %}
+          <img src="{{ empresa.logo.url }}" alt="Logo da Empresa">
+        {% else %}
+          <p>[ LOGO EMPRESA ]</p>
+        {% endif %}
+      </div>
+
+      <div class="empresa-dados">
+        
+        <h2>{{ empresa.razao_social }}</h2>
+        <p>Endereço: {{ empresa.logradouro }} {{empresa.numero}} - {{ empresa.bairro }}</p>
+        <p>Cidade: {{ empresa.cidade }} - {{ empresa.estado }} | CEP: {{ empresa.cep }}</p>
+        <p>Email: <a href="mailto:{{ empresa.email }}">{{ empresa.email }}</a></p>
+        <p>Telefone: {{ empresa.telefone }}</p>
+        <p>CNPJ: {{ empresa.cnpj }}</p>
+      </div>
+
+      <div class="ordem-box">
+        <div class="title">ORDEM DE SERVIÇO</div>
+        <div class="numero">{{ ordem.id|stringformat:"05d" }}</div>
+      </div>
     </div>
-  </div>
-  {% endif %}
+    {% endif %}
 
-  <div class="nf-section">
+    <div class="nf-section">
     <div class="nf-title">DADOS DA ORDEM DE SERVIÇO</div>
     <div class="nf-line">
       <div class="nf-field"><strong>Código:</strong> {{ ordem.id }}</div>
@@ -120,7 +172,7 @@
   <div class="nf-section">
     <div class="nf-title">DADOS DO CLIENTE</div>
     <div class="nf-line">
-      <div class="nf-field"><strong>Cliente:</strong> {{ ordem.n_cliente.nome_cliente|default:"---" }}</div>
+      <div class="nf-field"><strong>Cliente:</strong>{{ ordem.n_cliente.nome_cliente|default:"---" }}</div>
       <div class="nf-field"><strong>Solicitante:</strong> {{ ordem.solicitante }}</div>
       <div class="nf-field"><strong>Nº da Proposta:</strong> {{ ordem.n_proposta }}</div>
       <div class="nf-field"><strong>Nº do Desenho:</strong> {{ ordem.n_desenho }}</div>
@@ -141,19 +193,7 @@
     </div>
   </div>
 
-  <div class="nf-section">
-    <div class="nf-title">DESCRIÇÃO E ANEXO</div>
-    <div>
-      <strong>Descrição:</strong><br>
-      <p>{{ ordem.descricao|default:"---" }}</p>
-
-      {% if ordem.arquivo %}
-        <p><strong>Arquivo:</strong> <a href="{{ ordem.arquivo.url }}" target="_blank">Visualizar Anexo</a></p>
-      {% else %}
-        <p><strong>Arquivo:</strong> Nenhum anexo disponível.</p>
-      {% endif %}
-    </div>
-  </div>
+  
 
   <div class="nf-section">
     <div class="nf-title">PRODUTOS VINCULADOS</div>
@@ -192,6 +232,7 @@
             <th style="border: 1px solid #000; padding: 5px;">Preço Total</th>
             <th style="border: 1px solid #000; padding: 5px;">Comissao</th>
             <th style="border: 1px solid #000; padding: 5px;">Comissao Total</th>
+            <th style="border: 1px solid #000; padding: 5px;"></th>
           </tr>
         </thead>
         <tbody>
@@ -204,8 +245,14 @@
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.preco_total }}</td>
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.comissao }}</td>
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ servico.comissao_total }}</td>
-            </tr>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
           {% endfor %}
+          </tr>
+
+          <tr>
+            <td colspan="7" style="border: 1px solid #000; padding: 5px; text-align: right;"><strong>Gasto Total:</strong></td>
+            <td style="border: 1px solid #000; padding: 5px; text-align: center;"><strong>R$ {{ gasto_servico }}</strong></td>
+          </tr>
         </tbody>
       </table>
     {% else %}
@@ -213,8 +260,10 @@
     {% endif %}
   </div>
 
+
+
   <div class="nf-section">
-    <div class="nf-title">DESPESAS</div>
+    <div class="nf-title">DESPESAS VINCULADOS</div>
     {% if ordem.despesas.all %}
       <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
         <thead>
@@ -224,6 +273,7 @@
             <th style="border: 1px solid #000; padding: 5px;">Quantidade</th>
             <th style="border: 1px solid #000; padding: 5px;">Preço Unitário</th>
             <th style="border: 1px solid #000; padding: 5px;">Preço Total</th>
+            <th style="border: 1px solid #000; padding: 5px;"></th>
           </tr>
         </thead>
         <tbody>
@@ -234,8 +284,14 @@
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">{{ despesa.quantidade }}</td>
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$ {{ despesa.preco_unitario }}</td>
               <td style="border: 1px solid #000; padding: 5px; text-align: center;">R$  {{ despesa.preco_total }}</td>
-            </tr>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
           {% endfor %}
+            </tr>
+
+            <tr>
+            <td colspan="5" style="border: 1px solid #000; padding: 5px; text-align: right;"><strong>Gasto Total:</strong></td>
+            <td style="border: 1px solid #000; padding: 5px; text-align: center;"><strong>R$ {{ gasto_despesa }}</strong></td>
+          </tr>
         </tbody>
       </table>
     {% else %}
@@ -243,9 +299,47 @@
     {% endif %}
   </div>
 
-
-
-  <div class="print-btn">
-    <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+  <div class="nf-section">
+    <div class="nf-title">GASTO TOTAL DA ORDEM DE SERVICO</div>
+    
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #000; padding: 5px;">Serviços</th>
+            <th style="border: 1px solid #000; padding: 5px;">Despesas</th>
+            <th style="border: 1px solid #000; padding: 5px;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;"><strong>R$ {{ gasto_servico }}</strong></td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;"><strong>R$ {{ gasto_despesa }}</strong></td>
+              <td style="border: 1px solid #000; padding: 5px; text-align: center;"><strong>R$ {{ gasto_total }}</strong></td>
+            </tr>
+            
+        </tbody>
+      </table>
+    
   </div>
-</div>
+
+  <div class="nf-section">
+    <div class="nf-title">DESCRIÇÃO E ANEXO</div>
+    
+    <div class="nf-line">
+      <div class="nf-field"><strong>Descrição:</strong><br>
+        <p>{{ ordem.descricao|default:"---" }}</p>
+
+        {% if ordem.arquivo %}
+          <p><strong>Arquivo:</strong> <a href="{{ ordem.arquivo.url }}" target="_blank">Visualizar Anexo</a></p>
+        {% else %}
+          <p><strong>Arquivo:</strong> Nenhum anexo disponível.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="print-btn">
+      <button onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+    </div>
+  </div>
+</body>
+</html>

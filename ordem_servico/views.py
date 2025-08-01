@@ -13,6 +13,7 @@ from django.db.models import ProtectedError
 from servicos.models import Servico
 from tecnicos.models import Tecnico
 from decimal import Decimal  
+from django.db.models import Sum
 
 # Salva os despesas na OS
 def criar_despesa(request, ordem_servico):
@@ -39,10 +40,11 @@ def criar_despesa(request, ordem_servico):
                         'preco_total': float(precos_unitarios[i]) * int(quantidades[i])
                     })
 
-        for despesa in despesas:      
+        for despesa in despesas:    
+            print(despesa)  
             DespesaOrdemServico.objects.create(
                 ordem_servico = ordem_servico,
-                tipo = despesa['tipo'],
+               tipo = despesa['tipo'],
                 descricao = despesa['descricao'],
                 quantidade = int(despesa['quantidade']),
                 preco_unitario = Decimal(despesa['preco_unitario']),
@@ -285,7 +287,20 @@ def excluir_os(request, os_id):
 def ver_os(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)
     empresa = Empresa.objects.first()
-    return render(request, 'ordem_servico/ver_os.html', {'ordem': ordem, "empresa":empresa})
+    gasto_total_despesa = ordem.despesas.aggregate(total=Sum('preco_total'))['total'] or 0
+
+    gasto_comissao_servico = ordem.servicos.aggregate(total=Sum('comissao_total'))['total'] or 0
+    gasto_preco_servico = ordem.servicos.aggregate(total=Sum('preco_total'))['total'] or 0
+    gasto_total_servico = gasto_comissao_servico + gasto_preco_servico
+
+    gasto_total = gasto_total_servico + gasto_total_despesa
+
+    return render(request, 'ordem_servico/ver_os.html', {
+        'ordem': ordem, 
+        "empresa":empresa,
+        "gasto_despesa":float(gasto_total_despesa),
+        "gasto_servico":float(gasto_total_servico),
+        "gasto_total":float(gasto_total)})
 
 @login_required
 def definicao(request):

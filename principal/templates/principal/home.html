@@ -2,7 +2,6 @@
 {% block title %}Painel{% endblock %}
 
 {% block content %}
-
 {% if messages %}
   {% for message in messages %}
     <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
@@ -81,7 +80,6 @@
       </a>
     </div>
 
-    
   </div>
   
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -90,7 +88,6 @@
       <i class="fas fa-plus me-1"></i> Gerar Nova Ordem
     </a>
   </div>
-
 
   <div class="table-responsive">
         <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -112,12 +109,12 @@
                         <th scope="col">Título</th>
                         <th scope="col">Status</th>
                         <th scope="col">Cliente</th>
-                        <th scope="col">Segmento</th>
+                        <th scope="col">Nº da Proposta</th>
                         <th scope="col">Data de abertura</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ordem in page_obj %}
+                    {% for ordem in ordens %}
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalOrdem{{ ordem.id }}"
                         style="cursor: pointer;">
@@ -125,7 +122,7 @@
                         <td>{{ ordem.titulo}}</td>
                         <td>{{ ordem.status }}</td>
                         <td>{{ ordem.n_cliente }}</td>
-                        <td>{{ ordem.segmento }}</td>
+                        <td>{{ ordem.n_proposta }}</td>
                         <td>{{ ordem.data_abertura }}</td>
                     </tr>
                     <!-- Modal -->
@@ -161,50 +158,8 @@
                     {% endfor %}
                 </tbody>
             </table>
-
-            <!-- Paginação -->
-            <nav aria-label="Navegação de página">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if num == page_obj.number %}
-                            <li class="page-item active">
-                                <span class="page-link">{{ num }}</span>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
         </div>
     </div>
-
 <style>
     .hover-shadow {
     transition: transform 0.2s ease, box-shadow 0.2s ease;

@@ -118,6 +118,18 @@
   transition: transform 0.3s ease;
 }
 
+/* Transição suave dos textos/ícones antes de colapsar */
+.sidebar.collapsing-icons .nav-link span {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsing-icons .nav-link {
+  transform: translateX(-5px);
+  opacity: 0.8;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
 .content {
   margin-left: 250px;
   padding: 1rem;
@@ -461,10 +473,28 @@
       sidebar.classList.add("collapsed");
       content.classList.add("full");
 
-      toggleBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("collapsed");
-        content.classList.toggle("full");
-      });
+    toggleBtn.addEventListener("click", function () {
+      if (!sidebar.classList.contains("collapsed")) {
+        // 1. Fecha todos os dropdowns abertos
+        const openedMenus = sidebar.querySelectorAll('.collapse.show');
+        openedMenus.forEach(menu => {
+          const collapseInstance = bootstrap.Collapse.getInstance(menu) || new bootstrap.Collapse(menu, { toggle: false });
+          collapseInstance.hide();
+        });
+
+        // 2. Espera a animação do dropdown recolher (350ms), depois colapsa a sidebar
+        sidebar.classList.add("collapsing-icons");
+        setTimeout(() => {
+          sidebar.classList.remove("collapsing-icons");
+          sidebar.classList.add("collapsed");
+          content.classList.add("full");
+        }, 400);
+      } else {
+        // Expandir sidebar
+        sidebar.classList.remove("collapsed");
+        content.classList.remove("full");
+      }
+    });
 
       // Expande sidebar ao abrir submenu
       document.querySelectorAll('.sidebar .nav-link[data-bs-toggle="collapse"]').forEach(link => {

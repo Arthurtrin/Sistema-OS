@@ -101,7 +101,6 @@ class ServicoOrdemServico(models.Model):
     quantidade = models.IntegerField(default=1)
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
-
     comissao = models.DecimalField(max_digits=10, decimal_places=2)
     comissao_total = models.DecimalField(max_digits=10, decimal_places=2)
 
