@@ -118,7 +118,7 @@
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalOrdem{{ ordem.id }}"
                         style="cursor: pointer;">
-                        <td>{{ ordem.id}}</td>
+                        <td>{{ ordem.id|stringformat:"05d" }}</td>
                         <td>{{ ordem.titulo}}</td>
                         <td>{{ ordem.status }}</td>
                         <td>{{ ordem.n_cliente }}</td>

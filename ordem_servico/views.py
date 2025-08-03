@@ -17,41 +17,36 @@ from django.db.models import Sum
 
 # Salva os despesas na OS
 def criar_despesa(request, ordem_servico):
-    try:
-        despesas = []
-        tipos = [
-            'combustivel', 'alimentacao', 'hospedagem', 'mao-de-obra', 'sms', 'consumiveis',
-            'comissao', 'locacao', 'outros', 'materia-prima', 'transporte', 'equipamento'
-        ]
+    despesas = []
+    tipos = [
+        'combustivel', 'alimentacao', 'hospedagem', 'mao-de-obra', 'sms', 'consumiveis',
+        'comissao', 'locacao', 'outros', 'materia-prima', 'transporte', 'equipamento'
+    ]
 
-        for tipo in tipos:
-            descricoes = request.POST.getlist(f'descricao_{tipo}')
-            quantidades = request.POST.getlist(f'quantidade_{tipo}')
-            precos_unitarios = request.POST.getlist(f'preco_unitario_{tipo}')
-            precos_totais = request.POST.getlist(f'preco_total_{tipo}')
+    for tipo in tipos:
+        descricoes = request.POST.getlist(f'descricao_{tipo}')
+        quantidades = request.POST.getlist(f'quantidade_{tipo}')
+        precos_unitarios = request.POST.getlist(f'preco_unitario_{tipo}')
+        precos_totais = request.POST.getlist(f'preco_total_{tipo}')
 
-            for i in range(len(descricoes)):
-                if descricoes[i].strip():  # evita adicionar campos em branco
-                    despesas.append({
-                        'tipo': tipo,
-                        'descricao': descricoes[i],
-                        'quantidade': quantidades[i],
-                        'preco_unitario': float(precos_unitarios[i]),
-                        'preco_total': float(precos_unitarios[i]) * int(quantidades[i])
-                    })
-
-        for despesa in despesas:    
-            print(despesa)  
-            DespesaOrdemServico.objects.create(
-                ordem_servico = ordem_servico,
-               tipo = despesa['tipo'],
-                descricao = despesa['descricao'],
-                quantidade = int(despesa['quantidade']),
-                preco_unitario = Decimal(despesa['preco_unitario']),
-                preco_total = Decimal(despesa['preco_total'])
-            )
-    except:
-        print("deu erro na parte de despesas, mané")
+        for i in range(len(descricoes)):
+            if descricoes[i].strip():  # evita adicionar campos em branco
+                despesas.append({
+                    'tipo': tipo,
+                    'descricao': descricoes[i],
+                    'quantidade': quantidades[i],
+                    'preco_unitario': float(precos_unitarios[i]),
+                    'preco_total': float(precos_unitarios[i]) * int(quantidades[i])
+                })
+    for despesa in despesas:        
+        DespesaOrdemServico.objects.create(
+            ordem_servico = ordem_servico,
+            tipo = despesa['tipo'],
+            descricao = despesa['descricao'],
+            quantidade = int(despesa['quantidade']),
+            preco_unitario = Decimal(despesa['preco_unitario']),
+            preco_total = Decimal(despesa['preco_total'])
+        )
 
 # Salva os serviços na OS
 def criar_servico(request, ordem_servico):
@@ -81,18 +76,37 @@ def criar_servico(request, ordem_servico):
             comissao_total= (tecnico.comissao/100)*(servico.preco * Decimal(str(quantidade))),
         )
 
+def verifica_produto_estoque(request, produto_id, quantidade, erro_estoque):
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        if produto.quantidade < int(quantidade):
+            erro_estoque = True
+            messages.error(
+                request,
+                f"Estoque insuficiente para o produto \"{produto.nome}\". "
+                f"Disponível: {produto.quantidade}, Solicitado: {quantidade}"
+                )
+    except Produto.DoesNotExist:
+        erro_estoque = True
+        messages.error(request, 'Produto não encontrado no banco de dados.')
+    return erro_estoque
+
 @login_required
 def criar_os(request):
     servicos = Servico.objects.all()
     tecnicos = Tecnico.objects.all()
     produtos = Produto.objects.all()
+    nomes = [
+        'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
+        'Consumíveis', 'Comissão', 'Locação', 'Outros',
+        'Matéria Prima', 'Transporte', 'Equipamento'
+    ]
 
     if request.method == 'POST':
         os_form = OrdemServicoForm(request.POST, request.FILES)
         
         if os_form.is_valid():
             erro_estoque = False
-
             total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
             for i in range(total_forms):
                 produto_id = request.POST.get(f'form-{i}-produto')
@@ -103,27 +117,14 @@ def criar_os(request):
                 if not produto_id or acao != 'mantem':
                     continue
                 
-                try:
-                    produto = Produto.objects.get(id=produto_id)
-                    if produto.quantidade < int(quantidade):
-                        erro_estoque = True
-                        messages.error(
-                            request,
-                            f"Estoque insuficiente para o produto \"{produto.nome}\". "
-                            f"Disponível: {produto.quantidade}, Solicitado: {quantidade}"
-                        )
-                except Produto.DoesNotExist:
-                    erro_estoque = True
-                    messages.error(request, 'Produto não encontrado no banco de dados.')
-                print(f"Produto: {produto.nome}, Quantidade: {quantidade}")
-
-            print("produto disponivel")
-
+                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade, erro_estoque)
+                
             if erro_estoque:
                 return render(request, 'ordem_servico/criar_os.html', {
                     'form': os_form,
                     'servicos': servicos,
                     'tecnicos': tecnicos,
+                    'nomes': nomes,
                     'produtos': produtos
                 })
 
@@ -142,15 +143,12 @@ def criar_os(request):
                 if not produto_id or acao != 'mantem':
                     continue
 
-                try:
-                    produto = Produto.objects.get(id=produto_id)
-                    ProdutoOrdemServico.objects.create(
-                        ordem_servico = ordem_servico,
-                        produto = produto,
-                        quantidade = quantidade
-                    )
-                except Produto.DoesNotExist:
-                    messages.error(request, 'Produto não encontrado no banco de dados.')
+                produto = Produto.objects.get(id=produto_id)
+                ProdutoOrdemServico.objects.create(
+                    ordem_servico = ordem_servico,
+                    produto = produto,
+                    quantidade = quantidade
+                )
 
                 # Baixa estoque
                 produto = Produto.objects.get(id=produto_id)
@@ -162,16 +160,9 @@ def criar_os(request):
 
             messages.success(request, 'Nova ordem de serviço criada com sucesso.')
             return redirect('ordem_servico:criar_os')
-
     else:
+
         os_form = OrdemServicoForm()
-
-    nomes = [
-    'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
-    'Consumíveis', 'Comissão', 'Locação', 'Outros',
-    'Matéria Prima', 'Transporte', 'Equipamento'
-    ]
-
     return render(request, 'ordem_servico/criar_os.html', {
         'form': os_form,
         'servicos': servicos,
@@ -181,6 +172,143 @@ def criar_os(request):
     })
 
 
+@login_required
+def editar_os(request, os_id):
+    ordem_servico = get_object_or_404(OrdemServico, id=os_id)
+    somatoria_produtos = ordem_servico.itens.all()
+    somatoria_servicos = ordem_servico.servicos.all()
+    somatoria_despesas = ordem_servico.despesas.all()
+    
+    servicos = Servico.objects.all()
+    tecnicos = Tecnico.objects.all()
+    produtos = Produto.objects.all()
+
+    nomes = [
+        'Combustível', 'Alimentação', 'Hospedagem', 'Mão de obra', 'SMS',
+        'Consumíveis', 'Comissão', 'Locação', 'Outros',
+        'Matéria Prima', 'Transporte', 'Equipamento'
+    ]
+
+    if request.method == 'POST':
+        os_form = OrdemServicoForm(request.POST, request.FILES, instance=ordem_servico)
+
+        if os_form.is_valid():
+            erro_estoque = False
+            despesas = ordem_servico.despesas.all()
+            novas_despesas = []
+
+            for i, despesa in enumerate(ordem_servico.despesas.all()):
+                tipo = request.POST.get(f"despesa-{i}-tipo")
+                descricao = request.POST.get(f"descricao_{despesa.id}")
+                quantidade = request.POST.get(f"quantidade_{despesa.id}")
+                preco_unitario = request.POST.get(f"preco_unitario_{despesa.id}")
+                preco_total = request.POST.get(f"preco_total_{despesa.id}")
+
+                if all(x is None for x in [tipo, descricao, quantidade, preco_unitario, preco_total]):
+                    continue
+                
+                novas_despesas.append({
+                    'tipo': tipo,
+                    'descricao': descricao,
+                    'quantidade': quantidade,
+                    'preco_unitario': preco_unitario,
+                    'preco_total': preco_total,
+                })
+
+            # Exclui as despesas antigas
+            ordem_servico.despesas.all().delete()
+
+            # Cria novas despesas
+            for item in novas_despesas:
+                DespesaOrdemServico.objects.create(
+                    ordem_servico=ordem_servico,
+                    tipo=item['tipo'],
+                    descricao=item['descricao'],
+                    quantidade=item['quantidade'],
+                    preco_unitario=item['preco_unitario'],
+                    preco_total=item['preco_total'],
+                )
+            criar_despesa(request, ordem_servico)
+
+            servicos_cad = []
+            for i, _ in enumerate(ordem_servico.servicos.all()):
+                servico_id = request.POST.get(f'servico_{i}')
+                tecnico_id = request.POST.get(f'tecnico_{i}')
+                quantidade_serv = request.POST.get(f'quantidade_{i}')
+                preco_unitario_serv = request.POST.get(f'preco_unitario_{i}')
+                preco_total_serv = request.POST.get(f'preco_total_{i}')
+                comissao = request.POST.get(f'comissao_{i}')
+                comissao_total = request.POST.get(f'comissao_total_{i}')
+
+                if all(x is None for x in [servico_id, tecnico_id, quantidade_serv, preco_unitario_serv, preco_total_serv, comissao, comissao_total]):
+                    continue
+                servico = Servico.objects.get(id=servico_id)
+                tecnico = Tecnico.objects.get(id=tecnico_id)
+
+                servicos_cad.append({
+                'servico': servico,
+                'tecnico': tecnico,
+                'quantidade': quantidade_serv,
+                'preco_unitario': preco_unitario_serv,
+                'preco_total': preco_total_serv,
+                'comissao': comissao,
+                'comissao_total': comissao_total,
+            })
+            
+            ordem_servico.servicos.all().delete() 
+            for item in servicos_cad:
+                ServicoOrdemServico.objects.create(
+                    ordem_servico=ordem_servico,  # certifique-se de que essa variável está definida
+                    servico=item['servico'],
+                    profissional=item['tecnico'],
+                    quantidade=item['quantidade'],
+                    preco_unitario=item['preco_unitario'],
+                    preco_total=item['preco_total'],
+                    comissao=item['comissao'],
+                    comissao_total=item['comissao_total'],
+                )
+            criar_servico(request, ordem_servico)
+            
+            for item in ordem_servico.itens.all():
+                produto = item.produto  
+                produto.quantidade += item.quantidade  # Devolve ao estoque
+                produto.save()
+
+            produtos_cad = []
+            for i, _ in enumerate(ordem_servico.itens.all()):
+                produto_nome = request.POST.get(f'produto_{i}')
+                quantidade_produto = request.POST.get(f'quantidade_{i}')
+                print(produto_nome, quantidade_produto)
+
+                if all(x is None for x in [produto_nome, quantidade_produto]):
+                    continue
+                
+                produtos_cad.append({
+                    'produto_nome': produto_nome,
+                    'quantidade': quantidade_produto
+                })
+
+            #for item in ordem_servico.itens.all():
+            #    produto = item.produto
+            #    print(produto.nome)
+    else:
+        os_form = OrdemServicoForm(instance=ordem_servico)
+        
+
+        return render(request, 'ordem_servico/editar_os.html', {
+            'form': os_form,
+            'ordem_servico': ordem_servico,
+            'somatoria_produtos': somatoria_produtos,
+            'somatoria_servicos': somatoria_servicos,
+            'somatoria_despesas': somatoria_despesas,
+            'produtos': produtos,
+            'servicos': servicos,
+            'tecnicos': tecnicos,
+            'nomes': nomes,
+            'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
+        })
+
+"""
 @login_required
 def editar_os(request, os_id):
     ordem_servico = get_object_or_404(OrdemServico, id=os_id)
@@ -277,6 +405,7 @@ def editar_os(request, os_id):
         'ordem_servico': ordem_servico
     })
 
+"""
 
 def excluir_os(request, os_id):
     os = get_object_or_404(OrdemServico, id=os_id)

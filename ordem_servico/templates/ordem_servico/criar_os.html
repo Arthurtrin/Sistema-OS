@@ -337,18 +337,16 @@
                         {% endfor %}
                       </select>
                     </div>
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-0-quantidade" required class="form-control quantidade-produto-input">
+                    </div>
                     <div class="col-md-2 d-flex align-items-end">
                       <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
                         <i class="fas fa-trash-alt"></i>
                       </button>
                     </div>
-                  </div>
-                  <div class="row g-2">
-                    <div class="col-md-2">
-                      <label>Quantidade:</label>
-                      <input type="number" name="form-0-quantidade" required class="form-control quantidade-produto-input">
-                    </div>
-                    
+
                     <input type="hidden" name="form-0-acao" value="mantem" class="campo-acao" />
                   </div>
                 </div>
@@ -369,19 +367,20 @@
                         {% endfor %}
                       </select>
                     </div>
+                    <div class="col-md-2">
+                      <label>Quantidade:</label>
+                      <input type="number" name="form-__prefix__-quantidade" class="form-control quantidade-produto-input">
+                    </div>
                     <div class="col-md-2 d-flex align-items-end">
                       <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
                         <i class="fas fa-trash-alt"></i>
                       </button>
                     </div>
                   </div>
-                  <div class="row g-2">
-                    <div class="col-md-2">
-                      <label>Quantidade:</label>
-                      <input type="number" name="form-__prefix__-quantidade" class="form-control quantidade-produto-input">
-                    </div>
+                  
+                    
                     <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
-                  </div>
+                  
                 </div>
               </div>
 

@@ -56,7 +56,6 @@ class Status(models.Model):
     def __str__(self):
         return self.nome
 
-# Create your models here.
 class OrdemServico(models.Model):
     titulo = models.CharField(max_length=100)
     data_abertura = models.DateField()
@@ -84,7 +83,6 @@ class OrdemServico(models.Model):
 
     def __str__(self):
         return f"{self.titulo}"
-
 
 class ProdutoOrdemServico(models.Model):
     ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name='itens')
