@@ -321,8 +321,8 @@
         <div class="tab-pane fade" id="produtos" role="tabpanel">
           <div class="card-body">
             <div class="mb-3">
-              <input type="hidden" id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="1">
-              
+
+              <input type="hidden" id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="0">
               <div id="produtos-container">
                 {% for item in somatoria_produtos %}
                   <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
@@ -365,7 +365,7 @@
                     </div>
                     <div class="col-md-2">
                       <label>Quantidade:</label>
-                      <input type="number" name="form-0-quantidade" required class="form-control quantidade-produto-input">
+                      <input type="number" name="form-__prefix__-quantidade" required class="form-control quantidade-produto-input">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                       <button type="button" class="btn btn-outline-danger btn-sm btn-remove-produto" title="Remover produto">
@@ -375,7 +375,6 @@
                     <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />                 
                 </div>
               </div>
-
 
               <!-- Botão Adicionar -->
               <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-produto">
@@ -387,11 +386,10 @@
 
         <script>
           document.addEventListener('DOMContentLoaded', function () {
-          let totalProdutos = 1;
+          let totalProdutos = document.querySelectorAll('[name^="form-"][name$="-produto"]').length;
 
           function atualizarTotalForms() {
-            const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
-            totalFormsInput.value = totalProdutos;
+            document.getElementById('id_form-TOTAL_FORMS').value = totalProdutos;
           }
 
           document.getElementById('add-produto').addEventListener('click', function () {
@@ -407,15 +405,23 @@
             if (e.target.closest('.btn-remove-produto')) {
               const bloco = e.target.closest('.produto-form');
               if (bloco) {
-                bloco.remove();
-
-                // Atualiza o total de formulários visíveis
-                totalProdutos = document.querySelectorAll('.produto-form').length;
-                atualizarTotalForms();
+                // Só remove se for do formset (com campo name="form-X-produto")
+                const inputProduto = bloco.querySelector('[name^="form-"][name$="-produto"]');
+                if (inputProduto) {
+                  bloco.remove();
+                  totalProdutos--;
+                  atualizarTotalForms();
+                } else {
+                  // Para os que são antigos, você pode apenas esconder ou marcar como excluído
+                  bloco.remove(); // ou outro tratamento
+                }
               }
             }
           });
+
+          atualizarTotalForms(); // garantir valor inicial correto
         });
+
         </script>
 
         <!-- Serviços -->

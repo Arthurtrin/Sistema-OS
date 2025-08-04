@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from servicos.models import Servico
 from tecnicos.models import Tecnico
-from decimal import Decimal  
+from decimal import Decimal, InvalidOperation  
 from django.db.models import Sum
 
 # Salva os despesas na OS
@@ -91,6 +91,12 @@ def verifica_produto_estoque(request, produto_id, quantidade, erro_estoque):
         messages.error(request, 'Produto não encontrado no banco de dados.')
     return erro_estoque
 
+def to_decimal(valor):
+    try:
+        return Decimal(str(valor).replace(',', '.').strip())
+    except (InvalidOperation, TypeError):
+        return Decimal('0.00')  # ou outro valor padrão
+
 @login_required
 def criar_os(request):
     servicos = Servico.objects.all()
@@ -119,14 +125,14 @@ def criar_os(request):
                 
                 erro_estoque = verifica_produto_estoque(request, produto_id, quantidade, erro_estoque)
                 
-            if erro_estoque:
-                return render(request, 'ordem_servico/criar_os.html', {
-                    'form': os_form,
-                    'servicos': servicos,
-                    'tecnicos': tecnicos,
-                    'nomes': nomes,
-                    'produtos': produtos
-                })
+                if erro_estoque:
+                    return render(request, 'ordem_servico/criar_os.html', {
+                        'form': os_form,
+                        'servicos': servicos,
+                        'tecnicos': tecnicos,
+                        'nomes': nomes,
+                        'produtos': produtos
+                    })
 
             # Salva Ordem de Serviço
             ordem_servico = os_form.save(commit=False)
@@ -194,6 +200,113 @@ def editar_os(request, os_id):
 
         if os_form.is_valid():
             erro_estoque = False
+
+            #PARTE 1: ESTOQUE/PRODUTOS
+            #devolve ao estoque todos os produtos ja cadastrados na os
+            for item in ordem_servico.itens.all():
+                produto = item.produto  
+                produto.quantidade += item.quantidade
+                produto.save()
+
+            #pega os valores de produtos ja cadastrados na os
+            produtos_cad = []
+            for i, _ in enumerate(ordem_servico.itens.all()):
+                produto_id = request.POST.get(f'produto_id_{i}')
+                produto_nome = request.POST.get(f'produto_{i}')
+                quantidade_produto = request.POST.get(f'quantidade_{i}')
+
+                #verifica se eles não estão todos como  None
+                if all(x is None for x in [produto_nome, quantidade_produto]):
+                    continue
+
+                # verifica se tem disponivel em estoque
+                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade_produto, erro_estoque)
+                
+                if erro_estoque:
+                    # se der erro, a quantidade permanece 
+                    for item in ordem_servico.itens.all():
+                        produto = item.produto  
+                        produto.quantidade -= item.quantidade
+                        produto.save()
+
+                    return render(request, 'ordem_servico/editar_os.html', {
+                        'form': os_form,
+                        'ordem_servico': ordem_servico,
+                        'somatoria_produtos': somatoria_produtos,
+                        'somatoria_servicos': somatoria_servicos,
+                        'somatoria_despesas': somatoria_despesas,
+                        'produtos': produtos,
+                        'servicos': servicos,
+                        'tecnicos': tecnicos,
+                        'nomes': nomes,
+                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
+                    })
+
+                #salva os produtos em produtos_cad se não houver nenhum erro
+                produtos_cad.append({
+                    'produto': get_object_or_404(Produto, id=produto_id),
+                    'quantidade': quantidade_produto
+                })
+
+            produtos_novo = []
+            total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
+
+            #pega os valores dos produtos que o usuario quer cadastrar
+            for i in range(total_forms):
+                produto_id = request.POST.get(f'form-{i}-produto')
+                quantidade = request.POST.get(f'form-{i}-quantidade')
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+
+                if all(x is None for x in [produto_id, quantidade]):
+                    continue
+
+                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade, erro_estoque)
+                
+                if erro_estoque:
+                    return render(request, 'ordem_servico/editar_os.html', {
+                        'form': os_form,
+                        'ordem_servico': ordem_servico,
+                        'somatoria_produtos': somatoria_produtos,
+                        'somatoria_servicos': somatoria_servicos,
+                        'somatoria_despesas': somatoria_despesas,
+                        'produtos': produtos,
+                        'servicos': servicos,
+                        'tecnicos': tecnicos,
+                        'nomes': nomes,
+                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
+                    })
+
+                produtos_novo.append({
+                    'produto': get_object_or_404(Produto, id=produto_id),
+                    'quantidade': quantidade
+                })
+
+            #exclui os produtos vinculados a os
+            ordem_servico.itens.all().delete()
+
+            #cadastrar produtos na os
+            for item in produtos_novo:
+                ProdutoOrdemServico.objects.create(
+                    ordem_servico=ordem_servico,
+                    produto = item['produto'],
+                    quantidade = item['quantidade'],
+                )
+
+            #cadastrar produtos na os
+            for item in produtos_cad:
+                ProdutoOrdemServico.objects.create(
+                    ordem_servico=ordem_servico,
+                    produto = item['produto'],
+                    quantidade = item['quantidade'],
+                )
+
+            #subtrair os produtos do estoque
+            for item in ordem_servico.itens.all():
+                produto = item.produto  
+                produto.quantidade -= item.quantidade
+                produto.save()
+
+            #PARTE 2: DESPESA
             despesas = ordem_servico.despesas.all()
             novas_despesas = []
 
@@ -211,8 +324,8 @@ def editar_os(request, os_id):
                     'tipo': tipo,
                     'descricao': descricao,
                     'quantidade': quantidade,
-                    'preco_unitario': preco_unitario,
-                    'preco_total': preco_total,
+                    'preco_unitario': to_decimal(preco_unitario),
+                    'preco_total': to_decimal(preco_total)
                 })
 
             # Exclui as despesas antigas
@@ -230,6 +343,7 @@ def editar_os(request, os_id):
                 )
             criar_despesa(request, ordem_servico)
 
+            #PARTE 3: SERVIÇO
             servicos_cad = []
             for i, _ in enumerate(ordem_servico.servicos.all()):
                 servico_id = request.POST.get(f'servico_{i}')
@@ -242,6 +356,7 @@ def editar_os(request, os_id):
 
                 if all(x is None for x in [servico_id, tecnico_id, quantidade_serv, preco_unitario_serv, preco_total_serv, comissao, comissao_total]):
                     continue
+
                 servico = Servico.objects.get(id=servico_id)
                 tecnico = Tecnico.objects.get(id=tecnico_id)
 
@@ -249,14 +364,15 @@ def editar_os(request, os_id):
                 'servico': servico,
                 'tecnico': tecnico,
                 'quantidade': quantidade_serv,
-                'preco_unitario': preco_unitario_serv,
-                'preco_total': preco_total_serv,
-                'comissao': comissao,
-                'comissao_total': comissao_total,
+                'preco_unitario': to_decimal(preco_unitario_serv),
+                'preco_total': to_decimal(preco_total_serv),
+                'comissao': to_decimal(comissao),
+                'comissao_total': to_decimal(comissao_total),
             })
             
             ordem_servico.servicos.all().delete() 
             for item in servicos_cad:
+                print(item['preco_unitario'])
                 ServicoOrdemServico.objects.create(
                     ordem_servico=ordem_servico,  # certifique-se de que essa variável está definida
                     servico=item['servico'],
@@ -268,76 +384,13 @@ def editar_os(request, os_id):
                     comissao_total=item['comissao_total'],
                 )
             criar_servico(request, ordem_servico)
-            
-        
-            produtos_cad = []
-            for i, _ in enumerate(ordem_servico.itens.all()):
-                produto_id = request.POST.get(f'produto_id_{i}')
-                produto_nome = request.POST.get(f'produto_{i}')
-                quantidade_produto = request.POST.get(f'quantidade_{i}')
-                
-                if all(x is None for x in [produto_nome, quantidade_produto]):
-                    continue
 
-                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade_produto, erro_estoque)
+        messages.success(request, 'Ordem de serviço atualizada com sucesso.')
+        return redirect('home')
 
-                if erro_estoque:
-                    return render(request, 'ordem_servico/editar_os.html', {
-                        'form': os_form,
-                        'ordem_servico': ordem_servico,
-                        'somatoria_produtos': somatoria_produtos,
-                        'somatoria_servicos': somatoria_servicos,
-                        'somatoria_despesas': somatoria_despesas,
-                        'produtos': produtos,
-                        'servicos': servicos,
-                        'tecnicos': tecnicos,
-                        'nomes': nomes,
-                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
-                    })
-            
-            total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
-            for i in range(total_forms):
-                produto_id = request.POST.get(f'form-{i}-produto')
-                quantidade_lista = request.POST.getlist(f'form-{i}-quantidade')
-                quantidade = quantidade_lista[0] if quantidade_lista else None
-                acao = request.POST.get(f'form-{i}-acao', 'mantem')
-                print(produto_id, "quantidade", quantidade_lista, acao)
-                if not produto_id or acao != 'mantem':
-                    continue
-                
-                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade, erro_estoque)
-                
-                if erro_estoque:
-                    return render(request, 'ordem_servico/editar_os.html', {
-                        'form': os_form,
-                        'ordem_servico': ordem_servico,
-                        'somatoria_produtos': somatoria_produtos,
-                        'somatoria_servicos': somatoria_servicos,
-                        'somatoria_despesas': somatoria_despesas,
-                        'produtos': produtos,
-                        'servicos': servicos,
-                        'tecnicos': tecnicos,
-                        'nomes': nomes,
-                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
-                    })
-
-            for item in ordem_servico.itens.all():
-                produto = item.produto  
-                produto.quantidade += item.quantidade  # Devolve ao estoque
-                produto.save()
-
-            produtos_cad.append({
-                'produto_nome': produto_nome,
-                'quantidade': quantidade_produto
-            })
-
-            #for item in ordem_servico.itens.all():
-            #    produto = item.produto
-            #    print(produto.nome)
     else:
         os_form = OrdemServicoForm(instance=ordem_servico)
         
-
         return render(request, 'ordem_servico/editar_os.html', {
             'form': os_form,
             'ordem_servico': ordem_servico,
@@ -350,105 +403,6 @@ def editar_os(request, os_id):
             'nomes': nomes,
             'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
         })
-
-"""
-@login_required
-def editar_os(request, os_id):
-    ordem_servico = get_object_or_404(OrdemServico, id=os_id)
-
-    ProdutoFormSet = modelformset_factory(
-        ProdutoOrdemServico,
-        form=ProdutoOrdemServicoForm,
-        extra=0,
-        can_delete=True
-    )
-
-    if request.method == 'POST':
-        os_form = OrdemServicoForm(request.POST, request.FILES, instance=ordem_servico)
-        produto_formset = ProdutoFormSet(
-            request.POST,
-            queryset=ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico),
-            prefix='form'
-        )
-
-        if os_form.is_valid() and produto_formset.is_valid():
-            erro_estoque = False
-            produtos_antigos = list(ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico))
-            estoque_temporario = {}
-
-            # Etapa 1 – Repor estoque dos produtos antigos
-            for item in produtos_antigos:
-                produto = item.produto
-                produto.quantidade += item.quantidade
-                produto.save()
-                estoque_temporario[produto.id] = produto.quantidade
-
-            # Etapa 2 – Validar estoque para novos dados
-            for i, form in enumerate(produto_formset.forms):
-                if request.POST.get(f'form-{i}-acao', 'mantem') == 'delete':
-                    continue
-
-                produto = form.cleaned_data.get('produto')
-                quantidade = form.cleaned_data.get('quantidade')
-
-                if produto and quantidade is not None:
-                    estoque_atual = estoque_temporario.get(produto.id, produto.quantidade)
-                    if estoque_atual < quantidade:
-                        erro_estoque = True
-                        messages.error(
-                            request,
-                            f"Estoque insuficiente para o produto '{produto.nome}'. "
-                            f"Disponível: {estoque_atual}, Solicitado: {quantidade}"
-                        )
-
-            if erro_estoque:
-                return render(request, 'ordem_servico/editar_os.html', {
-                    'form': os_form,
-                    'produto_formset': produto_formset,
-                    'ordem_servico': ordem_servico
-                })
-
-            # Etapa 3 – Salvar OS e os produtos
-            ordem_servico = os_form.save()
-
-            # Remove os antigos do banco
-            ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico).delete()
-            
-            for i, form in enumerate(produto_formset.forms):
-                if request.POST.get(f'form-{i}-acao', 'mantem') == 'delete':
-                    continue
-
-                produto_os = form.save(commit=False)
-                produto_os.ordem_servico = ordem_servico
-                produto_os.save()
-
-                # Recarrega o produto do banco para garantir valor atualizado
-                produto = Produto.objects.get(id=produto_os.produto.id)
-
-                print("quantidade a ser tirada (edição):", produto_os.quantidade)
-                print("quantidade no estoque (recarregado):", produto.quantidade)
-
-                produto.quantidade -= produto_os.quantidade
-                produto.save()
-                print(f"[BAIXA] {produto.nome} -> nova quantidade: {produto.quantidade}")
-
-            messages.success(request, 'Ordem de serviço atualizada com sucesso.')
-            return redirect('home')
-
-    else:
-        os_form = OrdemServicoForm(instance=ordem_servico)
-        produto_formset = ProdutoFormSet(
-            queryset=ProdutoOrdemServico.objects.filter(ordem_servico=ordem_servico),
-            prefix='form'
-        )
-
-    return render(request, 'ordem_servico/editar_os.html', {
-        'form': os_form,
-        'produto_formset': produto_formset,
-        'ordem_servico': ordem_servico
-    })
-
-"""
 
 def excluir_os(request, os_id):
     os = get_object_or_404(OrdemServico, id=os_id)

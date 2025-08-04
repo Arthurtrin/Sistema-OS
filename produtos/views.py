@@ -16,7 +16,9 @@ def cadastrar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            form.save()
+            produto = form.save(commit=False)  # Não salva ainda
+            produto.quantidade = produto.qtd_entrada  # Define quantidade igual a qtd_entrada
+            produto.save()  # Agora salva
             messages.success(request, 'Novo produto criado com sucesso.')
             return redirect('produtos:listar_produtos')
     else:
