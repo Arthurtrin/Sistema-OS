@@ -269,24 +269,67 @@ def editar_os(request, os_id):
                 )
             criar_servico(request, ordem_servico)
             
+        
+            produtos_cad = []
+            for i, _ in enumerate(ordem_servico.itens.all()):
+                produto_id = request.POST.get(f'produto_id_{i}')
+                produto_nome = request.POST.get(f'produto_{i}')
+                quantidade_produto = request.POST.get(f'quantidade_{i}')
+                
+                if all(x is None for x in [produto_nome, quantidade_produto]):
+                    continue
+
+                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade_produto, erro_estoque)
+
+                if erro_estoque:
+                    return render(request, 'ordem_servico/editar_os.html', {
+                        'form': os_form,
+                        'ordem_servico': ordem_servico,
+                        'somatoria_produtos': somatoria_produtos,
+                        'somatoria_servicos': somatoria_servicos,
+                        'somatoria_despesas': somatoria_despesas,
+                        'produtos': produtos,
+                        'servicos': servicos,
+                        'tecnicos': tecnicos,
+                        'nomes': nomes,
+                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
+                    })
+            
+            total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
+            for i in range(total_forms):
+                produto_id = request.POST.get(f'form-{i}-produto')
+                quantidade_lista = request.POST.getlist(f'form-{i}-quantidade')
+                quantidade = quantidade_lista[0] if quantidade_lista else None
+                acao = request.POST.get(f'form-{i}-acao', 'mantem')
+                print(produto_id, "quantidade", quantidade_lista, acao)
+                if not produto_id or acao != 'mantem':
+                    continue
+                
+                erro_estoque = verifica_produto_estoque(request, produto_id, quantidade, erro_estoque)
+                
+                if erro_estoque:
+                    return render(request, 'ordem_servico/editar_os.html', {
+                        'form': os_form,
+                        'ordem_servico': ordem_servico,
+                        'somatoria_produtos': somatoria_produtos,
+                        'somatoria_servicos': somatoria_servicos,
+                        'somatoria_despesas': somatoria_despesas,
+                        'produtos': produtos,
+                        'servicos': servicos,
+                        'tecnicos': tecnicos,
+                        'nomes': nomes,
+                        'tipos_despesa': DespesaOrdemServico.TIPO_CHOICES,
+                    })
+
             for item in ordem_servico.itens.all():
                 produto = item.produto  
                 produto.quantidade += item.quantidade  # Devolve ao estoque
                 produto.save()
 
-            produtos_cad = []
-            for i, _ in enumerate(ordem_servico.itens.all()):
-                produto_nome = request.POST.get(f'produto_{i}')
-                quantidade_produto = request.POST.get(f'quantidade_{i}')
-                print(produto_nome, quantidade_produto)
-
-                if all(x is None for x in [produto_nome, quantidade_produto]):
-                    continue
-                
-                produtos_cad.append({
-                    'produto_nome': produto_nome,
-                    'quantidade': quantidade_produto
-                })
+            produtos_cad.append({
+                'produto_nome': produto_nome,
+                'quantidade': quantidade_produto
+            })
 
             #for item in ordem_servico.itens.all():
             #    produto = item.produto

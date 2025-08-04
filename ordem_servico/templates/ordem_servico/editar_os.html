@@ -326,7 +326,8 @@
               <div id="produtos-container">
                 {% for item in somatoria_produtos %}
                   <div class="row g-2 produto-form border rounded p-3 mb-3 position-relative bg-light">
-                  
+                    <!-- Novo campo oculto com o ID -->
+                    <input type="hidden" name="produto_id_{{ forloop.counter0 }}" value="{{ item.produto.id }}">
                     <div class="col-md-6">
                       <label for="produto_{{ forloop.counter0 }}">Produto:</label>
                       <input type="text" class="form-control" id="produto_{{ forloop.counter0 }}" name="produto_{{ forloop.counter0 }}" value="{{ item.produto.nome }}" readonly>
