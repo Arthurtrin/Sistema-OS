@@ -63,14 +63,6 @@ class ProdutoOrdemServicoForm(forms.ModelForm):
         self.fields['produto'].empty_label = 'Selecione o Produto'
         
 class OrdemServicoForm(forms.ModelForm):
-    data_abertura = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-control'
-        }, format='%Y-%m-%d'),
-        input_formats=['%Y-%m-%d']
-    )
-
     obra_inicio = forms.DateField(
         widget=forms.DateInput(attrs={
             'type': 'date',
@@ -90,7 +82,7 @@ class OrdemServicoForm(forms.ModelForm):
 
     class Meta:
         model = OrdemServico
-        exclude = ['digitador']
+        exclude = ['digitador', 'data_abertura']
         widgets = {
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'arquivo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
@@ -106,7 +98,7 @@ class OrdemServicoForm(forms.ModelForm):
                 css_class += ' is-invalid'
             
             # já tratados no widgets do Meta
-            if field_name in ['data_abertura', 'obra_inicio', 'obra_termino', 'descricao', 'arquivo']:
+            if field_name in [ 'obra_inicio', 'obra_termino', 'descricao', 'arquivo']:
                 continue
 
             field.widget.attrs.update({'class': css_class})

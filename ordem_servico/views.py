@@ -14,6 +14,7 @@ from servicos.models import Servico
 from tecnicos.models import Tecnico
 from decimal import Decimal, InvalidOperation  
 from django.db.models import Sum
+from django.utils import timezone
 
 # Salva os despesas na OS
 def criar_despesa(request, ordem_servico):
@@ -137,6 +138,7 @@ def criar_os(request):
             # Salva Ordem de Serviço
             ordem_servico = os_form.save(commit=False)
             ordem_servico.digitador = request.user
+            ordem_servico.data_abertura = timezone.now().date() 
             ordem_servico.save()
 
             # Salva os produtos na OS
