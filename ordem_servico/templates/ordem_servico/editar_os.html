@@ -492,41 +492,41 @@
               </div>
 
               <script>
-  function atualizarCamposServico(row) {
-    const servicoSelect = row.querySelector('.servico-select');
-    const tecnicoSelect = row.querySelector('.tecnico-select');
-    const quantidadeInput = row.querySelector('input[name^="quantidade_"]');
-    const precoUnitarioInput = row.querySelector('.preco-servico-input');
-    const precoTotalInput = row.querySelector('.preco-total-input');
-    const comissaoInput = row.querySelector('.comissao-tecnico-input');
-    const comissaoTotalInput = row.querySelector('.comissao-total-input');
+                function atualizarCamposServico(row) {
+                  const servicoSelect = row.querySelector('.servico-select');
+                  const tecnicoSelect = row.querySelector('.tecnico-select');
+                  const quantidadeInput = row.querySelector('input[name^="quantidade_"]');
+                  const precoUnitarioInput = row.querySelector('.preco-servico-input');
+                  const precoTotalInput = row.querySelector('.preco-total-input');
+                  const comissaoInput = row.querySelector('.comissao-tecnico-input');
+                  const comissaoTotalInput = row.querySelector('.comissao-total-input');
 
-    const precoServico = parseFloat(servicoSelect.selectedOptions[0]?.dataset?.preco || 0);
-    const comissaoTecnico = parseFloat(tecnicoSelect.selectedOptions[0]?.dataset?.preco || 0);
-    const quantidade = parseFloat(quantidadeInput.value || 0);
+                  const precoServico = parseFloat(servicoSelect.selectedOptions[0]?.dataset?.preco || 0);
+                  const comissaoTecnico = parseFloat(tecnicoSelect.selectedOptions[0]?.dataset?.preco || 0);
+                  const quantidade = parseFloat(quantidadeInput.value || 0);
 
-    const precoTotal = precoServico * quantidade;
-    const comissao = (comissaoTecnico / 100) * precoServico;
-    const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+                  const precoTotal = precoServico * quantidade;
+                  const comissao = (comissaoTecnico / 100) * precoServico;
+                  const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
 
-    precoUnitarioInput.value = precoServico.toFixed(2);
-    precoTotalInput.value = precoTotal.toFixed(2);
-    comissaoInput.value = comissao.toFixed(2);
-    comissaoTotalInput.value = comissaoTotal.toFixed(2);
-  }
+                  precoUnitarioInput.value = precoServico.toFixed(2);
+                  precoTotalInput.value = precoTotal.toFixed(2);
+                  comissaoInput.value = comissao.toFixed(2);
+                  comissaoTotalInput.value = comissaoTotal.toFixed(2);
+                }
 
-  // Inicializa todos os blocos já existentes
-  document.querySelectorAll('.servico-form').forEach(form => {
-    const selects = form.querySelectorAll('.servico-select, .tecnico-select');
-    const quantidadeInput = form.querySelector('input[name^="quantidade_"]');
+                // Inicializa todos os blocos já existentes
+                document.querySelectorAll('.servico-form').forEach(form => {
+                  const selects = form.querySelectorAll('.servico-select, .tecnico-select');
+                  const quantidadeInput = form.querySelector('input[name^="quantidade_"]');
 
-    selects.forEach(select => {
-      select.addEventListener('change', () => atualizarCamposServico(form));
-    });
+                  selects.forEach(select => {
+                    select.addEventListener('change', () => atualizarCamposServico(form));
+                  });
 
-    quantidadeInput.addEventListener('input', () => atualizarCamposServico(form));
-  });
-</script>
+                  quantidadeInput.addEventListener('input', () => atualizarCamposServico(form));
+                });
+              </script>
 
               <!-- Template Oculto -->
               <div id="servico-template" class="d-none">
@@ -596,35 +596,42 @@
 
         <script>
           function aplicarEventosNosServicos() {
-            document.querySelectorAll('.servico-form').forEach(function(form) {
-              const selectServico = form.querySelector('.servico-select');
-              const selectTecnico = form.querySelector('.tecnico-select');
-              const quantidadeInput = form.querySelector('input[name$="quantidade-servico"]');
-              const precoUnitarioInput = form.querySelector('.preco-servico-input');
-              const precoTotalInput = form.querySelector('.preco-total-input');
-              const comissaoInput = form.querySelector('.comissao-tecnico-input');
-              const comissaoTotalInput = form.querySelector('.comissao-total-input');
+  document.querySelectorAll('.servico-form').forEach(function(form) {
+    const selectServico = form.querySelector('.servico-select');
+    const selectTecnico = form.querySelector('.tecnico-select');
 
-              function calcular() {
-                const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
-                const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
-                const quantidade = parseFloat(quantidadeInput.value || 0);
+    // Aqui adaptamos para pegar o input que contenha "quantidade" no name
+    const quantidadeInput = Array.from(form.querySelectorAll('input'))
+      .find(input => input.name.includes('quantidade'));
 
-                const precoTotal = precoServico * quantidade;
-                const comissao = (comissaoTecnico / 100) * precoServico;
-                const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+    const precoUnitarioInput = form.querySelector('.preco-servico-input');
+    const precoTotalInput = form.querySelector('.preco-total-input');
+    const comissaoInput = form.querySelector('.comissao-tecnico-input');
+    const comissaoTotalInput = form.querySelector('.comissao-total-input');
 
-                precoUnitarioInput.value = precoServico.toFixed(2);
-                precoTotalInput.value = precoTotal.toFixed(2);
-                comissaoInput.value = comissao.toFixed(2);
-                comissaoTotalInput.value = comissaoTotal.toFixed(2);
-              }
+    function calcular() {
+      const precoServico = parseFloat(selectServico.selectedOptions[0]?.dataset.preco || 0);
+      const comissaoTecnico = parseFloat(selectTecnico.selectedOptions[0]?.dataset.preco || 0);
+      const quantidade = parseFloat(quantidadeInput?.value || 0);
 
-              selectServico.addEventListener('change', calcular);
-              selectTecnico.addEventListener('change', calcular);
-              quantidadeInput.addEventListener('input', calcular);
-            });
-          }
+      const precoTotal = precoServico * quantidade;
+      const comissao = (comissaoTecnico / 100) * precoServico;
+      const comissaoTotal = (comissaoTecnico / 100) * precoTotal;
+
+      precoUnitarioInput.value = precoServico.toFixed(2);
+      precoTotalInput.value = precoTotal.toFixed(2);
+      comissaoInput.value = comissao.toFixed(2);
+      comissaoTotalInput.value = comissaoTotal.toFixed(2);
+    }
+
+    selectServico.addEventListener('change', calcular);
+    selectTecnico.addEventListener('change', calcular);
+    if (quantidadeInput) {
+      quantidadeInput.addEventListener('input', calcular);
+    }
+  });
+}
+
 
           document.addEventListener('DOMContentLoaded', function() {
             aplicarEventosNosServicos();

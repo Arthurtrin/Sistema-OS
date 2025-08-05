@@ -372,7 +372,6 @@ def editar_os(request, os_id):
             
             ordem_servico.servicos.all().delete() 
             for item in servicos_cad:
-                print(item['preco_unitario'])
                 ServicoOrdemServico.objects.create(
                     ordem_servico=ordem_servico,  # certifique-se de que essa variável está definida
                     servico=item['servico'],
