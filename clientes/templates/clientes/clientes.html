@@ -121,122 +121,79 @@
     
    
 </style>
+   <style>
+  .card-link {
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  background-color: rgb(241, 241, 241);
+}
 
-<div class="container my-4">
+.card-link:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-link.active {
+  border: 2px solid #000; /* Destaque quando ativo */
+  background-color: #e9ecef;
+}
+</style>
+
+  <div class="container my-4">
+ 
     <h2 class="mb-4">Clientes</h2>
-
-    <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
-    <div class="col">
-      <a href="#" class="text-decoration-none">
-        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
-          <div class="card-body">
-            <i class="fas fa-users fa-2x mb-3 text-info"></i>
-            <h5 class="card-title">{{ qtd_clientes }} Clientes Cadastrados</h5>
+    <div class="row g-3 mb-5">
+      <div class="col-12 col-sm-6 col-md-3">
+        <a href="{% url 'clientes:listar_clientes' %}" class="card card-link {% if active_tab == 'listar_clientes' %}active{% endif %}">
+          <div class="card-body text-center">
+            <i class="fas fa-eye fa-2x text-primary mb-2"></i>
+            
+            <h6 class="mb-0">Ver Clientes</h6>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <a href="{% url 'clientes:cadastrar_clientes' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
+          <div class="card-body text-center">
+          
+            <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
+            <h6 class="mb-0">Cadastrar</h6>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-12 col-sm-6 col-md-3">
+        <a href="#" class="card card-link {% if active_tab == 'filtros' %}active{% endif %}">
+          <div class="card-body text-center">
+            <i class="fas fa-filter fa-2x text-info mb-2"></i>
+            <h6 class="mb-0">Filtros</h6>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <a href="{% url 'clientes:segmentos_atividades' %}" class="card card-link {% if active_tab == 'definicoes' %}active{% endif %}">
+          <div class="card-body text-center">
+            <i class="fas fa-cogs fa-2x text-warning mb-2"></i>
+            <h6 class="mb-0">Definições</h6>
+          </div>
+        </a>
+      </div>
     </div>
 
-    <div class="col">
-      <a href="#" class="text-decoration-none">
-        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
-          <div class="card-body">
-            <i class="fas fa-layer-group  fa-2x mb-3 text-success"></i>
-            <h5 class="card-title">{{ qtd_segmentos }} Segmentos</h5>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <div class="col">
-      <a href="" class="text-decoration-none">
-        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
-          <div class="card-body">
-            <i class="fas fa-cogs fa-2x mb-3 text-warning"></i>
-            <h5 class="card-title">{{ qtd_atividades }} Atividades</h5>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <div class="col">
-      <a href="#" class="text-decoration-none">
-        <div class="card text-bg-light h-100 shadow-sm text-center hover-shadow">
-          <div class="card-body">
-            <i class="fas fa-map-marked-alt fa-2x mb-3 "></i>
-            <h5 class="card-title">{{ qtd_estados }} Estados</h5>
-          </div>
-        </div>
-      </a>
-    </div>
-    </div>
   
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0">Clientes Recentes</h4>
-      <div class="dropdown ms-auto">
-        <button class="btn btn-dark-custom dropdown-toggle d-flex align-items-center gap-2" type="button" id="clienteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-handshake"></i> Cliente
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="clienteDropdown">
-          <li>
-            <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'clientes:cadastrar_clientes' %}">
-              <i class="fas fa-plus text-white"></i> Cadastrar Cliente
-            </a>
-          </li>
-          <li>
-            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
-              <i class="bi bi-table text-white"></i> Importar de Planilha
-            </button>
-          </li>
-        </ul>
-      </div>
-
+      <h4 class="mb-0">Lista de Clientes</h4> 
     </div>
-    <div class="modal fade" id="uploadPlanilhaModal" tabindex="-1" aria-labelledby="uploadPlanilhaModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'clientes:importar_clientes' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="uploadPlanilhaModalLabel">Importar Clientes via Planilha</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-              <a href="{% url 'clientes:download_modelo_clientes' %}" class="btn btn-outline-success mb-3" target="_blank">
-                <i class="bi bi-table me-1"></i> Baixar modelo de planilha
-              </a>
-              <div class="mb-3">
-                <label for="arquivoPlanilha" class="form-label">Selecione o arquivo Excel (.xlsx)</label>
-                <input class="form-control" type="file" name="arquivo" id="arquivoPlanilha" accept=".xlsx" required>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Importar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
 
   </div>
 
     <div class="table-responsive">
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-            <form method="get" class="d-flex align-items-center gap-2">
-                <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
-                    value="{{ pesquisa|default:'' }}">
-                <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
-                à
-                <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
-                <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
-                    Pesquisar
-                </button>
-            </form>
-
-            
-        </div>
+        
 
         <div class="table-pagination-container">
             <table class="table table-hover custom-table">

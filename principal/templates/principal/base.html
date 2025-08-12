@@ -265,7 +265,7 @@
 
 <body>
 
-  <!-- Navbar Superior -->
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light custom-navbar fixed-top">
     <div class="container-fluid">
       <button class="btn btn-link text-white me-3" id="toggleSidebar" title="Abrir menu">
@@ -280,6 +280,13 @@
           <li class="nav-item me-3">
             <span class="nav-link text-white"><i class="fa fa-user me-2"></i>{{ user.username }}</span>
           </li>
+
+          <li class="nav-item">
+            <a href="{% url 'novo_template' %}">
+              <span>novo template</span>
+            </a>
+          </li>
+
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="m-0 p-0">
               {% csrf_token %}
@@ -297,27 +304,7 @@
   <div class="sidebar collapsed" id="sidebar">
     <ul class="nav flex-column text-white px-2">
 
-      <li class="nav-item mb-2">
-        <a class="nav-link d-flex align-items-center" href="#OsSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-file-alt"></i><span class="ms-0">Ordem de Serviço</span>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="OsSubmenu">
-          <li><a class="nav-link" href="{% url 'ordem_servico:criar_os' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-file-alt me-2"></i>Ver Ordens</a></li>
-          <li><a class="nav-link" href="{% url 'ordem_servico:definicao' %}"><i class="fas fa-cog me-2"></i>Definições</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mb-2">
-        <a class="nav-link d-flex align-items-center" href="#clientesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-handshake"></i><span class="ms-0">Clientes</span>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="clientesSubmenu">
-          <li><a class="nav-link" href="{% url 'clientes:cadastrar_clientes' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'clientes:listar_clientes' %}"><i class="fas fa-handshake me-2"></i>Ver Clientes</a></li>
-          <li><a class="nav-link" href="{% url 'clientes:segmentos_atividades' %}"><i class="fas fa-cog me-2"></i>Definições</a></li>
-        </ul>
-      </li>
+      
 
       <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#produtosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
@@ -340,26 +327,6 @@
       </li>
 
       <li class="nav-item mb-2">
-        <a class="nav-link d-flex align-items-center" href="#servicosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-briefcase"></i><span class="ms-0">Serviços</span>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="servicosSubmenu">
-          <li><a class="nav-link" href="{% url 'servicos:cadastrar_servico' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'servicos:listar_servicos' %}"><i class="fas fa-tools me-2"></i>Ver Serviços</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mb-2">
-        <a class="nav-link d-flex align-items-center" href="#tecnicosSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-          <i class="fas fa-tools"></i><span class="ms-0">Técnicos</span>
-        </a>
-        <ul class="collapse list-unstyled ps-4" id="tecnicosSubmenu">
-          <li><a class="nav-link" href="{% url 'tecnicos:cadastrar_tecnicos' %}"><i class="fa-solid fa-plus me-2"></i>Criar</a></li>
-          <li><a class="nav-link" href="{% url 'tecnicos:listar_tecnicos' %}"><i class="fas fa-tools me-2"></i>Ver Técnicos</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mb-2">
         <a class="nav-link d-flex align-items-center" href="#financeiroSubmenu" data-bs-toggle="collapse" aria-expanded="false">
           <i class="fas fa-dollar-sign"></i><span class="ms-0">Financeiro</span>
         </a>
@@ -370,11 +337,6 @@
         </ul>
       </li>
 
-      <li class="nav-item mb-2">
-        <a class="nav-link" href="{% url 'atividades:ver_atividades' %}">
-          <i class="fas fa-search"></i><span class="ms-0">Auditoria</span>
-        </a>
-      </li>
       
       <li class="nav-item mb-2">
         <a class="nav-link" href="{% url 'usuarios' user.username %}">
@@ -382,11 +344,7 @@
         </a>
       </li>
 
-      <li class="nav-item mb-2">
-        <a class="nav-link" href="{% url 'configuracoes' %}">
-          <i class="fas fa-cog"></i><span class="ms-0">Configurações</span>
-        </a>
-      </li>
+      
     </ul>
   </div>
 

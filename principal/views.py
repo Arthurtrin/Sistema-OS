@@ -59,6 +59,13 @@ def home(request):
         })
 
 @login_required
+def novo_template(request):
+    return render(request, "principal/novo_template.html")
+
+def os(request):
+    return render(request, "principal/os.html")
+
+@login_required
 def usuarios(request, usuario):
     try:
         perfil = Perfil.objects.get(usuario__username=usuario)

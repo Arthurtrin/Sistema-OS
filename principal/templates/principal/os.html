@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Ordem de Serviço</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eef1f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dashboard-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Painel de Ordem de Serviço</h1>
+        
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8 mb-4">
+                <a href="#" class="text-decoration-none">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"> Cadastrar OS</h5>
+                            <p class="card-text">Registre uma nova ordem de serviço no sistema.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-8 mb-4">
+                <a href="#" class="text-decoration-none">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"> Ver OS</h5>
+                            <p class="card-text">Consulte todas as ordens de serviço cadastradas.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-8 mb-4">
+                <a href="#" class="text-decoration-none">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"> Definições</h5>
+                            <p class="card-text">Ajuste configurações e preferências do sistema.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

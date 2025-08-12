@@ -1,0 +1,63 @@
+<div class="dropdown ms-auto">
+          <button class="btn btn-dark-custom dropdown-toggle d-flex align-items-center gap-2" type="button" id="clienteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-handshake"></i> Cliente
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="clienteDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'clientes:cadastrar_clientes' %}">
+                <i class="fas fa-plus text-white"></i> Cadastrar Cliente
+              </a>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
+                <i class="bi bi-table text-white"></i> Importar de Planilha
+              </button>
+            </li>
+          </ul>
+        </div>
+
+
+
+
+        <div class="modal fade" id="uploadPlanilhaModal" tabindex="-1" aria-labelledby="uploadPlanilhaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'clientes:importar_clientes' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="uploadPlanilhaModalLabel">Importar Clientes via Planilha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <a href="{% url 'clientes:download_modelo_clientes' %}" class="btn btn-outline-success mb-3" target="_blank">
+                <i class="bi bi-table me-1"></i> Baixar modelo de planilha
+              </a>
+              <div class="mb-3">
+                <label for="arquivoPlanilha" class="form-label">Selecione o arquivo Excel (.xlsx)</label>
+                <input class="form-control" type="file" name="arquivo" id="arquivoPlanilha" accept=".xlsx" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+FILTROS
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
+                    value="{{ pesquisa|default:'' }}">
+                <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
+                à
+                <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
+                <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+                    Pesquisar
+                </button>
+            </form>
+        </div>
