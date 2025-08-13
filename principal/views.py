@@ -10,6 +10,9 @@ from produtos.models import Grupo
 from ordem_servico.models import OrdemServico, Status
 from django.db.models.functions import Lower
 
+
+
+
 @login_required
 def home(request):
     pesquisa = request.GET.get('pesquisa', '')
@@ -62,9 +65,6 @@ def home(request):
 def novo_template(request):
     return render(request, "principal/novo_template.html")
 
-def os(request):
-    return render(request, "principal/os.html")
-
 @login_required
 def usuarios(request, usuario):
     try:
@@ -106,9 +106,7 @@ def usuarios(request, usuario):
         mensagem = 'Perfil não encontrado'
         return render(request, 'principal/erro.html', {'mensagem': mensagem})
 
-@login_required
-def ordem_servico(request):
-    return render(request, 'principal/ordem_servico.html')
+
 
 @login_required
 def configuracoes(request):
