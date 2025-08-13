@@ -131,35 +131,36 @@
 </style>
 
 <div class="container my-4">
-    <h2 class="mb-4">Lista de Produtos</h2>
+    <h2 class="mb-4">Estoque</h2>
     <div class="row g-3 mb-5">
-      <div class="col-12 col-sm-6 col-md-3">
-        <a href="{% url 'produtos:listar_produtos' %}" class="card card-link {% if active_tab == 'listar_clientes' %}active{% endif %}">
-          <div class="card-body text-center">
-            <i class="fas fa-eye fa-2x text-primary mb-2"></i>
-            
-            <h6 class="mb-0">Ver Produtos</h6>
-          </div>
-        </a>
-      </div>
+      
       <div class="col-12 col-sm-6 col-md-3">
         <a href="{% url 'produtos:cadastrar_produto' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
           <div class="card-body text-center">
-          
             <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
             <h6 class="mb-0">Cadastrar</h6>
           </div>
         </a>
       </div>
       
-      <div class="col-12 col-sm-6 col-md-3">
-        <a href="#" class="card card-link {% if active_tab == 'filtros' %}active{% endif %}">
-          <div class="card-body text-center">
-            <i class="fas fa-filter fa-2x text-info mb-2"></i>
-            <h6 class="mb-0">Filtros</h6>
-          </div>
-        </a>
-      </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-link" data-bs-toggle="modal" data-bs-target="#movimentacoesModal" style="cursor: pointer;">
+                <div class="card-body text-center">
+                <i class="fas fa-exchange-alt fa-2x text-primary mb-2"></i>
+                <h6 class="mb-0">Movimentações</h6>
+                </div>
+            </div>
+        </div>
+
+      <!-- Card que abre o modal de Filtros -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-link" data-bs-toggle="modal" data-bs-target="#modalFiltros" style="cursor: pointer;">
+                <div class="card-body text-center">
+                <i class="fas fa-filter fa-2x text-info mb-2"></i>
+                <h6 class="mb-0">Filtros</h6>
+                </div>
+            </div>
+        </div>
 
       <div class="col-12 col-sm-6 col-md-3">
         <a href="{% url 'produtos:fabricante_marca_grupo' %}" class="card card-link {% if active_tab == 'definicoes' %}active{% endif %}">
@@ -169,75 +170,205 @@
           </div>
         </a>
       </div>
+      
+    </div>
+
+    <!-- Modal Filtros -->
+<div class="modal fade" id="modalFiltros" tabindex="-1" aria-labelledby="modalFiltrosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-gradient-info text-white border-0">
+        <h5 class="modal-title fw-bold" id="modalFiltrosLabel">
+          <i class="fas fa-filter me-2"></i>Filtros de Pesquisa
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <form method="get" class="row g-3">
+          <!-- Campo Pesquisa -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small text-secondary">Pesquisar</label>
+            <input type="text" name="pesquisa" class="form-control shadow-sm"
+              value="{{ pesquisa|default:'' }}" placeholder="Digite o nome ou código...">
+          </div>
+
+          <!-- Situação -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small text-secondary">Situação</label>
+            <select name="situacao" class="form-select shadow-sm">
+              <option value="">Todos</option>
+              {% for valor, label in Produto.SITUACAO_CHOICES %}
+                <option value="{{ valor }}" {% if valor == situacao %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Grupo -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small text-secondary">Grupo</label>
+            <select name="grupo" class="form-select shadow-sm">
+              <option value="">Todos</option>
+              {% for g in grupos %}
+                <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Fabricante -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small text-secondary">Fabricante</label>
+            <select name="fabricante" class="form-select shadow-sm">
+              <option value="">Todos</option>
+              {% for f in fabricantes %}
+                <option value="{{ f.id }}" {% if f.id|stringformat:"s" == fabricante %}selected{% endif %}>{{ f.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Data Última Compra -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small text-secondary">Data Última Compra</label>
+            <input type="date" name="data_ultima_compra" class="form-control shadow-sm"
+              value="{{ data_ultima_compra|default:'' }}">
+          </div>
+
+          <!-- Botão Pesquisar -->
+          <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-dark px-4 shadow-sm">
+              <i class="fas fa-search me-2"></i>Pesquisar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-info {
+    background: #0aa1c4;
+  }
+  .form-control, .form-select {
+    border-radius: 0.4rem;
+    border-color: #dee2e6;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+  }
+  .modal-body label {
+    font-size: 0.85rem;
+  }
+</style>
+
+
+    <!-- Modal Movimentações-->
+<div class="modal fade" id="movimentacoesModal" tabindex="-1" aria-labelledby="movimentacoesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="movimentacoesModalLabel">
+          <i class="fas fa-exchange-alt me-2"></i>Movimentações
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="d-grid gap-3">
+        <a href="#" class="btn btn-success btn-lg"
+            data-bs-target="#modalEntrada"
+            data-bs-toggle="modal"
+            data-bs-dismiss="modal">
+            <i class="fas fa-arrow-down me-2"></i>Entrada
+        </a>
+
+        <a href="#" class="btn btn-danger btn-lg"
+            data-bs-target="#modalSaida"
+            data-bs-toggle="modal"
+            data-bs-dismiss="modal">
+            <i class="fas fa-arrow-up me-2"></i>Saída
+        </a>
+          <a href="{% url 'produtos:relatorio_movimentacao' %}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-chart-line me-2"></i>Relatórios
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Entrada -->
+<div class="modal fade" id="modalEntrada" tabindex="-1" aria-labelledby="modalEntradaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEntradaLabel">Entrada de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:entrada_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoEntrada" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoEntrada" name="codigoEntrada" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeEntrada" class="form-label">Quantidade de Entrada</label>
+            <input type="number" class="form-control" id="quantidadeEntrada" name="quantidadeEntrada" required>
+          </div>
+          <div class="mb-3">
+            <label for="Observacao" class="form-label">Observações</label>
+            <textarea class="form-control" id="Observacao" name="Observacao" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Saída -->
+<div class="modal fade" id="modalSaida" tabindex="-1" aria-labelledby="modalSaidaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSaidaLabel">Saída de Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form method="post" action="{% url 'produtos:saida_produto' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="codigoSaida" class="form-label">Código do Produto</label>
+            <input type="text" class="form-control" id="codigoSaida" name="codigoSaida" required>
+          </div>
+          <div class="mb-3">
+            <label for="quantidadeSaida" class="form-label">Quantidade de Saída</label>
+            <input type="number" class="form-control" id="quantidadeSaida" name="quantidadeSaida" required>
+          </div>
+          <div class="mb-3">
+            <label for="Observacao" class="form-label">Observações</label>
+            <textarea class="form-control" id="Observacao" name="Observacao" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Lista de Produtos</h4> 
     </div>
 
     <div class="table-responsive">
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-
-            <form method="get" class="row g-2 align-items-end">
-                <div class="col-md-2">
-                    <input type="text" name="pesquisa" placeholder="Pesquisar" class="form-control"
-                        value="{{ pesquisa|default:'' }}">
-                </div>
-
-                <div class="col-md-2">
-                    <select name="situacao" class="form-select">
-                        <option value="">Situação</option>
-                        {% for valor, label in Produto.SITUACAO_CHOICES %}
-                            <option value="{{ valor }}" {% if valor == situacao %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <select name="grupo" class="form-select">
-                        <option value="">Grupo</option>
-                        {% for g in grupos %}
-                            <option value="{{ g.id }}" {% if g.id|stringformat:"s" == grupo %}selected{% endif %}>{{ g.nome }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <select name="fabricante" class="form-select">
-                        <option value="">Fabricante</option>
-                        {% for f in fabricantes %}
-                            <option value="{{ f.id }}" {% if f.id|stringformat:"s" == fabricante %}selected{% endif %}>{{ f.nome }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <input type="date" name="data_ultima_compra" class="form-control"
-                        value="{{ data_ultima_compra|default:'' }}">
-                </div>
-
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
-                        Pesquisar
-                    </button>
-                </div>
-            </form>
-
-            <div class="dropdown ms-auto">
-                <button class="btn btn-dark-custom dropdown-toggle d-flex align-items-center gap-2" type="button" id="clienteDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-box"></i> Produto
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="clienteDropdown">
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'produtos:cadastrar_produto' %}">
-                    <i class="fas fa-plus text-white"></i> Cadastrar Produto
-                    </a>
-                </li>
-                <li>
-                    <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadPlanilhaModal">
-                    <i class="bi bi-table text-white"></i> Importar de Planilha
-                    </button>
-                </li>
-                </ul>
-            </div>
-            
-        </div>
+        
 
         <div class="table-pagination-container">
             <table class="table table-hover custom-table">

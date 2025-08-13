@@ -76,6 +76,12 @@
 </style>
 
 <div class="container my-4">
+
+  <div class="d-flex align-items-center mb-2">
+    <a href="{% url 'produtos:listar_produtos' %}" class="text-decoration-none " style="margin-right: 10px;">
+      <i class="fas fa-arrow-left me-1"></i> Voltar
+    </a> 
+  </div>
   <h2 class="mb-3">Cadastrar Produto</h2>
   <form method="post" novalidate>
     {% csrf_token %}

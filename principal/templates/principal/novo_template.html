@@ -1,3 +1,8 @@
+{% extends 'principal/base.html' %}
+{% block title %}Gerenciar Clientes{% endblock %}
+
+{% block content %}
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
@@ -16,7 +21,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-clipboard-list icon-primary mb-3"></i>
-          <h3 class="mb-0">45</h3>
+          <h3 class="mb-0">OS</h3>
           <span>Ordens de Serviço</span>
         </div>
       </div>
@@ -24,11 +29,11 @@
   </div>
 
   <div class="col-md-5 col-lg-3 mb-4">
-    <a href="" class="card-link">
+    <a href="{% url 'produtos:listar_produtos' %}" class="card-link">
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-boxes-stacked icon-primary mb-3"></i>
-          <h3 class="mb-0">120</h3>
+          <h3 class="mb-0">Estoque</h3>
           <span>Estoque</span>
         </div>
       </div>
@@ -40,7 +45,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-user icon-primary mb-3"></i>
-          <h3 class="mb-0">8</h3>
+          <h3 class="mb-0">Clientes</h3>
           <span>Clientes</span>
         </div>
       </div>
@@ -52,12 +57,14 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-tools icon-primary mb-3"></i>
-          <h3 class="mb-0">32</h3>
+          <h3 class="mb-0">Técnicos</h3>
           <span>Técnicos</span>
         </div>
       </div>
     </a>
   </div>
+
+  
 </div>
 
 <!-- Segunda Linha -->
@@ -67,7 +74,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-hand-holding-dollar icon-primary mb-3"></i>
-          <h3 class="mb-0">45</h3>
+          <h3 class="mb-0">Financeiro</h3>
           <span>Financeiro</span>
         </div>
       </div>
@@ -79,7 +86,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-magnifying-glass-chart icon-primary mb-3"></i>
-          <h3 class="mb-0">120</h3>
+          <h3 class="mb-0">Auditoria</h3>
           <span>Auditoria</span>
         </div>
       </div>
@@ -91,7 +98,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-briefcase icon-primary mb-3"></i>
-          <h3 class="mb-0">8</h3>
+          <h3 class="mb-0">Serviços</h3>
           <span>Serviços</span>
         </div>
       </div>
@@ -103,7 +110,7 @@
       <div class="card custom-card shadow-sm text-center">
         <div class="card-body">
           <i class="fa-solid fa-gear icon-primary mb-3"></i>
-          <h3 class="mb-0">32</h3>
+          <h3 class="mb-0">Configurações</h3>
           <span>Configurações</span>
         </div>
       </div>
@@ -111,6 +118,20 @@
   </div>
 </div>
 
+<!-- Terceira Linha -->
+<div class="row justify-content-center">
+  <div class="col-md-5 col-lg-3 mb-4">
+      <a href="{% url 'usuarios' user.username %}" class="card-link">
+        <div class="card custom-card shadow-sm text-center">
+          <div class="card-body">
+            <i class="fa-solid fa-users icon-primary mb-3"></i>
+            <h3 class="mb-0">Usuários</h3>
+            <span>Usuarios</span>
+          </div>
+        </div>
+      </a>
+  </div>
+</div>
 
   </section>
 </div>
@@ -135,7 +156,7 @@
     
   }
   .custom-card h3 {
-    font-weight: 600;
+    font-weight: 400;
   }
   .custom-card span {
     font-size: 0.95rem;
@@ -150,3 +171,5 @@
     color: #007bff;
   }
 </style>
+
+{% endblock %}
