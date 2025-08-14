@@ -1,0 +1,105 @@
+{% extends 'principal/base.html' %}
+{% block title %}Gerenciar Clientes{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
+
+<div class="grey-bg container py-5">
+    <section id="painel-os">
+        <div class="text-center mb-5">
+            <h2 class="text-uppercase font-weight-bold">Painel Financeiro</h2>
+            <p class="text-muted">Visualize, gerencie e acompanhe suas finanças</p>
+        </div>
+
+        <!-- Primeira Linha -->
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-3 mb-4">
+                <a href="{% url 'home' %}" class="card-link">
+                <div class="card custom-card shadow-sm text-center">
+                    <div class="card-body">
+                    <i class="fa-solid fa-exchange-alt icon-primary mb-3"></i>
+                    <h3 class="mb-0">Movimentos</h3>
+                    <span>Movimentação</span>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-md-5 col-lg-3 mb-4">
+                <a href="{% url 'produtos:listar_produtos' %}" class="card-link">
+                <div class="card custom-card shadow-sm text-center">
+                    <div class="card-body">
+                    <i class="fa-solid fa-sliders-h icon-primary mb-3"></i>
+                    <h3 class="mb-0">Controle</h3>
+                    <span>Controle</span>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-md-5 col-lg-3 mb-4">
+                <a href="{% url 'clientes:listar_clientes' %}" class="card-link">
+                <div class="card custom-card shadow-sm text-center">
+                    <div class="card-body">
+                    <i class="fa-solid fa-cash-register icon-primary mb-3"></i>
+                    <h3 class="mb-0">Fluxo de Caixa</h3>
+                    <span>Fluxo de Caixa</span>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-md-5 col-lg-3 mb-4">
+                <a href="{% url 'clientes:listar_clientes' %}" class="card-link">
+                <div class="card custom-card shadow-sm text-center">
+                    <div class="card-body">
+                    <i class="fa-solid fa-address-book icon-primary mb-3"></i>
+                    <h3 class="mb-0">Cadastros</h3>
+                    <span>Cadastros</span>
+                    </div>
+                </div>
+                </a>
+            </div>
+        </div>
+  </section>
+</div>
+
+<style>
+  body {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .grey-bg {
+    background-color: white;
+  }
+  .custom-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    padding: 20px 0;
+    background-color: rgb(241, 241, 241);
+  }
+  .custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    
+  }
+  .custom-card h3 {
+    font-weight: 400;
+  }
+  .custom-card span {
+    font-size: 0.95rem;
+    color: black;
+  }
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .icon-primary {
+    font-size: 2.5rem;
+    color: #007bff;
+  }
+</style>
+{% endblock %}

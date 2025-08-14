@@ -1,0 +1,110 @@
+from django.db import models
+from clientes.models import Cliente
+
+
+ESTADOS = [
+        ('AC', 'Acre'),
+        ('AL', 'Alagoas'),
+        ('AP', 'Amapá'),
+        ('AM', 'Amazonas'),
+        ('BA', 'Bahia'),
+        ('CE', 'Ceará'),
+        ('DF', 'Distrito Federal'),
+        ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'),
+        ('MA', 'Maranhão'),
+        ('MT', 'Mato Grosso'),
+        ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'),
+        ('PA', 'Pará'),
+        ('PB', 'Paraíba'),
+        ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'),
+        ('PI', 'Piauí'),
+        ('RJ', 'Rio de Janeiro'),
+        ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'),
+        ('RO', 'Rondônia'),
+        ('RR', 'Roraima'),
+        ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'),
+        ('SE', 'Sergipe'),
+        ('TO', 'Tocantins'),
+    ]
+
+class Empresa(models.Model):
+    empresa = models.CharField(max_length=100)
+    nome = models.CharField(max_length=60)
+    cnpj = models.CharField(max_length=50) 
+    insc_municipal = models.CharField()
+    insc_estadual = models.CharField()
+    logradouro = models.CharField(max_length=100)
+    bairro = models.CharField(max_length=100)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
+    telefone = models.CharField(max_length=20)
+    cep = models.CharField(max_length=9)
+    email = models.CharField(max_length=60)
+    
+    def __str__(self):
+        return self.empresa
+
+
+# Create your models here.
+class ContasReceber(models.Model):
+    
+    F_PAG = [
+        ('cartao_credito', 'Cartão de Crédito'),
+        ('cartao_debito', 'Cartão de Débito'),
+        ('pix', 'PIX'),
+        ('boleto', 'Boleto'),
+
+    ]
+
+    #INTEGER
+    natureza = models.IntegerField()
+    cfop = models.IntegerField()
+
+    #FLOAT
+    valor_total = models.FloatField()
+    desconto = models.FloatField()
+    iss = models.FloatField()
+    valor_final = models.FloatField()
+    icms = models.FloatField()
+    vl_desconto = models.FloatField()
+    vl_iss = models.FloatField()
+    vl_icms = models.FloatField()
+    juros = models.FloatField()
+    vl_ipi= models.FloatField()
+    imp_ret_fonte = models.FloatField()
+    vl_duplicata = models.FloatField()
+
+    #CHAR
+    n_documento = models.CharField(max_length=60)
+    n_duplicata = models.CharField(max_length=60)
+    praca = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
+    serie = models.CharField(max_length=60)
+    forma_pgto = models.CharField(choices=F_PAG, blank=False, null=False)
+    historico = models.TextField()
+    cobrança = models.CharField(max_length=60)
+    n_bol_emp = models.CharField(max_length=60) 
+    vendedor_1 = models.CharField(max_length=60)
+    vendedor_2 = models.CharField(max_length=60)
+
+    #FOREINGKEY
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
+    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
+
+    #DATA
+    emissao = models.DateField()
+    vencimento = models.DateField()
+    data_programada = models.DateField()
+    
+    '''
+    fluxo_caixa e mov_estoque são opções para futuramente
+    fazer a baixa no estoque ou tirar do fluzo de caixa
+
+    '''
+
+    def __str__(self):
+        return self.n_documento

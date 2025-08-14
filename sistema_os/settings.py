@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'configuracoes', 
     'servicos',
     'despesas',
+    'financeiro',
     
 ]
 

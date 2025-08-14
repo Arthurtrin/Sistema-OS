@@ -18,6 +18,7 @@ urlpatterns += i18n_patterns(
     path('ordem_servico/', include('ordem_servico.urls')),
     path('configuracoes/', include('configuracoes.urls')),
     path('servicos/', include('servicos.urls')),
+    path('financeiro/', include('financeiro.urls')),
 )
 
 # Adicione isso no final do arquivo, fora do bloco do i18n_patterns
