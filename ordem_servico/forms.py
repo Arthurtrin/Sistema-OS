@@ -1,7 +1,6 @@
 from django import forms
 from .models import OrdemServico, Segmento, Status, Unidade, ProdutoOrdemServico, ServicoOrdemServico
 
-
 class ServicoOrdemServicoForm(forms.ModelForm):
     class Meta:
         model = ServicoOrdemServico

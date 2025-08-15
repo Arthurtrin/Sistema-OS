@@ -49,17 +49,41 @@ class Empresa(models.Model):
     def __str__(self):
         return self.empresa
 
+class FormaPagamento(models.Model):
+    forma = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.forma
+
+
+class Fornecedor(models.Model):
+    STATUS = [
+    ('ativo', 'Ativo'),
+    ('inativo', 'Inativo'),
+    ]
+    nome = models.CharField(max_length=60)
+    razao_social = models.CharField(max_length=100)
+    insc_municipal = models.CharField()
+    insc_estadual = models.CharField()
+    cnpj_cpf = models.CharField(max_length=50)
+    rg = models.CharField(max_length=50)
+    ativo =  models.CharField(max_length=7, choices=STATUS, default='ativo', blank=False, null=False)
+    email = models.CharField(max_length=60)
+    logradouro = models.CharField(max_length=100)
+    bairro = models.CharField(max_length=100)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
+    cep = models.CharField(max_length=9)
+    telefone = models.CharField(max_length=20)
+
+    forma_pgto = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
+    observacao = models.TextField()
+
+    def __str__(self):
+        return self.razao_social
 
 # Create your models here.
 class ContasReceber(models.Model):
-    
-    F_PAG = [
-        ('cartao_credito', 'Cartão de Crédito'),
-        ('cartao_debito', 'Cartão de Débito'),
-        ('pix', 'PIX'),
-        ('boleto', 'Boleto'),
-
-    ]
 
     #INTEGER
     natureza = models.IntegerField()
@@ -84,7 +108,7 @@ class ContasReceber(models.Model):
     n_duplicata = models.CharField(max_length=60)
     praca = models.CharField(max_length=2, choices=ESTADOS, default='RJ', blank=False, null=False)
     serie = models.CharField(max_length=60)
-    forma_pgto = models.CharField(choices=F_PAG, blank=False, null=False)
+    
     historico = models.TextField()
     cobrança = models.CharField(max_length=60)
     n_bol_emp = models.CharField(max_length=60) 
@@ -94,7 +118,8 @@ class ContasReceber(models.Model):
     #FOREINGKEY
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
-
+    forma_pgto = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
+    
     #DATA
     emissao = models.DateField()
     vencimento = models.DateField()
