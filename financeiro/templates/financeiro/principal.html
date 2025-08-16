@@ -69,8 +69,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                         </div>
                         <div class="modal-body">
-                            <a href="" class="btn btn-outline-success d-block mb-2">Receitas</a>
-                            <a href="" class="btn btn-outline-danger d-block">Despesas</a>
+                            <a href="" class="btn btn-outline-success d-block mb-2">Receitas - Contas a Receber</a>
+                            <a href="" class="btn btn-outline-danger d-block">Despesas - Contas a Receber</a>
                         </div>
                     </div>
                 </div>
@@ -123,10 +123,10 @@
                         </div>
                         <div class="modal-body">
                             <a href="" class="btn btn-outline-primary d-block mb-2">Plano de Contas</a>
-                            <a href="{% url 'financeiro:cadastrar_empresa' %}" class="btn btn-outline-primary d-block mb-2">Empresas</a>
-                            <a href="" class="btn btn-outline-primary d-block mb-2">Fornecedor</a>
+                            <a href="{% url 'financeiro:empresas' %}" class="btn btn-outline-primary d-block mb-2">Empresas</a>
+                            <a href="{% url 'financeiro:fornecedores' %}" class="btn btn-outline-primary d-block mb-2">Fornecedores</a>
                             <a href="" class="btn btn-outline-primary d-block mb-2">Locais de Cobrança</a>
-                            <a href="{% url 'financeiro:forma_pg' %}" class="btn btn-outline-primary d-block">Formas de Pagamento</a>
+                            <a href="{% url 'financeiro:cadastrar_forma_pagamento' %}" class="btn btn-outline-primary d-block">Formas de Pagamento</a>
                         </div>
                     </div>
                 </div>

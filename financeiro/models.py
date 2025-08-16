@@ -1,7 +1,6 @@
 from django.db import models
 from clientes.models import Cliente
 
-
 ESTADOS = [
         ('AC', 'Acre'),
         ('AL', 'Alagoas'),
@@ -35,9 +34,9 @@ ESTADOS = [
 class Empresa(models.Model):
     empresa = models.CharField(max_length=100)
     nome = models.CharField(max_length=60)
-    cnpj = models.CharField(max_length=50) 
-    insc_municipal = models.CharField()
-    insc_estadual = models.CharField()
+    cnpj = models.CharField(max_length=18) 
+    insc_municipal = models.CharField(max_length=10)
+    insc_estadual = models.CharField(max_length=10)
     logradouro = models.CharField(max_length=100)
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
@@ -63,8 +62,8 @@ class Fornecedor(models.Model):
     ]
     nome = models.CharField(max_length=60)
     razao_social = models.CharField(max_length=100)
-    insc_municipal = models.CharField()
-    insc_estadual = models.CharField()
+    insc_municipal = models.CharField(max_length=50)
+    insc_estadual = models.CharField(max_length=50)
     cnpj_cpf = models.CharField(max_length=50)
     rg = models.CharField(max_length=50)
     ativo =  models.CharField(max_length=7, choices=STATUS, default='ativo', blank=False, null=False)
@@ -99,7 +98,7 @@ class ContasReceber(models.Model):
     vl_iss = models.FloatField()
     vl_icms = models.FloatField()
     juros = models.FloatField()
-    vl_ipi= models.FloatField()
+    vl_ipi = models.FloatField()
     imp_ret_fonte = models.FloatField()
     vl_duplicata = models.FloatField()
 
@@ -110,7 +109,7 @@ class ContasReceber(models.Model):
     serie = models.CharField(max_length=60)
     
     historico = models.TextField()
-    cobrança = models.CharField(max_length=60)
+    cobranca = models.CharField(max_length=60)
     n_bol_emp = models.CharField(max_length=60) 
     vendedor_1 = models.CharField(max_length=60)
     vendedor_2 = models.CharField(max_length=60)

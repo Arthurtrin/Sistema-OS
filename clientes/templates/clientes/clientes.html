@@ -146,16 +146,8 @@
   <div class="container my-4">
  
     <h2 class="mb-4">Clientes</h2>
-    <div class="row g-3 mb-5">
-      <div class="col-12 col-sm-6 col-md-3">
-        <a href="{% url 'clientes:listar_clientes' %}" class="card card-link {% if active_tab == 'listar_clientes' %}active{% endif %}">
-          <div class="card-body text-center">
-            <i class="fas fa-eye fa-2x text-primary mb-2"></i>
-            
-            <h6 class="mb-0">Ver Clientes</h6>
-          </div>
-        </a>
-      </div>
+    <div class="row g-3 mb-5 justify-content-center">
+      
       <div class="col-12 col-sm-6 col-md-3">
         <a href="{% url 'clientes:cadastrar_clientes' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
           <div class="card-body text-center">
@@ -167,12 +159,12 @@
       </div>
       
       <div class="col-12 col-sm-6 col-md-3">
-        <a href="#" class="card card-link {% if active_tab == 'filtros' %}active{% endif %}">
-          <div class="card-body text-center">
-            <i class="fas fa-filter fa-2x text-info mb-2"></i>
-            <h6 class="mb-0">Filtros</h6>
-          </div>
-        </a>
+            <div class="card card-link" data-bs-toggle="modal" data-bs-target="#modalFiltros" style="cursor: pointer;">
+                <div class="card-body text-center">
+                <i class="fas fa-filter fa-2x text-info mb-2"></i>
+                <h6 class="mb-0">Filtros</h6>
+                </div>
+            </div>
       </div>
 
       <div class="col-12 col-sm-6 col-md-3">
@@ -185,7 +177,51 @@
       </div>
     </div>
 
-  
+        <!-- Modal Filtros -->
+<div class="modal fade" id="modalFiltros" tabindex="-1" aria-labelledby="modalFiltrosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      <div class="modal-header bg-gradient-info text-white border-0">
+        <h5 class="modal-title fw-bold" id="modalFiltrosLabel">
+          <i class="fas fa-filter me-2"></i>Filtros de Pesquisa
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <form method="get" class="d-flex align-items-center gap-2">
+                <input type="text" name="pesquisa" placeholder="Pesquisar cliente" class="form-control w-auto"
+                    value="{{ pesquisa|default:'' }}">
+                <input type="date" name="data_inicio" class="form-control w-auto" value="{{ data_inicio|default:'' }}">
+                à
+                <input type="date" name="data_fim" class="form-control w-auto" value="{{ data_fim|default:'' }}">
+                <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+                    Pesquisar
+                </button>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-info {
+    background: #0aa1c4;
+  }
+  .form-control, .form-select {
+    border-radius: 0.4rem;
+    border-color: #dee2e6;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+  }
+  .modal-body label {
+    font-size: 0.85rem;
+  }
+</style>
+
+
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0">Lista de Clientes</h4> 
     </div>
@@ -208,7 +244,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cliente in page_obj %}
+                    {% for cliente in clientes %}
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalCliente{{ cliente.id }}"
                         style="cursor: pointer;">
@@ -254,46 +290,7 @@
                 </tbody>
             </table>
 
-            <!-- Paginação -->
-            <nav aria-label="Navegação de página">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if num == page_obj.number %}
-                            <li class="page-item active">
-                                <span class="page-link">{{ num }}</span>
-                            </li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
+            
         </div>
     </div>
 </div>

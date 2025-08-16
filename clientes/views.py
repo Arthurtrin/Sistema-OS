@@ -63,16 +63,12 @@ def listar_clientes(request):
     if data_fim:
         clientes = clientes.filter(data_inclusao__lte=data_fim)
 
-    paginator = Paginator(clientes, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     qtd_clientes = Cliente.objects.count()
     qtd_segmentos = Segmento.objects.count()
     qtd_atividades = Atividade.objects.count()
     qtd_estados = Cliente.objects.values('estado_real').distinct().count()
     return render(request, 'clientes/clientes.html', {
-        'page_obj': page_obj,
+        'clientes': clientes,
         'pesquisa': pesquisa,
         'data_inicio': data_inicio,
         'data_fim': data_fim,
