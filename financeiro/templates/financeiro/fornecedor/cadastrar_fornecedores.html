@@ -135,7 +135,7 @@
                     {% endif %}
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome:</label>
                     {{ form.nome }}
                     {% if form.nome.errors %}
@@ -144,8 +144,11 @@
                     </div>
                     {% endif %}
                   </div>
-                 
-                  <div class="col-md-2">
+
+                </div>
+
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
                     <label for="{{ form.cnpj_cpf.id_for_label }}" class="form-label-professional">CNPJ/CPF:</label>
                     {{ form.cnpj_cpf }}
                     {% if form.cnpj_cpf.errors %}
@@ -154,10 +157,7 @@
                     </div>
                     {% endif %}
                   </div>
-                </div>
-
-                <div class="row g-2" style="margin-top: 5px;">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="{{ form.rg.id_for_label }}" class="form-label-professional">RG:</label>
                         {{ form.rg }}
                         {% if form.rg.errors %}
@@ -166,7 +166,7 @@
                         </div>
                         {% endif %}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="{{ form.ativo.id_for_label }}" class="form-label-professional">Atividade:</label>
                         {{ form.ativo }}
                         {% if form.ativo.errors %}
@@ -175,7 +175,7 @@
                         </div>
                         {% endif %}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="{{ form.forma_pgto.id_for_label }}" class="form-label-professional">Forma de Pagamento:</label>
                         {{ form.forma_pgto }}
                         {% if form.forma_pgto.errors %}
@@ -272,7 +272,103 @@
                         </div>
                         {% endif %}
                     </div>
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
+                        <label for="{{ form.conta_corrente.id_for_label }}" class="form-label-professional">Conta Corrente:</label>
+                        {{ form.conta_corrente }}
+                        {% if form.conta_corrente.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.conta_corrente.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.agencia.id_for_label }}" class="form-label-professional">Agência:</label>
+                        {{ form.agencia }}
+                        {% if form.agencia.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.agencia.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.n_banco.id_for_label }}" class="form-label-professional">Nº Banco:</label>
+                        {{ form.n_banco }}
+                        {% if form.n_banco.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.n_banco.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.prazo_entrega.id_for_label }}" class="form-label-professional">Prazo de Entrega (dias):</label>
+                        {{ form.prazo_entrega }}
+                        {% if form.prazo_entrega.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.prazo_entrega.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.margem_lucro.id_for_label }}" class="form-label-professional">Margem de Lucro (vendas):</label>
+                        {{ form.margem_lucro }}
+                        {% if form.margem_lucro.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.margem_lucro.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel1.id_for_label }}" class="form-label-professional">Contato 1:</label>
+                        {{ form.contato_tel1 }}
+                        {% if form.contato_tel1.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel1.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel2.id_for_label }}" class="form-label-professional">Contato 2:</label>
+                        {{ form.contato_tel2 }}
+                        {% if form.contato_tel2.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel2.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel3.id_for_label }}" class="form-label-professional">Contato 3:</label>
+                        {{ form.contato_tel3 }}
+                        {% if form.contato_tel3.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel3.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel4.id_for_label }}" class="form-label-professional">Contato 4:</label>
+                        {{ form.contato_tel4 }}
+                        {% if form.contato_tel4.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel4.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
 
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-12">
+                        <label for="{{ form.observacao.id_for_label }}" class="form-label-professional">Observação:</label>
+                        {{ form.observacao }}
+                        {% if form.observacao.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.observacao.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
                 </div>
             </div>
         </div>     

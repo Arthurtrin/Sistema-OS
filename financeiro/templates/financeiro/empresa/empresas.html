@@ -1,5 +1,5 @@
 {% extends 'principal/base.html' %}
-{% block title %}Gerenciar Fornecedores{% endblock %}
+{% block title %}Gerenciar Empresas{% endblock %}
 
 {% block content %}
 
@@ -146,11 +146,16 @@
 </style>
 
 <div class="container my-4">
-    <h2 class="mb-4">Fornecedores</h2>
+  <div class="d-flex align-items-center mb-2">
+      <a href="{% url 'financeiro:principal' %}" class="text-decoration-none " style="margin-right: 10px;">
+        <i class="fas fa-arrow-left me-1"></i> Voltar
+      </a> 
+    </div>
+    <h2 class="mb-4">Empresas</h2>
     <div class="row g-3 mb-5 justify-content-center">
       
         <div class="col-12 col-sm-6 col-md-3">
-            <a href="{% url 'financeiro:cadastrar_fornecedor' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
+            <a href="{% url 'financeiro:cadastrar_empresa' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
             <div class="card-body text-center">
                 <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
                 <h6 class="mb-0">Cadastrar</h6>
@@ -163,7 +168,7 @@
             <div class="card card-link" data-bs-toggle="modal" data-bs-target="#modalFiltros" style="cursor: pointer;">
             <div class="card-body text-center">
                 <i class="fas fa-filter fa-2x text-info mb-2"></i>
-                <h6 class="mb-0">Filtros</h6>
+                <h6 class="mb-0">Relatórios</h6>
             </div>
             </div>
         </div>
@@ -242,11 +247,12 @@
 </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0">Lista de Fornecedores</h4> 
+      <h4 class="mb-0">Lista de Empresas</h4> 
     </div>
 
     <div class="table-responsive">
-    
+        
+
         <div class="table-pagination-container">
             <table class="table table-hover custom-table">
                 <thead class="custom-thead">
@@ -259,9 +265,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in fornecedores %}
+                    {% for item in empresas %}
                     <tr data-bs-toggle="modal"
-                        data-bs-target="#modalFornecedor{{ item.id }}"
+                        data-bs-target="#modalEmpresa{{ item.id }}"
                         style="cursor: pointer;">
                         <td>{{ item.id }}</td>
                         <td>{{ item.nome }}</td>
@@ -272,7 +278,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6">Nenhum fornecedor encontrado.</td>
+                        <td colspan="6">Nenhuma empresa encontrada.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -284,8 +290,8 @@
 </div>
 
 <!-- Modais -->
-{% for item in fornecedores %}
-<div class="modal fade" id="modalFornecedor{{ item.id }}" tabindex="-1" aria-labelledby="modalLabel{{ item.id }}" aria-hidden="true">
+{% for item in empresas %}
+<div class="modal fade" id="modalEmpresa{{ item.id }}" tabindex="-1" aria-labelledby="modalLabel{{ item.id }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -299,10 +305,10 @@
                 <a href="" class="btn btn-success">
                     <i class="fas fa-eye"></i> Ver Empresa
                 </a>
-                <a href="" class="btn btn-primary">
+                <a href="{% url 'financeiro:editar_empresa' item.id %}" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Editar
                 </a>
-                <a href="" class="btn btn-danger">
+                <a href="{% url 'financeiro:excluir_empresa' item.id %}" class="btn btn-danger">
                     <i class="fas fa-trash-alt"></i> Excluir
                 </a>
             </div>

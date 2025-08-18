@@ -1,15 +1,16 @@
 from django import forms
 from .models import Empresa, ContasReceber, Fornecedor
 
-class EmpresaForm(forms.ModelForm):
+class ContasReceberForm(forms.ModelForm):
     class Meta:
-        model = Empresa
+        model = ContasReceber
         fields = '__all__'
-
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
+            
             # Se for checkbox
             if isinstance(field.widget, forms.CheckboxInput):
                 field.widget.attrs.update({'class': 'form-check-input'})
@@ -24,7 +25,30 @@ class EmpresaForm(forms.ModelForm):
                 current_classes = field.widget.attrs.get('class', '')
                 field.widget.attrs.update({'class': f'{current_classes} form-select'})
 
+class EmpresaForm(forms.ModelForm):
+    class Meta:
+        model = Empresa
+        fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        for field_name, field in self.fields.items():
+            
+            # Se for checkbox
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check-input'})
+            else:
+                css_class = 'form-control'
+                if self.errors.get(field_name):
+                    css_class += ' is-invalid'
+                field.widget.attrs.update({'class': css_class})
+
+            # Se for Select, adiciona também a classe form-select sem remover as outras
+            if isinstance(field.widget, forms.Select):
+                current_classes = field.widget.attrs.get('class', '')
+                field.widget.attrs.update({'class': f'{current_classes} form-select'})
+                
 class FornecedorForm(forms.ModelForm):
     class Meta:
         model = Fornecedor
@@ -47,3 +71,9 @@ class FornecedorForm(forms.ModelForm):
             if isinstance(field.widget, forms.Select):
                 current_classes = field.widget.attrs.get('class', '')
                 field.widget.attrs.update({'class': f'{current_classes} form-select'})
+        if 'observacao' in self.fields:
+            self.fields['observacao'].widget.attrs.update({
+                'rows': 5,   # controla altura do textarea
+                
+            })
+        self.fields['forma_pgto'].empty_label = 'Selecione a forma de pagamento'

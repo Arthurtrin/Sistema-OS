@@ -1,0 +1,105 @@
+{% extends 'principal/base.html' %}
+{% block title %}Locais de Cobrança{% endblock %}
+
+{% block content %}
+
+<style>
+  .btn-dark-custom {
+    background-color: #2c2f33;
+    border-color: #23272a;
+    color: #fff;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .btn-dark-custom:hover {
+    background-color: #23272a;
+    border-color: #1c1e21;
+    color: #fff;
+  }
+</style>
+
+<div class="container my-4">
+  <div class="d-flex align-items-center mb-2">
+    <a href="{% url 'financeiro:principal' %}" class="text-decoration-none" style="margin-right: 10px;">
+      <i class="fas fa-arrow-left me-1"></i> Voltar
+    </a> 
+  </div>
+
+  <h2 class="mb-3">Definir Locais de Cobrança</h2>
+
+  <ul class="list-group mb-4" id="lista-locais-cobranca">
+    {% for local in locais %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ local.nome }}
+        <div>
+          <button type="button"
+                  class="btn btn-sm btn-primary me-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editarModal"
+                  data-id="{{ local.id }}"
+                  data-nome="{{ local.nome }}">
+            Editar
+          </button>
+          <a href="{% url 'financeiro:excluir_locais_cobranca' local.id %}" class="btn btn-sm btn-danger">Excluir</a>
+        </div>
+      </li>
+    {% empty %}
+      <li class="list-group-item">Nenhum Local de Cobrança cadastrado.</li>
+    {% endfor %}
+  </ul>
+
+  <form method="post" action="{% url 'financeiro:locais_cobranca' %}">
+    {% csrf_token %}
+    <div class="input-group">
+      <input type="text" name="nome" class="form-control" placeholder="Novo Local de Cobrança" required>
+      <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" id="editarForm">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarModalLabel">Editar Local de Cobrança</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editar-id">
+          <div class="mb-3">
+            <label for="editar-nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="editar-nome" name="nome" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const editarModal = document.getElementById('editarModal');
+  editarModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const id = button.getAttribute('data-id');
+    const nome = button.getAttribute('data-nome');
+
+    const inputId = editarModal.querySelector('#editar-id');
+    const inputNome = editarModal.querySelector('#editar-nome');
+    const form = editarModal.querySelector('#editarForm');
+
+    inputId.value = id;
+    inputNome.value = nome;
+
+    form.action = "{% url 'financeiro:editar_locais_cobranca' 0 %}".replace('0', id);
+  });
+</script>
+
+{% endblock %}

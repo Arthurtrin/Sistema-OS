@@ -54,6 +54,12 @@ class FormaPagamento(models.Model):
     def __str__(self):
         return self.forma
 
+class LocalCobranca(models.Model):
+    nome = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.nome
+
 
 class Fornecedor(models.Model):
     STATUS = [
@@ -75,11 +81,25 @@ class Fornecedor(models.Model):
     cep = models.CharField(max_length=9)
     telefone = models.CharField(max_length=20)
 
+    conta_corrente = models.IntegerField(blank=True, null=True)
+    agencia = models.IntegerField(blank=True, null=True)
+    n_banco = models.IntegerField(blank=True, null=True)
+    prazo_entrega = models.IntegerField(blank=True, null=True)
+    margem_lucro = models.IntegerField(blank=True, null=True)
+
+    contato_tel1 = models.CharField(max_length=20, blank=True, null=True)
+    contato_tel2 = models.CharField(max_length=20, blank=True, null=True)
+    contato_tel3 = models.CharField(max_length=20, blank=True, null=True)
+    contato_tel4 = models.CharField(max_length=20, blank=True, null=True)
+
     forma_pgto = models.ForeignKey(FormaPagamento, on_delete=models.PROTECT)
     observacao = models.TextField()
 
     def __str__(self):
         return self.razao_social
+
+
+
 
 # Create your models here.
 class ContasReceber(models.Model):
@@ -126,7 +146,7 @@ class ContasReceber(models.Model):
     
     '''
     fluxo_caixa e mov_estoque são opções para futuramente
-    fazer a baixa no estoque ou tirar do fluzo de caixa
+    fazer a baixa no estoque ou tirar do fluxo de caixa
 
     '''
 

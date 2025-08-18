@@ -1,0 +1,439 @@
+{% extends 'principal/base.html' %}
+{% block title %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header {% if message.tags == 'error' %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+            <h5 class="modal-title" id="messageModalLabel">
+              {% if message.tags == 'error' %}Erro{% else %}Sucesso{% endif %}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+      });
+    </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+  
+   .form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+  }
+  .form-label {
+    font-weight: 500;
+    font-size: 0.825rem;
+  }
+  .form-control, .form-select {
+    font-size: 0.825rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+  .btn-lg {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  .card-collapse {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  .card-collapse .card-header {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+  }
+  .card-collapse .card-body {
+    padding: 1rem;
+  }
+
+  .nav-tabs .nav-link {
+    color: black;
+    font-weight: 500;
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: #343a40;
+    border-color: #dee2e6 #dee2e6 #fff;
+    color: white;
+  }
+
+  #formTabs {
+  overflow-x: unset !important;
+  white-space: normal !important;
+  flex-wrap: wrap !important;
+}
+.form-despesa {
+  display: none;
+  margin-top: 20px;
+}
+</style>
+
+<div class="container my-4">
+  <div class="d-flex align-items-center mb-2">
+    <a href="{% url 'financeiro:fornecedores' %}" class="text-decoration-none " style="margin-right: 10px;">
+      <i class="fas fa-arrow-left me-1"></i> Voltar
+    </a> 
+  </div>
+
+  <h2 class="mb-3 me-3">Cadastrar Fornecedor</h2>
+  <form method="post"  novalidate>
+    {% csrf_token %}
+    <div class="border rounded" style="padding: 10px; padding-top: 0px; background-color:#f8f8f8; border-radius: 10px;">
+        <!-- Nav Tabs -->
+        <ul class="nav nav-tabs  " id="formTabs" role="tablist" style="overflow-x: auto; white-space: nowrap; ">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active d-flex align-items-center gap-2 px-4 py-2 rounded-top" id="identificacao-tab" data-bs-toggle="tab" data-bs-target="#identificacao" type="button" role="tab">
+              <i class="fas fa-id-card"></i> Identificação
+            </button>
+          </li>
+          
+        </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content  p-3" id="formTabsContent" style="background-color: #f8f8f8;">
+
+        <!-- Identificação -->
+        <div class="tab-pane fade show active" id="identificacao" role="tabpanel">
+          <div class="card-body">
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    <label for="{{ form.razao_social.id_for_label }}" class="form-label-professional">Razão Social:</label>
+                    {{ form.razao_social }}
+                    {% if form.razao_social.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.razao_social.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label for="{{ form.nome.id_for_label }}" class="form-label-professional">Nome:</label>
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.nome.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+
+                </div>
+
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
+                    <label for="{{ form.cnpj_cpf.id_for_label }}" class="form-label-professional">CNPJ/CPF:</label>
+                    {{ form.cnpj_cpf }}
+                    {% if form.cnpj_cpf.errors %}
+                    <div class="invalid-feedback d-block">
+                      {{ form.cnpj_cpf.errors|striptags }}
+                    </div>
+                    {% endif %}
+                  </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.rg.id_for_label }}" class="form-label-professional">RG:</label>
+                        {{ form.rg }}
+                        {% if form.rg.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.rg.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.ativo.id_for_label }}" class="form-label-professional">Atividade:</label>
+                        {{ form.ativo }}
+                        {% if form.ativo.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.ativo.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.forma_pgto.id_for_label }}" class="form-label-professional">Forma de Pagamento:</label>
+                        {{ form.forma_pgto }}
+                        {% if form.forma_pgto.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.forma_pgto.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div class="row g-2" style="margin-top: 5px;">
+                    <div class="col-md-2">
+                        <label for="{{ form.insc_municipal.id_for_label }}" class="form-label-professional">Inscrição Municipal:</label>
+                        {{ form.insc_municipal }}
+                        {% if form.insc_municipal.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.insc_municipal.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.insc_estadual.id_for_label }}" class="form-label-professional">Inscrição Estadual:</label>
+                        {{ form.insc_estadual }}
+                        {% if form.insc_estadual.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.insc_estadual.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ form.email.id_for_label }}" class="form-label-professional">E-mail:</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.email.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ form.telefone.id_for_label }}" class="form-label-professional">Telefone:</label>
+                        {{ form.telefone }}
+                        {% if form.telefone.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.telefone.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                    <div class="col-md-4">
+                        <label for="{{ form.logradouro.id_for_label }}" class="form-label-professional">Logradouro:</label>
+                        {{ form.logradouro }}
+                        {% if form.logradouro.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.logradouro.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.bairro.id_for_label }}" class="form-label-professional">Bairro:</label>
+                        {{ form.bairro }}
+                        {% if form.bairro.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.bairro.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.cidade.id_for_label }}" class="form-label-professional">Cidade:</label>
+                        {{ form.cidade }}
+                        {% if form.cidade.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.cidade.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label for="{{ form.estado.id_for_label }}" class="form-label-professional">Estado:</label>
+                        {{ form.estado }}
+                        {% if form.estado.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.estado.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.cep.id_for_label }}" class="form-label-professional">CEP:</label>
+                        {{ form.cep }}
+                        {% if form.cep.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.cep.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
+                        <label for="{{ form.conta_corrente.id_for_label }}" class="form-label-professional">Conta Corrente:</label>
+                        {{ form.conta_corrente }}
+                        {% if form.conta_corrente.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.conta_corrente.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.agencia.id_for_label }}" class="form-label-professional">Agência:</label>
+                        {{ form.agencia }}
+                        {% if form.agencia.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.agencia.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.n_banco.id_for_label }}" class="form-label-professional">Nº Banco:</label>
+                        {{ form.n_banco }}
+                        {% if form.n_banco.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.n_banco.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-2">
+                        <label for="{{ form.prazo_entrega.id_for_label }}" class="form-label-professional">Prazo de Entrega (dias):</label>
+                        {{ form.prazo_entrega }}
+                        {% if form.prazo_entrega.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.prazo_entrega.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.margem_lucro.id_for_label }}" class="form-label-professional">Margem de Lucro (vendas):</label>
+                        {{ form.margem_lucro }}
+                        {% if form.margem_lucro.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.margem_lucro.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel1.id_for_label }}" class="form-label-professional">Contato 1:</label>
+                        {{ form.contato_tel1 }}
+                        {% if form.contato_tel1.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel1.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel2.id_for_label }}" class="form-label-professional">Contato 2:</label>
+                        {{ form.contato_tel2 }}
+                        {% if form.contato_tel2.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel2.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel3.id_for_label }}" class="form-label-professional">Contato 3:</label>
+                        {{ form.contato_tel3 }}
+                        {% if form.contato_tel3.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel3.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                  <div class="col-md-3">
+                        <label for="{{ form.contato_tel4.id_for_label }}" class="form-label-professional">Contato 4:</label>
+                        {{ form.contato_tel4 }}
+                        {% if form.contato_tel4.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.contato_tel4.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+
+                </div>
+                <div class="row g-2" style="margin-top: 5px;">
+                  <div class="col-md-12">
+                        <label for="{{ form.observacao.id_for_label }}" class="form-label-professional">Observação:</label>
+                        {{ form.observacao }}
+                        {% if form.observacao.errors %}
+                        <div class="invalid-feedback d-block">
+                        {{ form.observacao.errors|striptags }}
+                        </div>
+                        {% endif %}
+                  </div>
+                </div>
+            </div>
+        </div>     
+      </div>
+
+    </div>
+    <div class="text-end mt-3">
+      <button type="submit" class="btn btn-dark-custom btn-sm w-auto">
+        <i class="fas fa-save me-2"></i>Salvar Empresa
+      </button>
+    </div>
+  </form>
+
+</div>
+
+<!-- Máscaras e outras funcionalidades fica aqui (sem alterações) -->
+<script>
+    // Máscara para CNPJ
+    const cnpjCpfInput = document.getElementById("{{ form.cnpj.id_for_label }}");
+    if (cnpjCpfInput) {
+        cnpjCpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                        .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                        .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                        .replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    // Máscara para cep_real
+    const cepRealInput = document.getElementById("{{ form.cep.id_for_label }}");
+    if (cepRealInput) {
+        cepRealInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+
+    // Função de máscara para telefone/celular
+    function maskPhone(input) {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            e.target.value = value;
+        });
+    }
+
+    const telefone = document.getElementById("{{ form.telefone.id_for_label }}");
+    
+    [telefone].forEach(function(input) {
+        if (input) maskPhone(input);
+    });
+
+</script>
+
+{% endblock %}
