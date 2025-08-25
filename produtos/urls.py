@@ -22,5 +22,6 @@ urlpatterns = [
     path('produtos/grupo/cadastrar/', views.cadastrar_grupo, name='cadastrar_grupo'),
     path('produtos/grupo/editar/<int:grupo_id>', views.editar_grupo, name='editar_grupo'),
     path('produtos/grupo/excluir/<int:grupo_id>', views.excluir_grupo, name='excluir_grupo'),
+    path('lista-de-produtos', views.lista_de_produtos, name='lista_de_produtos'),
     
 ]

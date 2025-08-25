@@ -393,14 +393,21 @@
                   <div class="row g-2">
                     <div class="col-md-6">
                       <label>Produto:</label>
-                      <select name="form-0-produto" class="form-select produto-select">
-                        <option value="">Selecione o Produto</option>
-                        {% for produto in produtos %}
-                          <option value="{{ produto.id }}" data-preco="{{ produto.preco }}">
-                            {{ produto.nome }}
-                          </option>
-                        {% endfor %}
-                      </select>
+                      <div class="input-group">
+                        <select name="form-0-produto" class="form-select produto-select">
+                          <option value="">Selecione o Produto</option>
+                          {% for produto in produtos %}
+                            <option value="{{ produto.id }}" data-preco="{{ produto.preco }}">
+                              {{ produto.nome }}
+                            </option>
+                          {% endfor %}
+                          <option value="cadastrar-ser">➕ Cadastrar novo Produto</option>
+                        </select>
+                        <!-- Botão pequeno para recarregar apenas os produtos -->
+                        <button type="button" id="btn-recarregar-produtos" class="btn btn-outline-secondary btn-sm" title="Recarregar serviços">
+                          <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                      </div>
                     </div>
                     <div class="col-md-2">
                       <label>Quantidade:</label>
@@ -416,6 +423,74 @@
                   </div>
                 </div>
               </div>
+
+<script>
+  async function atualizarProdutos() {
+    const btn = document.getElementById("btn-recarregar-produtos");
+    const btnHtml = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+    try {
+      const resp = await fetch("{% url 'produtos:lista_de_produtos' %}");
+      const data = await resp.json();
+
+      // pega todos os selects de produto (inclusive os ocultos __prefix__)
+      document.querySelectorAll(".produto-select").forEach(select => {
+        const antigoSelecionado = select.value;
+
+        // limpa e repopula
+        select.innerHTML = "";
+
+        // opção inicial
+        const optionInicial = document.createElement("option");
+        optionInicial.value = "";
+        optionInicial.textContent = "Selecione o Produto";
+        select.appendChild(optionInicial);
+
+        // opções vindas do banco
+        data.forEach(produto => {
+          const option = document.createElement("option");
+          option.value = produto.id;
+          option.textContent = produto.nome;
+          select.appendChild(option);
+        });
+
+        // opção cadastrar
+        const optionCadastrar = document.createElement("option");
+        optionCadastrar.value = "cadastrar-prod";
+        optionCadastrar.textContent = "➕ Cadastrar novo Produto";
+        select.appendChild(optionCadastrar);
+
+        // tenta manter seleção anterior (se ainda existir)
+        const existeAnterior = Array.from(select.options).some(o => o.value == antigoSelecionado);
+        if (existeAnterior) {
+          select.value = antigoSelecionado;
+        }
+      });
+
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível atualizar a lista de produtos agora.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = btnHtml;
+    }
+  }
+
+  // Botão recarrega todos os selects de produto
+  document.getElementById("btn-recarregar-produtos")
+    .addEventListener("click", atualizarProdutos);
+
+  // Delegação: qualquer select de produto que mude para "cadastrar-prod"
+  document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("produto-select") && e.target.value === "cadastrar-prod") {
+      window.open("{% url 'produtos:cadastrar_produto' %}", "_blank");
+      e.target.value = ""; // reseta
+    }
+  });
+</script>
 
               <!-- Template Oculto -->
               <div id="produto-template" class="d-none">
@@ -442,8 +517,6 @@
                       </button>
                     </div>
                   </div>
-                  
-                    
                     <input type="hidden" name="form-__prefix__-acao" value="mantem" class="campo-acao" />
                   
                 </div>
@@ -457,6 +530,9 @@
             </div>
           </div>
         </div>
+
+
+
 
         <script>
           document.addEventListener('DOMContentLoaded', function () {
@@ -501,25 +577,103 @@
                 <div class="row g-1 servico-form border rounded p-3 mb-3 position-relative bg-light">
                   <div class="row g-2">
                     <div class="col-md-5">
-                      <label>Serviço:</label>
-                      <select name="form-0-servico" class="form-select servico-select">
-                        <option value="">Selecione o Serviço</option>
-                        {% for servico in servicos %}
-                          <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
-                            {{ servico.nome }}
-                          </option>
-                        {% endfor %}
-                      </select>
-                    </div>
+                  <label>Serviço:</label>
+                  <div class="input-group">
+                    <select id="id_servico" name="form-0-servico" class="form-select servico-select">
+                      <option value="">Selecione o Serviço</option>
+                      {% for servico in servicos %}
+                        <option value="{{ servico.id }}" data-preco="{{ servico.preco }}">
+                          {{ servico.nome }}
+                        </option>
+                      {% endfor %}
+                      <option value="cadastrar-ser">➕ Cadastrar novo Serviço</option>
+                    </select>
+                    <!-- Botão pequeno para recarregar apenas os serviços -->
+                    <button type="button" id="btn-recarregar-servicos" class="btn btn-outline-secondary btn-sm" title="Recarregar serviços">
+                      <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <script>
+  async function atualizarServicos() {
+    const btn = document.getElementById("btn-recarregar-servicos");
+    const btnHtml = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+    try {
+      const resp = await fetch("{% url 'servicos:lista_de_servicos' %}");
+      const data = await resp.json();
+
+      // pega todos os selects de serviço (inclusive os ocultos com __prefix__)
+      document.querySelectorAll(".servico-select").forEach(select => {
+        const antigoSelecionado = select.value;
+
+        // limpa e repopula
+        select.innerHTML = "";
+
+        // opção inicial
+        const optionInicial = document.createElement("option");
+        optionInicial.value = "";
+        optionInicial.textContent = "Selecione o Serviço";
+        select.appendChild(optionInicial);
+
+        // opções vindas do banco
+        data.forEach(servico => {
+          const option = document.createElement("option");
+          option.value = servico.id;
+          option.textContent = servico.nome;
+          option.dataset.preco = servico.preco;
+          select.appendChild(option);
+        });
+
+        // opção cadastrar
+        const optionCadastrar = document.createElement("option");
+        optionCadastrar.value = "cadastrar-ser";
+        optionCadastrar.textContent = "➕ Cadastrar novo Serviço";
+        select.appendChild(optionCadastrar);
+
+        // tenta manter seleção anterior (se ainda existir)
+        const existeAnterior = Array.from(select.options).some(o => o.value == antigoSelecionado);
+        if (existeAnterior) {
+          select.value = antigoSelecionado;
+        }
+      });
+
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível atualizar a lista de serviços agora.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = btnHtml;
+    }
+  }
+
+  // Botão recarrega todos os selects de serviço
+  document.getElementById("btn-recarregar-servicos")
+    .addEventListener("click", atualizarServicos);
+
+  // Delegação: qualquer select de serviço que mude para "cadastrar-ser"
+  document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("servico-select") && e.target.value === "cadastrar-ser") {
+      window.open("{% url 'servicos:cadastrar_servico' %}", "_blank");
+      e.target.value = ""; // reseta
+    }
+  });
+</script>
+
                     <div class="col-md-5">
                       <label>Profissional:</label>
-                      <select name="form-0-tecnico" class="form-select tecnico-select">
+                      <select id="id_servico" name="form-0-tecnico" class="form-select tecnico-select">
                         <option value="">Selecione o Profissional</option>
                         {% for tecnico in tecnicos %}
                           <option value="{{ tecnico.id }}" data-preco="{{ tecnico.comissao }}">
                             {{ tecnico.nome }}
                           </option>
                         {% endfor %}
+                        
                       </select>
                     </div>
                     <div class="col-md-1 d-flex align-items-end">
@@ -560,6 +714,7 @@
                   <div class="row g-2">
                     <div class="col-md-5">
                       <label>Serviço:</label>
+                      
                       <select name="form-__prefix__-servico" class="form-select servico-select">
                         <option value="">Selecione o Serviço</option>
                         {% for servico in servicos %}
@@ -567,7 +722,10 @@
                             {{ servico.nome }}
                           </option>
                         {% endfor %}
+                  
                       </select>
+                      
+                    
                     </div>
                     <div class="col-md-5">
                       <label>Profissional:</label>

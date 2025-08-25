@@ -11,6 +11,14 @@ from django.contrib import messages
 from configuracoes.models import Empresa
 from django.utils import timezone
 
+from django.http import JsonResponse
+
+def lista_de_produtos(request):
+    produtos = Produto.objects.all().values("id", "nome")
+    return JsonResponse(list(produtos), safe=False)
+
+
+
 @login_required
 def cadastrar_produto(request):
     if request.method == 'POST':

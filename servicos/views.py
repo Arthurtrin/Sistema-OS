@@ -7,6 +7,13 @@ from .forms import ServicoForm
 from .models import Servico
 from django.contrib import messages
 
+from django.http import JsonResponse
+from .models import Servico
+
+def lista_de_servicos(request):
+    servicos = Servico.objects.all().values("id", "nome", "preco")
+    return JsonResponse(list(servicos), safe=False)
+
 @login_required
 def listar_servicos(request):
     servicos = Servico.objects.all().order_by('-id')
