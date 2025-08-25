@@ -16,7 +16,8 @@ urlpatterns = [
     path('atividade/excluir/<int:atv_id>/', views.excluir_atividade, name='excluir_atividade'),
     path('segmentos/cadastrar/', views.cadastrar_segmento, name='cadastrar_segmento'),
     path('atividades/cadastrar/', views.cadastrar_atividade, name='cadastrar_atividade'),
-     path('clientes/download-modelo/', views.download_modelo_clientes, name='download_modelo_clientes'),
-      path('importar/', views.importar_clientes, name='importar_clientes'),
+    path('clientes/download-modelo/', views.download_modelo_clientes, name='download_modelo_clientes'),
+    path('importar/', views.importar_clientes, name='importar_clientes'),
+    path("lista-de-clientes/", views.lista_de_clientes, name="lista_de_clientes"),
     # Adicione outras rotas como editar, listar etc.
 ]

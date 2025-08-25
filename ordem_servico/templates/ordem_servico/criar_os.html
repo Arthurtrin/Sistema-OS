@@ -166,14 +166,87 @@
                   </div>
                  
                   <div class="col-md-4">
-                    <label for="{{ form.n_cliente.id_for_label }}" class="form-label-professional">Cliente</label>
-                    {{ form.n_cliente }}
-                    {% if form.n_cliente.errors %}
-                    <div class="invalid-feedback d-block">
-                      {{ form.n_cliente.errors|striptags }}
-                    </div>
-                    {% endif %}
-                  </div>
+  <label for="{{ form.n_cliente.id_for_label }}" class="form-label-professional">Cliente</label>
+
+  <div class="input-group">
+    <select id="id_n_cliente" name="n_cliente" class="form-select">
+      {% for value, label in form.n_cliente.field.choices %}
+        <option value="{{ value.nome_cliente }}">{{ label }}</option>
+      {% endfor %}
+      <option value="cadastrar">➕ Cadastrar novo cliente</option>
+    </select>
+
+    <!-- Botão pequeno para recarregar apenas o dropdown -->
+    <button type="button" id="btn-recarregar-clientes" class="btn btn-outline-secondary btn-sm" title="Recarregar clientes">
+      <i class="fa-solid fa-rotate-right"></i>
+    </button>
+  </div>
+
+  {% if form.n_cliente.errors %}
+    <div class="invalid-feedback d-block">
+      {{ form.n_cliente.errors|striptags }}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  async function atualizarClientes(selecionarId) {
+    const select = document.getElementById("id_n_cliente");
+    const btn = document.getElementById("btn-recarregar-clientes");
+    const antigoSelecionado = selecionarId ?? select.value;
+    const btnHtml = btn.innerHTML;
+
+    // feedback rápido no botão
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+    try {
+      const resp = await fetch("{% url 'clientes:lista_de_clientes' %}");
+      const data = await resp.json();
+
+      // limpa e repopula
+      select.innerHTML = "";
+      data.forEach(cliente => {
+        const option = document.createElement("option");
+        option.value = cliente.id;
+        option.textContent = cliente.nome_cliente;
+        select.appendChild(option);
+      });
+
+      // adiciona a opção de cadastrar no final
+      const optionCadastrar = document.createElement("option");
+      optionCadastrar.value = "cadastrar";
+      optionCadastrar.textContent = "➕ Cadastrar novo cliente";
+      select.appendChild(optionCadastrar);
+
+      // tenta manter a seleção anterior (se ainda existir)
+      const existeAnterior = Array.from(select.options).some(o => o.value == antigoSelecionado);
+      if (existeAnterior) {
+        select.value = antigoSelecionado;
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível atualizar a lista de clientes agora.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = btnHtml;
+    }
+  }
+
+  // Botão de recarregar apenas o dropdown
+  document.getElementById("btn-recarregar-clientes")
+    .addEventListener("click", () => atualizarClientes());
+
+  // Ao escolher "Cadastrar", abre em nova aba (e você depois clica no botão para recarregar)
+  document.getElementById("id_n_cliente")
+    .addEventListener("change", function () {
+      if (this.value === "cadastrar") {
+        window.open("{% url 'clientes:cadastrar_clientes' %}", "_blank");
+        this.value = ""; // reseta para evitar ficar selecionado
+      }
+    });
+</script>
+
                 </div>
                 <div class="row g-2" style="margin-top: 5px;">
                   <div class="col-md-4">

@@ -15,6 +15,14 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from configuracoes.models import Empresa
 
+# views.py
+from django.http import JsonResponse
+
+def lista_de_clientes(request):
+    clientes = Cliente.objects.all().values("id", "nome_cliente")
+    return JsonResponse(list(clientes), safe=False)
+
+
 @login_required
 def cadastrar_clientes(request):
     if request.method == 'POST':
