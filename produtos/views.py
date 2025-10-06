@@ -18,7 +18,6 @@ def lista_de_produtos(request):
     return JsonResponse(list(produtos), safe=False)
 
 
-
 @login_required
 def cadastrar_produto(request):
     if request.method == 'POST':
@@ -121,6 +120,7 @@ def entrada_produto(request):
         codigo = request.POST.get('codigoEntrada')
         quantidade = request.POST.get('quantidadeEntrada')
         observacao = request.POST.get('Observacao')
+        fornecedor = request.POST.get('fornecedor')
         # Verifica se a quantidade é um número válido
         try:
             quantidade = int(quantidade)
@@ -147,6 +147,8 @@ def entrada_produto(request):
             quantidade = quantidade,
             data = timezone.now().date(),
             observacao = observacao,
+            fornecedor = fornecedor,
+            cliente = '-',
             usuario = request.user
         )
 
@@ -160,6 +162,7 @@ def saida_produto(request):
         codigo = request.POST.get('codigoSaida')
         quantidade = request.POST.get('quantidadeSaida')
         observacao = request.POST.get('Observacao')
+        cliente = request.POST.get('cliente')
         # Verifica se a quantidade é um número inteiro positivo
         try:
             quantidade = int(quantidade)
@@ -191,6 +194,8 @@ def saida_produto(request):
             quantidade = quantidade,
             data = timezone.now().date(),
             observacao = observacao,
+            cliente = cliente,
+            fornecedor = '-',
             usuario = request.user
         )
 

@@ -51,7 +51,6 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
-    
 class Movimentacao(models.Model):
     TIPOS = [
         ('entrada', 'Entrada de Produto'),
@@ -63,6 +62,8 @@ class Movimentacao(models.Model):
     quantidade = models.IntegerField()
     data = models.DateField()
     observacao = models.TextField(blank=True, null=True)
+    fornecedor = models.CharField(blank=True, default='-')
+    cliente = models.CharField(blank=True, default='-')
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
