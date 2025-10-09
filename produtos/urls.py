@@ -23,5 +23,6 @@ urlpatterns = [
     path('produtos/grupo/editar/<int:grupo_id>', views.editar_grupo, name='editar_grupo'),
     path('produtos/grupo/excluir/<int:grupo_id>', views.excluir_grupo, name='excluir_grupo'),
     path('lista-de-produtos', views.lista_de_produtos, name='lista_de_produtos'),
+    path('consultar', views.consultar_produto, name='consultar_produto'),
     
 ]

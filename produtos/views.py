@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.contrib import messages
 from configuracoes.models import Empresa
 from django.utils import timezone
-
 from django.http import JsonResponse
 
 def lista_de_produtos(request):
@@ -32,6 +31,60 @@ def cadastrar_produto(request):
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
 
+@login_required
+def consultar_produto(request):
+    pesquisa = request.GET.get('pesquisa', '')
+    situacao = request.GET.get('situacao', '')
+    grupo = request.GET.get('grupo', '')
+    fabricante = request.GET.get('fabricante', '')
+    data_ultima_compra = request.GET.get('data_ultima_compra', '')
+
+    produtos = Produto.objects.all().order_by('-id')
+
+    if pesquisa:
+        produtos = produtos.filter(
+            Q(id__icontains=pesquisa) |
+            Q(nome__icontains=pesquisa) |
+            Q(grupo__nome__icontains=pesquisa) |
+            Q(situacao__icontains=pesquisa) |
+            Q(fabricante__nome__icontains=pesquisa) |
+            Q(marca__nome__icontains=pesquisa) |
+            Q(ref_fabricante__icontains=pesquisa) |
+            Q(cod_embalagem__icontains=pesquisa) |
+            Q(cod_barra__icontains=pesquisa) | 
+            Q(apresentacao__icontains=pesquisa) |
+            Q(descricao__icontains=pesquisa)
+        )
+
+    if situacao:
+        produtos = produtos.filter(situacao=situacao)
+
+    if grupo:
+        produtos = produtos.filter(grupo_id=grupo)
+
+    if fabricante:
+        produtos = produtos.filter(fabricante_id=fabricante)
+
+    if data_ultima_compra:
+        produtos = produtos.filter(data_ultima_compra=data_ultima_compra)
+
+    
+
+    grupos = Grupo.objects.all()
+    fabricantes = Fabricante.objects.all()
+
+    return render(request, 'produtos/consultar_produto.html', {
+        'produtos': produtos,
+        'pesquisa': pesquisa,
+        'situacao': situacao,
+        'grupo': grupo,
+        'fabricante': fabricante,
+        'data_ultima_compra': data_ultima_compra,
+        'grupos': grupos,
+        'fabricantes': fabricantes,
+        'Produto': Produto  # usado para acessar Produto.SITUACAO_CHOICES no template
+    })
+    
 @login_required
 def listar_produtos(request):
     pesquisa = request.GET.get('pesquisa', '')

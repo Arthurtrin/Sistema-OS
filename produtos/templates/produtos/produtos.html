@@ -142,6 +142,15 @@
           </div>
         </a>
       </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <a href="{% url 'produtos:consultar_produto' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
+          <div class="card-body text-center">
+            <i class="fas fa-search fa-2x text-warning mb-2"></i>
+            <h6 class="mb-0">Consulta</h6>
+          </div>
+        </a>
+      </div>
       
         <div class="col-12 col-sm-6 col-md-3">
             <div class="card card-link" data-bs-toggle="modal" data-bs-target="#movimentacoesModal" style="cursor: pointer;">
@@ -165,7 +174,7 @@
       <div class="col-12 col-sm-6 col-md-3">
         <a href="{% url 'produtos:fabricante_marca_grupo' %}" class="card card-link {% if active_tab == 'definicoes' %}active{% endif %}">
           <div class="card-body text-center">
-            <i class="fas fa-cogs fa-2x text-warning mb-2"></i>
+            <i class="fas fa-cogs fa-2x text-dark mb-2"></i>
             <h6 class="mb-0">Definições</h6>
           </div>
         </a>
