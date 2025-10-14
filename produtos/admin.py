@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Produto, Grupo, Marca, Fabricante, Movimentacao
+from .models import *
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
@@ -11,3 +11,5 @@ admin.site.register(Grupo)
 admin.site.register(Marca)
 admin.site.register(Fabricante)
 admin.site.register(Movimentacao)
+admin.site.register(TipoEntrada)
+admin.site.register(TipoSaida)

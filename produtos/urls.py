@@ -24,5 +24,11 @@ urlpatterns = [
     path('produtos/grupo/excluir/<int:grupo_id>', views.excluir_grupo, name='excluir_grupo'),
     path('lista-de-produtos', views.lista_de_produtos, name='lista_de_produtos'),
     path('consultar', views.consultar_produto, name='consultar_produto'),
-    
+
+    path('cadastrar_tipoEntrada', views.cadastrar_tipoEntrada, name='cadastrar_tipoEntrada'),
+    path('cadastrar_tipoSaida', views.cadastrar_tipoSaida, name='cadastrar_tipoSaida'),
+    path('editar/tipo-entrada/<int:id>', views.editar_tipoentrada, name='editar_tipoentrada'),
+    path('editar/tipo-saida/<int:id>', views.editar_tiposaida, name='editar_tiposaida'),
+    path('excluir/tipo-entrada/<int:id>', views.excluir_tipoentrada, name='excluir_tipoentrada'),
+    path('excluir/tipo-saida/<int:id>', views.excluir_tiposaida, name='excluir_tiposaida'),
 ]

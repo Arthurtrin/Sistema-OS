@@ -85,6 +85,32 @@
         Grupos
       </button>
     </li>
+
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if aba == 'tipoentrada' %}active{% endif %}"
+              id="tipoentrada-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#tipoentrada"
+              type="button"
+              role="tab"
+              aria-controls="tipoentrada"
+              aria-selected="{% if aba == 'tipoentrada' %}true{% else %}false{% endif %}">
+        Tipos de Entrada
+      </button>
+    </li>
+
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if aba == 'tiposaida' %}active{% endif %}"
+              id="tiposaida-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#tiposaida"
+              type="button"
+              role="tab"
+              aria-controls="tiposaida"
+              aria-selected="{% if aba == 'tiposaida' %}true{% else %}false{% endif %}">
+        Tipos de Saída
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content border border-top-0 p-4 rounded-bottom shadow-sm">
@@ -198,6 +224,81 @@
         </div>
       </form>
     </div>
+
+    <!-- Tipos de Entrada Tab -->
+    <div class="tab-pane fade {% if aba == 'tipoentrada' %}show active{% endif %}" 
+         id="tipoentrada" 
+         role="tabpanel" 
+         aria-labelledby="tipoentrada-tab">
+      <h4>Tipos de Entrada</h4>
+      <ul class="list-group mb-4" id="lista-tipoentrada">
+        {% for tipoentrada in tipos_entrada %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ tipoentrada.nome }}
+            <div>
+              <button type="button"
+                      class="btn btn-sm btn-primary me-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editarModal"
+                      data-id="{{ tipoentrada.id }}"
+                      data-nome="{{ tipoentrada.nome }}"
+                      data-tipo="tipoentrada">
+                Editar
+              </button>
+              <a href="{% url 'produtos:excluir_tipoentrada' tipoentrada.id %}" class="btn btn-sm btn-danger">Excluir</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhum tipo de entrada cadastrado.</li>
+        {% endfor %}
+      </ul>
+
+      <form method="post" action="{% url 'produtos:cadastrar_tipoEntrada' %}">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="text" name="nome" class="form-control" placeholder="Novo tipo de entrada" required>
+          <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tipos de Saída Tab -->
+    <div class="tab-pane fade {% if aba == 'tiposaida' %}show active{% endif %}" 
+         id="tiposaida" 
+         role="tabpanel" 
+         aria-labelledby="tiposaida-tab">
+      <h4>Tipos de Saída</h4>
+      <ul class="list-group mb-4" id="lista-tiposaida">
+        {% for tiposaida in tipos_saida %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ tiposaida.nome }}
+            <div>
+              <button type="button"
+                      class="btn btn-sm btn-primary me-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editarModal"
+                      data-id="{{ tiposaida.id }}"
+                      data-nome="{{ tiposaida.nome }}"
+                      data-tipo="tiposaida">
+                Editar
+              </button>
+              <a href="{% url 'produtos:excluir_tiposaida' tiposaida.id %}" class="btn btn-sm btn-danger">Excluir</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhum tipo de saída cadastrado.</li>
+        {% endfor %}
+      </ul>
+
+      <form method="post" action="{% url 'produtos:cadastrar_tipoSaida' %}">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="text" name="nome" class="form-control" placeholder="Novo tipo de saída" required>
+          <button type="submit" class="btn btn-dark-custom btn-sm w-auto">Adicionar</button>
+        </div>
+      </form>
+    </div>
+
   </div>
   {% endwith %}
 </div>
@@ -251,6 +352,10 @@
       form.action = "{% url 'produtos:editar_fabricante' 0 %}".replace('0', id);
     } else if (tipo === 'grupo') {
       form.action = "{% url 'produtos:editar_grupo' 0 %}".replace('0', id);
+    } else if (tipo === 'tipoentrada') {
+      form.action = "{% url 'produtos:editar_tipoentrada' 0 %}".replace('0', id);
+    } else if (tipo === 'tiposaida') {
+      form.action = "{% url 'produtos:editar_tiposaida' 0 %}".replace('0', id);
     }
   });
 </script>

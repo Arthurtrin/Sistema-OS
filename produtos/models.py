@@ -15,6 +15,16 @@ class Fabricante(models.Model):
     nome = models.CharField(max_length=100)
     def __str__(self):
         return self.nome
+    
+class TipoEntrada(models.Model):
+    nome = models.CharField(max_length=100)
+    def __str__(self):
+        return self.nome
+    
+class TipoSaida(models.Model):
+    nome = models.CharField(max_length=100)
+    def __str__(self):
+        return self.nome
 
 class Produto(models.Model):
     #sera feito em definiçoes
@@ -62,8 +72,10 @@ class Movimentacao(models.Model):
     quantidade = models.IntegerField()
     data = models.DateField()
     observacao = models.TextField(blank=True, null=True)
-    fornecedor = models.CharField(blank=True, default='-')
-    cliente = models.CharField(blank=True, default='-')
+    fornecedor = models.CharField(max_length=50, blank=True, default='-')
+    cliente = models.CharField(max_length=50, blank=True, default='-')
+    tipoSaida = models.CharField(max_length=50, blank=True, default='-')
+    tipoEntrada = models.CharField(max_length=50, blank=True, default='-')
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):

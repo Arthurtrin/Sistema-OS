@@ -192,6 +192,11 @@
 </style>
 
 <div class="container my-4">
+    <div class="d-flex align-items-center mb-2">
+    <a href="{% url 'produtos:listar_produtos' %}" class="text-decoration-none " style="margin-right: 10px;">
+      <i class="fas fa-arrow-left me-1"></i> Voltar
+    </a> 
+  </div>
     <div class="row align-items-center">
         <div class="col-auto">
             <h2 class="mb-0">Consultar</h2>
@@ -275,7 +280,7 @@
 
     <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
         <div class="table-pagination-container">
-            <table class="table table-hover custom-table mb-0">
+            <table class="table table-hover custom-table mb-0" style="background-color: #343a40; padding: 3px;">
                 <thead class="custom-thead" style="position: sticky; top: 0; z-index: 2; background-color: white;">
                     <tr>
                         <th scope="col">Código</th>

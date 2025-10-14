@@ -3,8 +3,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Perfil, Chave_Gerenciador
-from .forms import ProdutoForm, MarcaForm, FabricanteForm, GrupoForm
-from .models import Produto, Marca, Fabricante, Grupo, Movimentacao
+from .forms import ProdutoForm, MarcaForm, FabricanteForm, GrupoForm, TipoEntradaForm, TipoSaidaForm
+from .models import Produto, Marca, Fabricante, Grupo, Movimentacao, TipoEntrada, TipoSaida
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
@@ -122,15 +122,13 @@ def listar_produtos(request):
     if data_ultima_compra:
         produtos = produtos.filter(data_ultima_compra=data_ultima_compra)
 
-    paginator = Paginator(produtos, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     grupos = Grupo.objects.all()
     fabricantes = Fabricante.objects.all()
+    tipoEntrada = TipoEntrada.objects.all() 
+    tipoSaida = TipoSaida.objects.all()
 
     return render(request, 'produtos/produtos.html', {
-        'page_obj': page_obj,
+        'produtos': produtos,
         'pesquisa': pesquisa,
         'situacao': situacao,
         'grupo': grupo,
@@ -138,6 +136,8 @@ def listar_produtos(request):
         'data_ultima_compra': data_ultima_compra,
         'grupos': grupos,
         'fabricantes': fabricantes,
+        'tipos_entrada': tipoEntrada,
+        'tipos_saida': tipoSaida,
         'Produto': Produto  # usado para acessar Produto.SITUACAO_CHOICES no template
     })
 
@@ -174,6 +174,8 @@ def entrada_produto(request):
         quantidade = request.POST.get('quantidadeEntrada')
         observacao = request.POST.get('Observacao')
         fornecedor = request.POST.get('fornecedor')
+        idEntrada = request.POST.get('tipoentrada')
+        tipoEntrada = get_object_or_404(TipoEntrada, id=idEntrada)
         # Verifica se a quantidade é um número válido
         try:
             quantidade = int(quantidade)
@@ -193,7 +195,8 @@ def entrada_produto(request):
         # Atualiza a quantidade do produto
         produto.quantidade += quantidade
         produto.save()
-
+        
+        
         Movimentacao.objects.create(
             tipo = 'entrada',
             produto = produto,
@@ -202,6 +205,7 @@ def entrada_produto(request):
             observacao = observacao,
             fornecedor = fornecedor,
             cliente = '-',
+            tipoEntrada = tipoEntrada,
             usuario = request.user
         )
 
@@ -216,6 +220,8 @@ def saida_produto(request):
         quantidade = request.POST.get('quantidadeSaida')
         observacao = request.POST.get('Observacao')
         cliente = request.POST.get('cliente')
+        idSaida = request.POST.get('tiposaida')
+        tipoSaida = get_object_or_404(TipoSaida, id=idSaida)
         # Verifica se a quantidade é um número inteiro positivo
         try:
             quantidade = int(quantidade)
@@ -249,6 +255,7 @@ def saida_produto(request):
             observacao = observacao,
             cliente = cliente,
             fornecedor = '-',
+            tipoSaida = tipoSaida,
             usuario = request.user
         )
 
@@ -335,12 +342,66 @@ def fabricante_marca_grupo(request):
     marca = Marca.objects.all()
     fabricante = Fabricante.objects.all()
     grupo = Grupo.objects.all()
+    tipoEntrada = TipoEntrada.objects.all()
+    tipoSaida= TipoSaida.objects.all()
 
     return render(request, 'produtos/fabricante_marca_grupo.html', {
         "marcas": marca,
         "fabricantes": fabricante,
-        "grupos":grupo
+        "grupos":grupo, 
+        "tipos_entrada":tipoEntrada,
+        "tipos_saida":tipoSaida
     })
+
+@login_required
+def cadastrar_tipoEntrada(request):
+    if request.method == 'POST':
+        form = TipoEntradaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tipoentrada')
+    else:
+        return redirect('produtos:fabricante_marca_grupo')
+
+@login_required
+def cadastrar_tipoSaida(request):
+    if request.method == 'POST':
+        form = TipoSaidaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tiposaida')
+    else:
+        return redirect('produtos:fabricante_marca_grupo')
+
+def editar_tipoentrada(request, id):
+    entrada = get_object_or_404(TipoEntrada, id=id)
+    if request.method == 'POST':
+        form = TipoEntradaForm(request.POST, instance=entrada)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tipoentrada')
+    else:
+        return redirect('produtos:fabricante_marca_grupo')
+
+def editar_tiposaida(request, id):
+    saida = get_object_or_404(TipoSaida, id=id)
+    if request.method == 'POST':
+        form = TipoSaidaForm(request.POST, instance=saida)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tiposaida')
+    else:
+        return redirect('produtos:fabricante_marca_grupo')
+
+def excluir_tipoentrada(request, id):
+    entrada = get_object_or_404(TipoEntrada, id=id)
+    entrada.delete()
+    return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tipoentrada')
+
+def excluir_tiposaida(request, id):
+    saida = get_object_or_404(TipoSaida, id=id)
+    saida.delete()
+    return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=tiposaida')
 
 @login_required
 def ver_produto(request, produto_id):
@@ -367,6 +428,7 @@ def cadastrar_fabricante(request):
             return HttpResponseRedirect(reverse('produtos:fabricante_marca_grupo') + '?aba=fabricantes')
     else:
         return redirect('produtos:fabricante_marca_grupo')
+
 
 @login_required
 def editar_marca(request, marca_id):

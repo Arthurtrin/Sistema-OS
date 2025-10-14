@@ -137,7 +137,7 @@
       <div class="col-12 col-sm-6 col-md-3">
         <a href="{% url 'produtos:cadastrar_produto' %}" class="card card-link {% if active_tab == 'cadastrar' %}active{% endif %}">
           <div class="card-body text-center">
-            <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
+            <i class="fas fa-plus-circle fa-2x text-success mb-2"></i> 
             <h6 class="mb-0">Cadastrar</h6>
           </div>
         </a>
@@ -152,7 +152,7 @@
         </a>
       </div>
       
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card card-link" data-bs-toggle="modal" data-bs-target="#movimentacoesModal" style="cursor: pointer;">
                 <div class="card-body text-center">
                 <i class="fas fa-exchange-alt fa-2x text-primary mb-2"></i>
@@ -162,7 +162,7 @@
         </div>
 
       <!-- Card que abre o modal de Filtros -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card card-link" data-bs-toggle="modal" data-bs-target="#modalFiltros" style="cursor: pointer;">
                 <div class="card-body text-center">
                 <i class="fas fa-filter fa-2x text-info mb-2"></i>
@@ -171,7 +171,7 @@
             </div>
         </div>
 
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-12 col-sm-6 col-md-2">
         <a href="{% url 'produtos:fabricante_marca_grupo' %}" class="card card-link {% if active_tab == 'definicoes' %}active{% endif %}">
           <div class="card-body text-center">
             <i class="fas fa-cogs fa-2x text-dark mb-2"></i>
@@ -272,36 +272,43 @@
 </style>
 
 
-    <!-- Modal Movimentações-->
+<!-- Modal Movimentações-->
 <div class="modal fade" id="movimentacoesModal" tabindex="-1" aria-labelledby="movimentacoesModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="movimentacoesModalLabel">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;"> <!-- modal mais estreito -->
+    <div class="modal-content shadow-lg border-0 rounded-4" style="background: #ffffff;">
+      <div class="modal-header bg-primary text-white border-0 py-3">
+        <h5 class="modal-title fw-semibold d-flex align-items-center" id="movimentacoesModalLabel">
           <i class="fas fa-exchange-alt me-2"></i>Movimentações
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
       </div>
-      <div class="modal-body text-center">
-        <div class="d-grid gap-3">
-        <a href="#" class="btn btn-success btn-lg"
-            data-bs-target="#modalEntrada"
-            data-bs-toggle="modal"
-            data-bs-dismiss="modal">
-            <i class="fas fa-arrow-down me-2"></i>Entrada
-        </a>
 
-        <a href="#" class="btn btn-danger btn-lg"
-            data-bs-target="#modalSaida"
-            data-bs-toggle="modal"
-            data-bs-dismiss="modal">
-            <i class="fas fa-arrow-up me-2"></i>Saída
-        </a>
-          <a href="{% url 'produtos:relatorio_movimentacao' %}" class="btn btn-secondary btn-lg">
-            <i class="fas fa-chart-line me-2"></i>Relatórios
+      <div class="modal-body text-center py-4 px-4">
+        
+
+        <div class="d-grid gap-3">
+          <a href="#" class="btn btn-success btn-lg  py-3 rounded-3 shadow-sm"
+              data-bs-target="#modalEntrada"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+              style="transition: all 0.3s ease;">
+              <i class="fas fa-arrow-down me-2"></i>Entrada
+          </a>
+
+          <a href="#" class="btn btn-danger btn-lg  py-3 rounded-3 shadow-sm text"
+              data-bs-target="#modalSaida"
+              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+              style="transition: all 0.3s ease;">
+              <i class="fas fa-arrow-up me-2"></i>Saída
+          </a>
+
+          <a href="{% url 'produtos:relatorio_movimentacao' %}" class="btn btn-warning btn-lg py-3 rounded-3 shadow-sm text-white"
+              style="transition: all 0.3s ease;">
+              <i class="fas fa-chart-line me-2"></i>Relatórios
           </a>
         </div>
-      </div>
+      </div>  
     </div>
   </div>
 </div>
@@ -328,6 +335,15 @@
           <div class="mb-3">
             <label for="fornecedor" class="form-label">Fornecedor</label>
             <input type="text" class="form-control" id="fornecedor" name="fornecedor" required>
+          </div>
+          <div class="mb-3">
+            <label for="tipoentrada" class="form-label">Tipo de Entrada</label>
+            <select class="form-select" id="tipoentrada" name="tipoentrada" required>
+              <option value="" selected disabled>Selecione o tipo de saída</option>
+              {% for tipo in tipos_entrada %}
+                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+              {% endfor %}
+            </select>
           </div>
           <div class="mb-3">
             <label for="Observacao" class="form-label">Observações</label>
@@ -367,6 +383,15 @@
             <input type="text" class="form-control" id="cliente" name="cliente" required>
           </div>
           <div class="mb-3">
+            <label for="tiposaida" class="form-label">Tipo de Saída</label>
+            <select class="form-select" id="tiposaida" name="tiposaida" required>
+              <option value="" selected disabled>Selecione o tipo de saída</option>
+              {% for tipo in tipos_saida %}
+                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
             <label for="Observacao" class="form-label">Observações</label>
             <textarea class="form-control" id="Observacao" name="Observacao" rows="3"></textarea>
           </div>
@@ -385,11 +410,9 @@
     </div>
 
     <div class="table-responsive">
-        
-
         <div class="table-pagination-container">
-            <table class="table table-hover custom-table">
-                <thead class="custom-thead">
+            <table class="table table-hover custom-table" style="background-color: #343a40; padding: 3px;">
+                <thead class="custom-thead" >
                     <tr>
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
@@ -401,7 +424,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for produto in page_obj %}
+                    {% for produto in produtos %}
                     <tr data-bs-toggle="modal"
                         data-bs-target="#modalProduto{{ produto.id }}"
                         style="cursor: pointer;">
@@ -419,48 +442,14 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-            </table>
-
-            <!-- Paginação -->
-            <nav aria-label="Navegação de página">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Anterior">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if num == page_obj.number %}
-                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                        {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% if pesquisa %}pesquisa={{ pesquisa }}&{% endif %}{% if situacao %}situacao={{ situacao }}&{% endif %}{% if marca %}marca={{ marca }}&{% endif %}{% if fabricante %}fabricante={{ fabricante }}&{% endif %}{% if data_ultima_compra %}data_ultima_compra={{ data_ultima_compra }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Próximo">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                    {% endif %}
-                </ul>
-            </nav>
+            </table>  
         </div>
     </div>
+
 </div>
 
 <!-- Modais -->
-{% for produto in page_obj %}
+{% for produto in produtos %}
 <div class="modal fade" id="modalProduto{{ produto.id }}" tabindex="-1" aria-labelledby="modalLabel{{ produto.id }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
